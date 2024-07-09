@@ -1,0 +1,81 @@
+{
+  "_from": "@neuronet.io/vido@^2.5.11",
+  "_id": "@neuronet.io/vido@2.6.3",
+  "_inBundle": false,
+  "_integrity": "sha512-iTBCorsaA0+Ku8Wer477g8MsucTIPyvaaqSjAhVnMUpb4aHNuVDKoEhlFlfH/nloFagVRT8DhRcugzSUV2RYcg==",
+  "_location": "/@neuronet.io/vido",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@neuronet.io/vido@^2.5.11",
+    "name": "@neuronet.io/vido",
+    "escapedName": "@neuronet.io%2fvido",
+    "scope": "@neuronet.io",
+    "rawSpec": "^2.5.11",
+    "saveSpec": null,
+    "fetchSpec": "^2.5.11"
+  },
+  "_requiredBy": [
+    "/gantt-schedule-timeline-calendar"
+  ],
+  "_resolved": "https://registry.npmjs.org/@neuronet.io/vido/-/vido-2.6.3.tgz",
+  "_shasum": "be07fb5c81bb5ad5d68e0b3a0a5996a97e49b229",
+  "_spec": "@neuronet.io/vido@^2.5.11",
+  "_where": "C:\\Users\\wolf_\\node_modules\\gantt-schedule-timeline-calendar",
+  "author": {
+    "name": "Rafal Pospiech",
+    "email": "neuronet.io@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/neuronetio/vido/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "csstype": "^2.6.10",
+    "lit-html-optimised": "^1.1.7"
+  },
+  "deprecated": false,
+  "description": "Compilation-less and eval free frontend framework for fast scalable apps.",
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "chromedriver": "^79.0.0",
+    "expect": "^24.9.0",
+    "geckodriver": "^1.19.1",
+    "nightwatch": "^1.3.2",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^1.27.8",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.3",
+    "rollup-plugin-typescript": "^1.0.1",
+    "selenium-server": "^3.141.59",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.3"
+  },
+  "homepage": "https://github.com/neuronetio/vido#readme",
+  "keywords": [
+    "frontend",
+    "framework",
+    "svelte",
+    "fast",
+    "compilation",
+    "compilation-less",
+    "functional",
+    "easy"
+  ],
+  "license": "MIT",
+  "main": "vido.umd.min.js",
+  "module": "vido.esm.min.js",
+  "name": "@neuronet.io/vido",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neuronetio/vido.git"
+  },
+  "scripts": {
+    "autobuild": "rollup -c -w",
+    "build": "tsc -d vido.ts --downlevelIteration && rollup -c",
+    "test": "nightwatch --env chrome && nightwatch --env firefox"
+  },
+  "version": "2.6.3"
+}

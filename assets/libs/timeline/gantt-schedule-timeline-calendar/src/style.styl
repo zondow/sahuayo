@@ -1,0 +1,409 @@
+$bg-dark-1 = hsl(192, 15%, 98%)
+$bg-dark-2 = hsl(210, 20%, 98%)
+$bg-dark-3 = hsl(192, 15%, 94%)
+$bg-dark-4 = rgba(177, 184, 189, 0.5)
+$bg-dark-5 = rgba(177, 184, 189, 0.75)
+
+//$dot = hsl(192, 15%, 80%)
+$dot = #e0eff2
+$grid = 1px solid hsla(192, 15%, 94%, 0.75)
+
+$font-color = #606060
+$font-color-2 = #707070
+$font-color-3 = hsl(210, 5%, 48%)
+$font-color-4 = hsla(210, 5%, 38%, 70%)
+
+$item-content-padding = 5px
+
+.gantt-schedule-timeline-calendar
+  display: flex
+  overflow: hidden
+  color: $font-color
+  font-size: 14px
+  background-color: #fdfdfd;
+  line-height: 1.2
+
+  & *
+    box-sizing: border-box
+
+  &__helper
+    &-center
+      text-align: center
+    &-dark
+      background: $bg-dark-2
+
+  &__list-column-header-resizer--active
+    cursor: ew-resize
+    & *
+      -webkit-user-select: none; /* Safari 3.1+ */
+      -moz-user-select: none; /* Firefox 2+ */
+      -ms-user-select: none; /* IE 10+ */
+      user-select: none; /* Standard syntax */
+  &__vertical-scroll
+    overflow:hidden
+    overflow-y:visible
+    flex-shrink: 0
+    position: absolute
+    right: 0px
+    & > *
+      will-change: scroll-position
+
+  &__horizontal-scroll
+    overflow: hidden
+    overflow-x: scroll
+    & > *
+      will-change: scroll-position
+
+  &__list
+    border-collapse: collapse
+    display: flex
+    overflow: hidden
+    flex-grow: 0
+    flex-shrink: 0
+    user-select: none
+    > *
+      touch-action: none
+    &-toggle
+      position: fixed
+      left: var(--compensation-x)
+      top: var(--compensation-y)
+      overflow: hidden
+      cursor: pointer
+      padding: 14px
+      background: white
+      transition: box-shadow 250ms
+      box-shadow: 0px 0px 0px rgba(0,0,0,0.0)
+      border-bottom-right-radius: 4px
+      &:hover
+        box-shadow: 0px 0px 6px rgba(0,0,0,0.15)
+      img
+        opacity: 0.5
+    &-column-row-expander
+      display: flex
+      height: var(--height)
+      width: calc(var(--expander-padding-width) + var(--expander-size))
+      flex-shrink: 0
+      will-change: opacity
+      &-toggle
+        padding-left: var(--expander-padding-width)
+        display: block
+        flex-shrink: 0
+        height: var(--height)
+        width: calc(var(--expander-size) + var(--expander-padding-width))
+        overflow: hidden
+        text-align: center
+        margin: 0 auto
+        will-change: opacity
+        img
+          width: 16px
+          height: 16px
+          will-change: contents
+        &-child
+          cursor: default
+        &-open
+          cursor: pointer
+        &-closed
+          cursor: pointer
+    &-column
+      width: var(--width)
+      position: relative
+      &-rows
+        height: var(--height)
+        width: var(--width)
+        overflow: hidden
+        &--scroll-compensation
+          height: var(--height)
+          width: var(--width)
+          overflow: hidden
+          will-change: transform
+    &-column-row, &-column-header
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      height: var(--height)
+      line-height: var(--height)
+      vertical-align: middle
+      font-size: 14px
+      display: flex
+    &-column-row *
+      overflow: hidden
+      text-overflow: ellipsis
+      vertical-align: middle
+      line-height: var(--height)
+    &-column-row
+      border-bottom: $grid
+      border-right: $grid
+      width: var(--width)
+      will-change: height
+      &-content
+        width: calc( var(--width) - var(--expander-padding-width) - var(--expander-size) )
+        height: var(--height)
+        overflow: hidden
+        padding-left: 6px
+        flex-shrink: 0
+        flex-grow: 1
+        //will-change: height, contents
+    &-column-header
+      background: $bg-dark-1
+      font-weight: 500
+      color: $font-color-2
+      height: var(--height)
+      width: var(--width)
+      line-height: var(--height)
+      display: flex
+      &-content
+        vertical-align: middle
+        line-height: calc(var(--height) - 2px)
+        width: 100%
+        display: flex
+      &-resizer
+        display: flex
+        flex-grow: 1
+        flex-shrink: 0
+        background:transparent
+        vertical-align: middle
+        height: var(--height)
+        &-container, &-dots
+          display: block
+        &-container
+          flex-grow: 1
+          padding-left: 6px
+        &-line
+          position:absolute
+          top: 0
+          width: 0px;
+          height:100%
+          border-right: 2px dashed black
+          display: var(--display)
+          left: var(--left)
+          z-index: 1000
+        &-dots
+          cursor: ew-resize
+          background: transparent
+          padding-top: 12px
+          padding-left: 6px
+          padding-right: 2px
+          &-dot
+            background: $dot
+            width: 3px
+            height: 3px;
+            border-radius: 100%
+            margin-bottom: 6px
+            box-shadow: inset 1px 1px 0px rgba(0,0,0,0.05)
+
+  &__chart
+    flex-grow:1
+    flex-shrink: 1
+    overflow: hidden
+    &-calendar
+      background: $bg-dark-1
+      margin-right: -17px
+      display: flex
+      flex-direction: column
+      &-dates
+        overflow: hidden
+        color: $font-color-3;
+        user-select: none
+        display: flex
+        &--level-1
+          flex-grow: 1
+      &-date
+        flex-grow: 0
+        flex-shrink: 0
+        border: none
+        white-space: nowrap
+        border-right: 1px solid $bg-dark-4
+        overflow: hidden
+        display: flex
+        flex-direction: column
+        &--month
+          font-size: 14px
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
+        &--day, &--week
+          text-align: center
+        &--level-0 &-content
+          margin-left: 4px
+        &--level-1.gstc-current
+          box-shadow: inset 0px 0px 4px hsla(205, 8.3%, 71.8%, 0.45)
+        &--level-1 &-content
+          margin: auto
+        &-content
+          white-space: nowrap
+          .gstc-dash
+            line-height: 15px
+          &.gstc-date-bold
+            font-weight: 500
+          &.gstc-date-thin
+            font-weight: 300
+          &.gstc-date-normal
+            font-weight: 400 !important
+          &.gstc-date-bottom
+            margin-top: 4px
+          &.gstc-date-left
+            text-align: left
+          &.gstc-date-center
+            text-align: center
+          &.gstc-date-vertical
+            font-size: 14px
+            .gstc-date-top
+              margin-top: 2px
+          &.gstc-date-small
+            font-size: 13px
+            font-weight: 300
+            line-height: 1em
+          &.gstc-date-extra-small
+            font-size: 9px
+          &.gstc-date-medium
+            font-size: 16px
+          &.gstc-date-month-level-1
+            font-size: 16px
+            line-height: 1.6em
+            text-align: center
+          &.gstc-date-big
+            text-align: center
+            font-size: 23px
+            height: var(--calendar-height)
+            line-height: var(--calendar-height)
+          &--hour
+            text-align: center
+          &--day, &--week
+            font-size: 18px
+            line-height: 1.7em
+            overflow: visible
+            &.gstc-date-week-small
+              line-height: 1.2em
+              height: calc(var(--calendar-height) - 20px)
+              font-size: 14px
+            //will-change: contents, opacity
+            &.current
+              border-right: none
+            &.previous
+              border-right: none
+    &-timeline
+      overflow: hidden
+      position: relative
+      &-inner
+        will-change: transform
+        overflow: hidden
+      &-grid
+        overflow: hidden
+        & *
+          user-select: none
+        &-row
+          display: flex
+          text-align:center
+          user-select: none
+          pointer-events: all
+          will-change: height
+          &-block
+            pointer-events: all
+            flex-grow: 0
+            flex-shrink: 0
+            margin: auto 0
+            vertical-align: middle
+            overflow: hidden
+            border-right: $grid
+            border-bottom: $grid
+            touch-action: none
+            &--selecting
+              background: rgba(0,119, 192, 0.5) !important
+            &--selecting:last-child
+              border-right: 1px solid red
+            &--selected
+              background: rgba(0,119, 192, 0.75) !important
+            &.current
+              background: rgba(241, 196, 15, 0.1)
+            &--weekend
+              background: #f9fafb
+      &-dependency-lines
+        &-lines , &-handles
+          position: absolute
+          left: 0
+          top: 0
+          pointer-events: none
+          width: var(--width)
+          height: var(--height)
+          user-select: none
+        &-handle
+          position: absolute
+          //background: #E74C3C60
+          border-radius: 100%
+          pointer-events: all
+          user-select: none
+          border: 2px dashed #e74c36
+          &--connector
+            position: absolute
+            //background: #E74C3C60
+            border-radius: 100%
+            pointer-events: all
+            user-select: none
+            border: 2px dashed #e74c36
+      &-items
+        & *
+          user-select: none
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        pointer-events: none !important
+        overflow: hidden
+        touch-action: none
+        &-row
+          overflow: hidden
+          pointer-events: none !important
+          will-change: opacity, height
+          touch-action: none
+          &-item
+            touch-action: none
+            overflow: hidden
+            position: absolute // must be here - movement
+            pointer-events: auto
+            padding: 4px 4px
+            user-select: none
+            //will-change: left, opacity, height
+            background: #E74C3C
+            border-radius: 18px
+            color: white
+            display: flex
+            height: calc(var(--row-height) - 8px);
+            margin-top: 4px
+            line-height: calc(var(--row-height) - 18px)
+            will-change: contents
+            &-cut
+              width: 10px
+              height: 100%
+              float: left
+              svg
+                vertical-align: middle
+            &-label
+              touch-action: none
+              flex-grow: 1
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+              margin-left: 4px
+            &-resizer
+              touch-action: none
+              width: 8px
+              background: rgba(255,255,255,0.1)
+              cursor: ew-resize
+              flex-shrink: 0
+              will-change: visibility
+            &--selecting
+              box-shadow: 0px 0px 2px 2px rgba(0,119, 192, 0.5)
+            &--selected
+              box-shadow: 0px 0px 2px 2px rgba(0,119, 192, 1)
+            &--moving
+              touch-action: none
+              opacity: 0.5
+          &-item-dependency
+            &-line
+              position: absolute
+            &-handle
+              position: absolute
+              border-radius:  100%
+              background: #E74C3C
+              box-shadow: 0px 4px 4px #C72C1CAD

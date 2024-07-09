@@ -1,0 +1,108 @@
+{
+  "_from": "lit-html-optimised@^1.1.7",
+  "_id": "lit-html-optimised@1.1.7",
+  "_inBundle": false,
+  "_integrity": "sha512-BqXw2hHoalBV8nXUdqH4aHREiFhpprvnU8h/qL1H1/8XTCFdksUjAwJd0TZ9uJTyg8EKVfVHcgA5UxahS3Mk6Q==",
+  "_location": "/lit-html-optimised",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "lit-html-optimised@^1.1.7",
+    "name": "lit-html-optimised",
+    "escapedName": "lit-html-optimised",
+    "rawSpec": "^1.1.7",
+    "saveSpec": null,
+    "fetchSpec": "^1.1.7"
+  },
+  "_requiredBy": [
+    "/@neuronet.io/vido"
+  ],
+  "_resolved": "https://registry.npmjs.org/lit-html-optimised/-/lit-html-optimised-1.1.7.tgz",
+  "_shasum": "c41d7b04c325405daec8c856d18dc8462076ded9",
+  "_spec": "lit-html-optimised@^1.1.7",
+  "_where": "C:\\Users\\wolf_\\node_modules\\@neuronet.io\\vido",
+  "author": {
+    "name": "The Polymer Authors"
+  },
+  "bugs": {
+    "url": "https://github.com/neuronetio/lit-html/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "HTML template literals in JavaScript",
+  "devDependencies": {
+    "@types/chai": "^4.2.10",
+    "@types/mocha": "^5.2.0",
+    "@types/trusted-types": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
+    "@webcomponents/shadycss": "^1.9.5",
+    "@webcomponents/webcomponentsjs": "^2.4.2",
+    "chai": "^4.1.2",
+    "clang-format": "^1.4.0",
+    "eslint": "^6.8.0",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "lit-html-benchmarks": "^0.2.1",
+    "mocha": "^5.2.0",
+    "rollup": "^1.32.1",
+    "rollup-plugin-filesize": "^6.2.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "tachometer": "^0.4.16",
+    "typescript": "^3.8.3",
+    "uglify-es": "^3.3.5",
+    "wct-mocha": "^1.0.0",
+    "web-component-tester": "^6.9.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "files": [
+    "/lit-html.js",
+    "/lit-html.js.map",
+    "/lit-html.d.ts",
+    "/lit-html.d.ts.map",
+    "/lib/",
+    "/directives/",
+    "/polyfills",
+    "/src/",
+    "!/src/test/"
+  ],
+  "homepage": "https://github.com/neuronetio/lit-html",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "license": "BSD-3-Clause",
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "main": "lit-html.js",
+  "module": "lit-html.js",
+  "name": "lit-html-optimised",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neuronetio/lit-html.git"
+  },
+  "scripts": {
+    "autobuild": "tsc -w",
+    "build": "tsc",
+    "checksize": "rollup -c ; cat lit-html.bundled.js | gzip -9 | wc -c ; rm lit-html.bundled.js",
+    "format": "clang-format --version; find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
+    "lint": "npm run lint:eslint",
+    "lint:eslint": "eslint 'src/**/*.{js,ts}'",
+    "prepare": "npm run build",
+    "prepublishOnly": "node check-version-tracker.js && npm run lint && npm test",
+    "publish-dev": "npm test && VERSION=${npm_package_version%-*}-dev.`git rev-parse --short HEAD` && npm version --no-git-tag-version $VERSION && npm publish --tag dev",
+    "quicktest": "wct -l chrome -p --npm",
+    "test": "npm run build && npm run lint && wct --npm"
+  },
+  "typings": "lit-html.d.ts",
+  "version": "1.1.7"
+}

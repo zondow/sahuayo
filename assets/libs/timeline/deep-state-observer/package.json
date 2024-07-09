@@ -1,0 +1,87 @@
+{
+  "_from": "deep-state-observer@^3.3.0",
+  "_id": "deep-state-observer@3.8.0",
+  "_inBundle": false,
+  "_integrity": "sha512-I4PGeiddxXvb2yegGiMilp1P+NIq3bvpBxc3EzyjJCthteJV219UiOxxKEsBuVpyzA64W2/Q83DWw9OGiRTHWw==",
+  "_location": "/deep-state-observer",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "deep-state-observer@^3.3.0",
+    "name": "deep-state-observer",
+    "escapedName": "deep-state-observer",
+    "rawSpec": "^3.3.0",
+    "saveSpec": null,
+    "fetchSpec": "^3.3.0"
+  },
+  "_requiredBy": [
+    "/gantt-schedule-timeline-calendar"
+  ],
+  "_resolved": "https://registry.npmjs.org/deep-state-observer/-/deep-state-observer-3.8.0.tgz",
+  "_shasum": "7761a0bcd0c5be085d8709dea8407e524fc967d1",
+  "_spec": "deep-state-observer@^3.3.0",
+  "_where": "C:\\Users\\wolf_\\node_modules\\gantt-schedule-timeline-calendar",
+  "author": {
+    "name": "neuronet.io@gmail.com"
+  },
+  "browser": "index.js",
+  "bugs": {
+    "url": "https://github.com/neuronetio/deep-state-observer/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "Deep state observer is an state management library that will fire listeners only when specified object node (which also can be a wildcard) was changed.",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "jasmine": "^3.4.0",
+    "loglevel": "^1.6.4",
+    "rollup": "^2.3.1",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "svelte": "^3.8.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.5.3"
+  },
+  "homepage": "https://github.com/neuronetio/deep-state-observer#readme",
+  "keywords": [
+    "deep state observer",
+    "deep state",
+    "deep store",
+    "svelte",
+    "react",
+    "vue",
+    "angular",
+    "deep",
+    "store",
+    "observer",
+    "subscribe",
+    "svelte",
+    "deep",
+    "store",
+    "svelte",
+    "deep",
+    "observer",
+    "svelte",
+    "deep",
+    "subscribe"
+  ],
+  "license": "MIT",
+  "main": "index.cjs.js",
+  "module": "index.js",
+  "name": "deep-state-observer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neuronetio/deep-state-observer.git"
+  },
+  "scripts": {
+    "bench": "node benchmark.js",
+    "bench:chrome": "node --inspect-brk benchmark.js",
+    "build": "rollup -c",
+    "test": "jasmine --config=./jasmine.json",
+    "types": "tsc -d index.ts --downlevelIteration"
+  },
+  "types": "index.d.ts",
+  "version": "3.8.0"
+}
