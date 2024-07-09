@@ -1,22 +1,20 @@
 <li class="header">Dashboard</li>
-<li class="active"> <a href="<?= base_url("Usuario/index") ?>"><i class="zmdi zmdi-home"></i><span>Dashboard</span></a>
-    <!--<ul class="ml-menu">
-        <li class="active"><a href="index.html">Main</a> </li>
-        <li><a href="dashboard-rtl.html">RTL</a></li>
-        <li><a href="index2.html">Horizontal</a></li>
-        <li><a href="ec-dashboard.html">Ecommerce</a></li>
-        <li><a href="blog-dashboard.html">Blog</a></li>
-    </ul>-->
-</li>
+<li class="active"> <a href="<?= base_url("Usuario/index") ?>"><i class="zmdi zmdi-home"></i><span>Dashboard</span></a></li>
 <li class="header">Configuracion y Catalogos</li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-settings"></i><span>Configuración</span> </a>
     <ul class="ml-menu">
-        <li><a href="mail-inbox.html">Inbox</a></li>
-        <li><a href="chat.html">Chat</a></li>
-        <li><a href="events.html">Calendar</a></li>
-        <li><a href="file-dashboard.html">File Manager</a></li>
-        <li><a href="contact.html">Contact list</a></li>
-        <li><a href="blog-dashboard.html">Blog</a></li>
+        <li><a href="mail-inbox.html">Roles y permisos</a></li>
+        <li><a href="chat.html">Dias Inhabiles</a></li>
+        <li><a href="events.html">Prestaciones</a></li>
+        <li><a href="file-dashboard.html">Permisos</a></li>
+        <li><a href="contact.html">Expedientes</a></li>
+        <li> <a href="javascript:void(0);" class="menu-toggle"><b>Horarios</b></a>
+        <ul class="ml-menu">
+            <li><a href="horarios">Crear Horarios</a></li>
+            <li><a href="guardias">Guardias</a></li>
+        </ul>
+
+        <li><a href="blog-dashboard.html">Onboarding y Offboarding</a></li>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
