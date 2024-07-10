@@ -1,0 +1,7 @@
+.modal {
+    position: absolute !important;
+}
+
+section.content{
+    z-index: auto !important;
+}

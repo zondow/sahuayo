@@ -3,7 +3,7 @@
 <li class="header">Configuracion y Catalogos</li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-settings"></i><span>Configuración</span> </a>
     <ul class="ml-menu">
-        <li><a href="mail-inbox.html">Roles y permisos</a></li>
+        <li><a href="<?= base_url('Configuracion/roles') ?>">Roles y permisos</a></li>
         <li><a href="chat.html">Dias Inhabiles</a></li>
         <li><a href="events.html">Prestaciones</a></li>
         <li><a href="file-dashboard.html">Permisos</a></li>

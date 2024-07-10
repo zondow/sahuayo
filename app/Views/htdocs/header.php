@@ -1,12 +1,6 @@
 <?php defined('FCPATH') or exit('No direct script access allowed');
 $db = \Config\Database::connect();
 if (!isset($title)) $title = 'Inicio';
-//Get session data
-$name = output(session('name'));
-$photo = fotoPerfil(encryptDecrypt('encrypt', session("id")));
-$puesto = session('puesto');
-$nombrePuesto = session('nombrePuesto');
-
 // Notificaciones
 $notificaciones = APPPATH . 'Views/htdocs/notificaciones.php';
 // Mensajes
@@ -44,6 +38,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css") ?>" />
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/morrisjs/morris.min.css") ?>" />
 	<!-- Custom Css -->
+	<link rel="stylesheet" href="<?= base_url("assets/css/custom.css") ?>" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/main.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/css/color_skins.css") ?>">
 </head>
@@ -80,7 +75,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<!------------ Notifications ----------->
-				<?php if (file_exists($notificaciones)) require ($notificaciones); ?>
+				<?php if (file_exists($notificaciones)) require($notificaciones); ?>
 				<!--<li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="zmdi zmdi-flag"></i>
 						<div class="notify"><span class="heartbit"></span><span class="point"></span></div>
 					</a>
@@ -159,10 +154,10 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 			<ul class="list">
 				<li>
 					<div class="user-info">
-						<div class="image"><a href="#"><img src="<?= $photo; ?>" alt="Usuario"></a></div>
+						<div class="image"><a href="#"><img src="<?= fotoPerfil(encryptDecrypt('encrypt', session("id"))); ?>" alt="Usuario"></a></div>
 						<div class="detail">
-							<h6><?= $name; ?></h6>
-							<small><?= $nombrePuesto; ?></small>
+							<h6><?= output(session('name')); ?></h6>
+							<small><?= session('nombrePuesto'); ?></small>
 						</div>
 						<!--<a href="events.html" title="Events"><i class="zmdi zmdi-calendar"></i></a>
 						<a href="contact.html" title="Contact List"><i class="zmdi zmdi-account-box-phone"></i></a>
@@ -178,7 +173,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	</aside>
 
 	<!-- Main Content -->
-	<section class="content home">
+	<section class="content">
 		<div class="block-header">
 			<div class="row">
 				<div class="col-lg-7 col-md-6 col-sm-12">

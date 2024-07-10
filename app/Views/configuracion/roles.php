@@ -7,7 +7,7 @@
                     <div class="col-md-12 mb-2">
                         <div class="col-md-8 text-left">
                             <?php if(revisarPermisos('Agregar',$this)){ ?>
-                            <a href="#" class="btn btn-success waves-light waves-effect addRol"><i class="dripicons-plus" style="top: 2px !important; position: relative"></i>Agregar</a>
+                            <a href="#" class="btn btn-success waves-light waves-effect addRol">Agregar</a>
                             <?php } ?>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
 </div>
 
 
-<div class="modal fade" id="modalAddEditRol" tabindex="-1" role="dialog">
+<div class="modal fade " id="modalAddEditRol" tabindex="-1" role="dialog"  style="display: none;" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -58,4 +58,5 @@
         </div>
     </div>
 </div>
+
 
