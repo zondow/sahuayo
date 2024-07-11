@@ -7,7 +7,7 @@
                     <div class="col-md-12 mb-2">
                         <div class="col-md-8 text-left">
                             <?php if(revisarPermisos('Agregar',$this)){ ?>
-                            <a href="#" class="btn btn-success waves-light waves-effect addRol">Agregar</a>
+                            <a href="#" class="btn btn-info waves-light waves-effect addRol">Agregar</a>
                             <?php } ?>
                         </div>
                     </div>
