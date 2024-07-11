@@ -5,9 +5,12 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 mb-2">
-                        <div class="col-md-8 text-left">
+                        <div class="col-md-12 text-right">
                             <?php if(revisarPermisos('Agregar',$this)){ ?>
-                            <a href="#" class="btn btn-info waves-light waves-effect addRol">Agregar</a>
+                            <!-- <a href="#" class="btn btn-info waves-light waves-effect addRol">Agregar</a> -->
+                            <button class="btn btn-success btn-round addRol">
+                            <i class="zmdi zmdi-plus"></i> Agregar
+                            </button>
                             <?php } ?>
                         </div>
                     </div>
