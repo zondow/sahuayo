@@ -1,7 +1,24 @@
 .modal {
-    position: absolute !important;
+    position: fixed !important;
 }
 
 section.content{
     z-index: auto !important;
+}
+
+.red_label{
+    color:rgba(255, 0, 0, 0.815);
+}
+
+label{
+    font-weight: 800;
+}
+
+.fc .fc-toolbar{
+    background: #3974ba !important;
+}
+
+fc-day-grid-event fc-h-event fc-event fc-start fc-end{
+    border-radius: 5px;
+    color:white;
 }

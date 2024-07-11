@@ -52,12 +52,15 @@ class BaseController extends Controller
 
         helper('functions');
         helper('vacaciones');
-        helper('anticipos');
+		helper('excel');
+		helper('correo');
+		helper('plugins');
+        /*helper('anticipos');
         helper('nomina');
-        helper('excel');
+        
         helper('gcrud');
 		helper('mesadeayuda');
-		helper('correo');
+		*/
 
 
         $this->session->start();

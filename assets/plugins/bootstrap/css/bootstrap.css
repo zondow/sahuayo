@@ -6210,7 +6210,7 @@ a.close.disabled {
 }
 
 .modal {
-  position: absolute !important;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1050;

@@ -10,9 +10,9 @@ $(document).ready(function (e) {
             type: "POST",
         },
         columns: [
-            { "data": "acciones", render: function(data,type,row){return acciones(data,type,row)} },
             { "data": "cont"},
             { "data": "rol_Nombre"},
+            { "data": "acciones", render: function(data,type,row){return acciones(data,type,row)} },
         ],
         responsive:true,
         stateSave:false,
@@ -31,7 +31,7 @@ $(document).ready(function (e) {
             loadingRecords: "Cargando...",
             infoFiltered:"(filtrado de _MAX_ registros)"
         },
-        "order": [[ 1, "asc" ]],
+        "order": [[ 0, "asc" ]],
         "processing":true
     });
 
@@ -57,12 +57,11 @@ $(document).ready(function (e) {
         let id = row.rol_RolID;
         let txt = row.rol_Nombre;
         if(revisarPermisos('Permisos','roles'))
-            output += '<button type="button" class="btn btn-secondary   permisosRol" data-id="'+id+'" title="Permisos del rol"><i class="fa fa-key "></i></button>';
+            output += '<button type="button" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down permisosRol"  data-id="'+id+'" title="Permisos del rol"><i class="zmdi zmdi-key"></i></button>';
         if(revisarPermisos('Editar','roles'))
-            output += '<button type="button" class="btn btn-info  editRol" data-id="' + id + '" title="Editar rol" ><i class="fa fa-edit"></i></button>';
+            output += '<button type="button" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down editRol"  data-id="'+id+'" title="Permisos del rol"><i class="zmdi zmdi-edit"></i></button>';
         if(revisarPermisos('Eliminar','roles'))
-            output += '<a href="#" data-id="'+ id +'" class="btn btn-danger deleteRol" title="Eliminar rol">' +
-                '<i class="fa fa-trash"></i></a>';
+            output += '<button type="button" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down deleteRol"  data-id="'+id+'" title="Eliminar rol"><i class="zmdi zmdi-delete"></i></button>';
         return output;
     }//acciones
 
@@ -74,7 +73,7 @@ $(document).ready(function (e) {
             text: '¿Esta seguro que desea eliminar el registro seleccionado?',
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
+            confirmButtonColor: "#25c5d2",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {
@@ -177,8 +176,8 @@ $(document).ready(function (e) {
                         let acciones = JSON.parse(value.fun_Acciones);
 
                         html+='<div class="col-md-4 card-f">' +
-                            '<div class="card-box ribbon-box ">' +
-                            '<div class="ribbon ribbon-blue find_Nombre">' + value['fun_Descripcion'] + '</div>';
+                            '<div class="card-box">' +
+                            '<div class="badge bg-blue find_Nombre">' + value['fun_Descripcion'] + '</div>';
                                 $.each(acciones, function (key, val) {
                                     let c = '';
                                     if (permisos !== null && permisos !== '') {

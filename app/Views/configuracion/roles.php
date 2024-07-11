@@ -17,9 +17,9 @@
                         <table class="table m-0 table-centered dt-responsive cls-table" id="tblRoles" cellspacing="0" width="100%">
                             <thead>
                             <tr>
-                                <th>Acciones</th>
                                 <th>#</th>
                                 <th>Nombre</th>
+                                <th>Acciones</th>
                             </tr>
                             </thead>
                         </table>
@@ -43,7 +43,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-12">
-                            <label for="rol_Nombre"> * Nombre</label>
+                            <label for="rol_Nombre"><span class="red_label">*</span> Nombre</label>
                             <input class="form-control" id="rol_Nombre" name="rol_Nombre" required>
                         </div>
                     </div>
