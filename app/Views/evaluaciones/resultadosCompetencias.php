@@ -124,7 +124,7 @@
                         "sFirst": "<i class='mdi mdi-chevron-right'>",
                         "sLast": "<i class='mdi mdi-chevron-left'>",
                         "sNext": "<i class='mdi mdi-chevron-right'>",
-                        "sPrevious": "<i class='mdi mdi-chevron-left'>"
+                        "sPrevious": "<i class='zmdi zmdi-caret-left'>"
                     },
                 },
                 drawCallback: function() {

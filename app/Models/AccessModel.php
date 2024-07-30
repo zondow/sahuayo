@@ -22,12 +22,14 @@ class AccessModel extends Model{
                 EMP.emp_Estatus AS `status`,
                 PUE.pue_Nombre AS `nombrePuesto`,
                 EMP.emp_DepartamentoID AS `departamento`,
+                D.dep_Nombre as `departamentoNombre`,
                 'En línea' AS `disponibilidad`,
                 R.rol_Nombre AS `rol`,
                 R.rol_Permisos AS `permisos`
                FROM empleado EMP
             LEFT JOIN puesto PUE ON PUE.pue_PuestoID = EMP.emp_PuestoID
             LEFT JOIN rol R ON R.rol_RolID=EMP.emp_Rol
+            LEFT JOIN departamento D ON D.dep_DepartamentoID = EMP.emp_DepartamentoID
             WHERE EMP.emp_Username = ?";
         return $this->db->query($sql, array($username))->getRowArray();
     }//getUsuarioByUsername

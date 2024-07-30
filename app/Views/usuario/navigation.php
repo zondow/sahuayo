@@ -5,9 +5,9 @@
     <ul class="ml-menu">
         <li><a href="<?= base_url('Configuracion/roles') ?>">Roles y permisos</a></li>
         <li><a href="<?= base_url('Configuracion/diasInhabiles') ?>">Dias Inhabiles</a></li>
-        <li><a href="events.html">Prestaciones</a></li>
-        <li><a href="file-dashboard.html">Permisos</a></li>
-        <li><a href="contact.html">Expedientes</a></li>
+        <li><a href="<?= base_url('Configuracion/prestaciones') ?>">Prestaciones</a></li>
+        <li><a href="<?= base_url('Configuracion/configuracionPermisos') ?>">Permisos</a></li>
+        <li><a href="<?= base_url('Configuracion/configuracionExpediente') ?>">Expedientes</a></li>
         <li> <a href="javascript:void(0);" class="menu-toggle"><b>Horarios</b></a>
         <ul class="ml-menu">
             <li><a href="horarios">Crear Horarios</a></li>

@@ -35,7 +35,7 @@
                 title: 'Reporte de vacaciones',
                 text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn btn-warning",
+                className: "btn l-slategray",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -46,7 +46,7 @@
                 title: 'Reporte de vacaciones',
                 text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn btn-warning",
+                className: "btn l-slategray",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -61,8 +61,8 @@
         ],
         language: {
             paginate: {
-                previous:"<i class='mdi mdi-chevron-left'>",
-                next:"<i class='mdi mdi-chevron-right'>"
+                previous:"<i class='zmdi zmdi-caret-left'>",
+                next:"<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
@@ -76,8 +76,8 @@
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":     "<i class='mdi mdi-chevron-right'>",
-                "sPrevious": "<i class='mdi mdi-chevron-left'>"
+                "sNext":     "<i class='zmdi zmdi-caret-right'>",
+                "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
         },

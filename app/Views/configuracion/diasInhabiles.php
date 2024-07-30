@@ -31,21 +31,17 @@
                     <br>
                     <div class="col-md-12">
                         <label for="motivo"><b>* Sucursal</b></label>
-                        <select id="sucursales" name="sucursales[]" class="select2 form-control select2-multiple" style="width: 100%" multiple="multiple" style="width: 100%">
+                        <select id="sucursales" name="sucursales[]" class="select2 form-control select2-multiple" multiple="multiple">
                         </select>
                     </div>
                     <br>
-                    <div class="body">
-                        <div class="row clearfix">
-                            <div class="col-sm-6">
-                                <label for="motivo"><b>* Tipo</b></label>
-                                <select class="form-control show-tick">
-                                    <option value="" hidden>Seleccione</option>
-                                    <option value="0">Día completo</option>
-                                    <option value="1">Mediodía</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="col-md-12">
+                        <label for="motivo"><b>* Tipo</b></label>
+                        <select class="select2 form-control" id="dia_MedioDia" name="dia_MedioDia">
+                            <option value="" hidden>Seleccione</option>
+                            <option value="0">Día completo</option>
+                            <option value="1">Mediodía</option>
+                        </select>
                     </div>
                     <br>
                 </div>

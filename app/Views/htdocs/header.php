@@ -38,6 +38,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css") ?>" />
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/morrisjs/morris.min.css") ?>" />
 	<!-- Custom Css -->
+	<link href="<?=base_url("assets/libs/jquery-toast/jquery.toast.min.css")?>" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/custom.css") ?>" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/main.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/css/color_skins.css") ?>">

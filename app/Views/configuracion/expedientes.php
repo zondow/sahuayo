@@ -1,69 +1,48 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
-<div class="content">
-    <!-- Start Content-->
-    <div class="container-fluid">
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card-box">
-                    <div class="col-md-12 text-left" style="padding-bottom: 2%">
-                        <?php if (revisarPermisos('Agregar', $this)) { ?>
-                            <a type="button" style="color: #FFFFFF" class=" btnAddExpediente btn btn-success waves-effect waves-light"><i class="dripicons-plus"></i> Agregar</a>
-                        <?php } ?>
-                    </div>
-                    <table class="table table-hover  m-0 table-centered tickets-list table-actions-bar dt-responsive " cellspacing="0" width="100%" id="datatable">
-                        <thead>
-                            <tr>
-                                <!--<th>Acciones</th>-->
-                                <th>Categoría</th>
-                                <th>Número</th>
-                                <th>Nombre</th>
-                                <th>Estatus</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <?php
-                            if (isset($expedientes)) {
-                                foreach ($expedientes as $expediente) {
-                                    $html = '<tr>';
-
-                                    if (revisarPermisos('Editar', $this)) {
-                                        //$html .= '<td><a type="button" class="btn btn-info waves-effect waves-light editarExpediente" data-id="' . $expediente['exp_ExpedienteID'] . '" style="color:#FFFFFF"><i class="fa fa-edit"></i> </a></td>';
-                                    } else {
-                                        $html .= '<td></td>';
-                                    }
-
-                                    $html .= '<td>' . $expediente['exp_Categoria'] . '</td>';
-                                    $html .= '<td>' . $expediente['exp_Numero'] . '</td>';
-                                    $html .= '<td>' . $expediente['exp_Nombre'] . '</td>';
-
-                                    if (revisarPermisos('Baja', $this)) {
-                                        if ($expediente['exp_Estatus'] == 1) {
-                                            $estatus = '<a class="btn btn-outline-success btn-rounded waves-light waves-effect pt-0 pb-0 btnActivo" title="Click para cambiar estatus" href="' . base_url("Configuracion/estatusExpediente/0/" . encryptDecrypt('encrypt', $expediente['exp_ExpedienteID'])) . '">Activo</a>';
-                                        } else {
-                                            $estatus = '<a class="btn btn-outline-danger btn-rounded waves-light waves-effect pt-0 pb-0 btnInactivo" title="Click para cambiar estatus" href="' . base_url("Configuracion/estatusExpediente/1/" . encryptDecrypt('encrypt', $expediente['exp_ExpedienteID'])) . '">Inactivo</a>';
-                                        }
-                                    } else {
-                                        if ($expediente['exp_Estatus'] == 1) {
-                                            $estatus = '<a class="btn btn-outline-success btn-rounded waves-light waves-effect pt-0 pb-0 btnActivo" >Activo</a>';
-                                        } else {
-                                            $estatus = '<a class="badge badge-danger"  style="color: #ffffff;padding: 3.5%;font-size: 10px">INACTIVO</a>';
-                                        }
-                                    }
-
-                                    $html .= '<td>' . $estatus . '</td>';
-                                    $html .= '</tr>';
-                                    echo $html;
-                                } //foreach
-                            } //if
-                            ?>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div class="card">
+    <div class="card-body">
+        <div class="col-md-12 text-left" style="padding-bottom: 2%">
+            <?php if (revisarPermisos('Agregar', $this)) { ?>
+                <a type="button" style="color: #FFFFFF" class=" btnAddExpediente btn btn-success waves-effect waves-light"><i class="dripicons-plus"></i> Agregar</a>
+            <?php } ?>
         </div>
+        <table class="table table-hover  m-0 table-centered tickets-list table-actions-bar dt-responsive " cellspacing="0" width="100%" id="datatable">
+            <thead>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Número</th>
+                    <th>Nombre</th>
+                    <th>Estatus</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                if (isset($expedientes)) {
+                    foreach ($expedientes as $expediente) {
+                        $html = '<tr>';
+                        $html .= '<td>' . $expediente['exp_Categoria'] . '</td>';
+                        $html .= '<td>' . $expediente['exp_Numero'] . '</td>';
+                        $html .= '<td>' . $expediente['exp_Nombre'] . '</td>';
+
+                        if (revisarPermisos('Baja', $this)) {
+                            $estatus = $expediente['exp_Estatus'] == 1 ?
+                                '<a href="' . base_url("Configuracion/estatusExpediente/0/" . encryptDecrypt('encrypt', $expediente['exp_ExpedienteID'])) . '"><span class="badge badge-info btnActivo" title="Click para cambiar estatus">Activo</span></a>' :
+                                '<a href="' . base_url("Configuracion/estatusExpediente/1/" . encryptDecrypt('encrypt', $expediente['exp_ExpedienteID'])) . '"><span class="badge badge-default btnInactivo" title="Click para cambiar estatus">Inactivo</span></a>';
+                        } else {
+                            $estatus = $expediente['exp_Estatus'] == 1 ? '<span class="badge badge-info" >Activo</span> ' :  '<span class="badge badge-default ">Inactivo</span> ';
+                        }
+
+                        $html .= '<td>' . $estatus . '</td>';
+                        $html .= '</tr>';
+                        echo $html;
+                    } //foreach
+                } //if
+                ?>
+
+            </tbody>
+        </table>
     </div>
 </div>
 <!--Modal-->

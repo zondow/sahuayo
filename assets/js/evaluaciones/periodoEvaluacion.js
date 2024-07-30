@@ -123,7 +123,7 @@ $(document).ready(function (e) {
                 title: 'Mis vacaciones',
                 text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn btn-warning",
+                className: "btn l-slategray",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -134,7 +134,7 @@ $(document).ready(function (e) {
                 title: 'Mis vacaciones',
                 text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn btn-warning",
+                className: "btn l-slategray",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -165,7 +165,7 @@ $(document).ready(function (e) {
                 "sFirst": "Primero",
                 "sLast": "Último",
                 "sNext": "<i class='mdi mdi-chevron-right'>",
-                "sPrevious": "<i class='mdi mdi-chevron-left'>"
+                "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
         },

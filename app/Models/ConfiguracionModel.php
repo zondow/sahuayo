@@ -9,7 +9,7 @@ class ConfiguracionModel extends Model
     //Diego->Trae los roles
     public function getRoles()
     {
-        return $this->db->query("SELECT * FROM rol WHERE rol_Estatus=1")->getResultArray();
+        return $this->db->query("SELECT rol_RolID,rol_Nombre,rol_Permisos,rol_Estatus FROM rol WHERE rol_Estatus=1")->getResultArray();
     } //getRoles
 
     //Lia -> Obtiene la informacion de un rol por su id
@@ -49,21 +49,6 @@ class ConfiguracionModel extends Model
         return $this->db->query("select * from catalogopermiso where cat_CatalogoPermisoID = ?", array((int)encryptDecrypt('decrypt', $id)))->getRowArray();
     } //getConfiguracionPermisosById
 
-    //Diego->Dias Inhabiles
-    public function getDiasInhabiles(){
-        return $this->db->query("SELECT * FROM diainhabil ")->getResultArray();
-    }// end getDiasInhabiles
-
-    //Diego->Dias Inhabiles ley
-    public function getDiasInhabilesLey(){
-        return $this->db->query("SELECT * FROM diainhabilley ")->getResultArray();
-    }// end getDiasInhabilesLey
-
-    //HUGO->Get horarios
-    public function getHorarios(){
-        return $this->db->query('select * from horario')->getResultArray();
-    }//getHorarios
-
     //HUGO->Get schedule
     public function getScheduleByID($scheduleID){
         return $this->db->query('select * from horario where hor_HorarioID = ?',array((int)$scheduleID))->getRowArray();
@@ -99,7 +84,4 @@ class ConfiguracionModel extends Model
         return $this->db->query("SELECT * FROM expediente order by exp_Categoria,exp_Numero ASC")->getResultArray();
     }//end getExpedientes
 
-    public function getEmpleados(){
-        return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 ORDER BY emp_Nombre ASC")->getResultArray();
-    }
 }

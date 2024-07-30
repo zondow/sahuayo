@@ -1,509 +1,424 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
-<style>
-    .picture {
-        width: 120px;
-        height: 120px;
-        background-color: #d7d7d7;
-        border: 2px solid transparent;
-        color: #FFFFFF;
-        border-radius: 50%;
-        margin: 5px auto;
-        overflow: hidden;
-        transition: all 0.2s;
-        -webkit-transition: all 0.2s;
-    }
-
-    .picture-container {
-        position: relative;
-        cursor: pointer;
-        text-align: center;
-    }
-
-
-    .doc>input[type="file"] {
-        cursor: pointer;
-        display: block;
-        height: 100%;
-        left: 0;
-        opacity: 0 !important;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        text-align: center;
-    }
-
-
-    #lblEye {
-        font-size: 15px;
-        position: absolute;
-        right: 15px;
-        bottom: 10px;
-        cursor: pointer;
-    }
-
-    .invalid {
-        padding-left: 22px;
-        line-height: 24px;
-        color: #ec3f41;
-    }
-
-    .valid {
-        padding-left: 22px;
-        line-height: 24px;
-        color: #3a7d34;
-    }
-
-    #pswd_info {
-        display: none;
-    }
-</style>
-<?php
-$val_Puesto = '';
-$val_Horario = '';
-$val_Contrato = '';
-$val_Genero = '';
-$val_Edad = '';
-$val_EstadoCivil = '';
-$val_Idioma = '';
-$val_nivelIdioma = '';
-$val_Escolaridad = '';
-$val_Experiencia = '';
-$val_Departamento = '';
-$val_objetivo = '';
-$val_ingreso = '';
-$val_nacimiento = '';
-$val_curp = '';
-$val_rfc = '';
-$val_nss = '';
-$val_telefono = '';
-$val_conocimientos = '';
-if (isset($perfilPuesto)) {
-    $val_Puesto = isset($perfilPuesto['puesto']) ? trim($perfilPuesto['puesto']) : "";
-    $val_Horario = isset($perfilPuesto['horario']) ? trim($perfilPuesto['horario']) : "";
-    $val_Contrato = isset($perfilPuesto['tipoContrato']) ? trim($perfilPuesto['tipoContrato']) : "";
-    $val_Genero = isset($perfilPuesto['genero']) ? trim($perfilPuesto['genero']) : "";
-    $val_Edad = isset($perfilPuesto['edad']) ? trim($perfilPuesto['edad']) : "";
-    $val_EstadoCivil = isset($perfilPuesto['estadoCivil']) ? trim($perfilPuesto['estadoCivil']) : "";
-    $val_Idioma = isset($perfilPuesto['idioma']) ? trim($perfilPuesto['idioma']) : "";
-    $val_nivelIdioma = isset($perfilPuesto['idiomaNivel']) ? trim($perfilPuesto['idiomaNivel']) : "";
-    $val_Escolaridad = isset($perfilPuesto['escolaridad']) ? trim($perfilPuesto['escolaridad']) : "";
-    $val_Experiencia = isset($perfilPuesto['aniosExperiencia']) ? trim($perfilPuesto['aniosExperiencia']) : "";
-    $val_Departamento = isset($perfilPuesto['departamento']) ? trim($perfilPuesto['departamento']) : "";
-    $val_objetivo = isset($perfilPuesto['objetivo']) ? trim($perfilPuesto['objetivo']) : "";
-    $val_ingreso = isset($perfilPuesto['ingreso']) ? trim($perfilPuesto['ingreso']) : "";
-    $val_nacimiento = isset($perfilPuesto['nacimiento']) ? trim($perfilPuesto['nacimiento']) : "";
-    $val_curp = isset($perfilPuesto['curp']) ? trim($perfilPuesto['curp']) : "";
-    $val_rfc = isset($perfilPuesto['rfc']) ? trim($perfilPuesto['rfc']) : "";
-    $val_nss = isset($perfilPuesto['nss']) ? trim($perfilPuesto['nss']) : "";
-    $val_telefono = isset($perfilPuesto['telefono']) ? trim($perfilPuesto['telefono']) : "";
-    $val_conocimientos = isset($perfilPuesto['conocimientos']) ? trim($perfilPuesto['conocimientos']) : "";
-} //if
-
-
-//alain - boton de exportar pdf
-$db = \Config\Database::connect();
-$puestoPDFbtn = "";
-$puestoID = (int)session('puesto');
-$perfiles = $db->query("SELECT COUNT(*) AS 'total' FROM perfilpuesto WHERE per_PuestoID=" . $puestoID)->getRowArray();
-if ((int)$perfiles['total'] > 0) {
-    $puestoPDFbtn = '<a class="btn btn-warning" href="' . base_url("PDF/perfilPuestoPdf/" . $puestoID) . '" ><i class="fas fa-file-pdf "></i> Exportar a PDF</a>';
-}
-
-?>
-<div class="content pt-0">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <!-- meta -->
-                <div class="profile-user-box card-box bg-dark">
-                    <div class="row">
-                        <div class="col-sm-6">
-
-                            <span class="float-left mr-2">
-                                <div class="thumb-lg member-thumb mx-auto">
-                                    <img src="<?= fotoPerfil(encryptDecrypt('encrypt', session("id"))) ?>" class="rounded-circle avatar-xl img-thumbnail" alt="profile-image">
-                                </div>
-                            </span>
-                            <div class="media-body text-white">
-                                <h4 class=" text-white font-18"><?= isset($informacion['nombre']) ? trim($informacion['nombre']) : '' ?></h4>
-                                <p class="font-13"><?= isset($informacion['puesto']) ? trim($informacion['puesto']) : '' ?></p>
-                                <p class="font-13"><?= isset($informacion['departamento']) ? trim($informacion['departamento']) : '' ?></p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="text-right">
-                                <a href="<?php
-
-                                            echo base_url('Personal/expediente/' . encryptDecrypt('encrypt', session("id")));
-
-                                            ?>" type="button" class="btn btn-light waves-effect">
-                                    <i class="mdi mdi-folder-outline   mr-1"></i> Expediente
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+<div class="container-fluid">
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-12">
+            <div class="card member-card">
+                <div class="header l-blush-azul">
+                    <h6 class="m-t-10"><?= session('nombre') ?></h6>
                 </div>
-                <!--/ meta -->
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xl-4">
-                <!-- Personal-Information -->
-                <div class="card-box">
-                    <h4 class="header-title">Información personal</h4>
-                    <div class="panel-body">
-                        <div class="text-left">
-                            <p class="text-muted font-13">
-                                <strong>No. empleado:</strong>
-                                <span>
-                                    <?= isset($informacion['noEmpleado']) ? trim($informacion['noEmpleado']) : '' ?>
-                                </span>
-                            </p>
-                            <p class="text-muted font-13">
-                                <strong>Fecha de ingreso:</strong>
-                                <span>
-                                    <?= isset($informacion['ingreso']) ? trim($informacion['ingreso']) : '' ?>
-                                </span>
-                            </p>
-                            <p class="text-muted font-13">
-                                <strong>Fecha de nacimiento:</strong>
-                                <span>
-                                    <?= isset($informacion['nacimiento']) ? trim($informacion['nacimiento']) : '' ?>
-                                </span>
-                            </p>
-                            <p class="text-muted font-13">
-                                <strong>CURP:</strong>
-                                <span>
-                                    <?= isset($informacion['curp']) ? trim($informacion['curp']) : '' ?>
-                                </span>
-                            </p>
-                            <p class="text-muted font-13">
-                                <strong>RFC:</strong>
-                                <span>
-                                    <?= isset($informacion['rfc']) ? trim($informacion['rfc']) : '' ?>
-                                </span>
-                            </p>
-
-                            <p class="text-muted font-13">
-                                <strong>NSS:</strong>
-                                <span>
-                                    <?= isset($informacion['nss']) ? trim($informacion['nss']) : '' ?>
-                                </span>
-                            </p>
-
-                            <p class="text-muted font-13">
-                                <strong>Telefono:</strong>
-                                <span>
-                                    <?= isset($informacion['telefono']) ? trim($informacion['telefono']) : '' ?>
-                                </span>
-                            </p>
-
-                            <p class="text-muted font-13">
-                                <strong>Dirección:</strong>
-                                <span>
-                                    <?= isset($informacion['direccion']) ? trim($informacion['direccion']) : '' ?>
-                                </span>
-                            </p>
-
-                            <p class="text-muted font-13">
-                                <strong>Estado Civil:</strong>
-                                <span>
-                                    <?= isset($informacion['estadoCivil']) ? trim($informacion['estadoCivil']) : '' ?>
-                                    <?php if($informacion['estadoCivil'] =='CASADO (A)'){
-                                        echo shortDate($informacion['fechaMatrimonio'],' de ');
-                                    } ?>
-                                </span>
-                            </p>
-
-                        </div>
+                <div class="member-img">
+                    <a href="#" class="">
+                        <img src="<?= fotoPerfil(encryptDecrypt('encrypt', session('id'))); ?>" class="rounded-circle" alt="profile-image">
+                    </a>
+                </div>
+                <div class="body">
+                    <div class="col-12">
+                        <p class="text-muted"><?= session('nombrePuesto') ?></p>
                     </div>
                     <hr>
-                    <h4 class="header-title">Cambiar contraseña</h4>
-                    <div class="panel-body pt-3">
-                        <div class="form-group">
-                            <strong class="text-muted">Usuario</strong>
-                            <input type="text" class="form-control" value="<?= isset($informacion['username']) ? trim($informacion['username']) : '' ?>" readonly />
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="text-muted">Total de solicitudes</p>
                         </div>
-                        <div class="form-group">
-                            <strong class="text-muted">Contraseña</strong>
-                            <div style="position: relative">
-                                <input id="txtPassword" type="password" placeholder="Ecribe mínimo 8 caracteres." class="form-control" autocomplete="off" />
-                                <span id="lblEye" class="fa fa-eye-slash"></span>
-                            </div>
-                            <span id="lblPassword" style="font-size: 12px; color:#dd0100"></span>
-
-                            <div id="pswd_info">
-                                <small>La contraseña debería cumplir con los siguientes requerimientos:</small>
-                                <ul>
-                                    <li id="letter"><small>Al menos debería tener <span class="badge badge-dark">una letra</span></small></li>
-                                    <li id="capital"><small>Al menos debería tener <span class="badge badge-dark">una letra en mayúsculas</span></small></li>
-                                    <li id="number"><small>Al menos debería tener <span class="badge badge-dark">un número</span></small></li>
-                                    <li id="length"><small>Debería tener <span class="badge badge-dark">8 carácteres</span> como mínimo</small></li>
-                                </ul>
-                            </div>
+                        <div class="col-4">
+                            <h5>852</h5>
+                            <small>Vacaciones</small>
                         </div>
-                        <div class="form-group text-center">
-                            <button id="btnactualizarPw" type="button" class="btn btn-success waves-light waves-effect">
-                                <i class="dripicons-checkmark pt-1"></i>
-                                Actualizar
-                            </button>
+                        <div class="col-4">
+                            <h5>13k</h5>
+                            <small>Permisos</small>
                         </div>
-                    </div>
-                </div>
-                <!-- Personal-Information -->
-                <div class="card-box ribbon-box">
-                    <div class="ribbon " style="background-color:#797979  ">Mi departamento</div>
-                    <div class="clearfix"></div>
-                    <div class="inbox-widget" style="overflow-y: auto; max-height: 370px">
-                        <?php
-                        if (isset($colaboradores)) {
-                            if (count($colaboradores)) {
-
-                                foreach ($colaboradores as $col) {
-                                    $url = fotoPerfil(encryptDecrypt('encrypt', $col['emp_EmpleadoID']));
-                                    $html = '<a href="#">';
-                                    $html .= '<div class="inbox-item">';
-                                    $html .= '<div class="inbox-item-img"><img src="' . $url . '" class="rounded-circle" alt=""></div>';
-                                    $html .= '<p class="inbox-item-author">' . trim($col['emp_Nombre']) . '</p>';
-                                    $html .= '<p class="inbox-item-text">' . trim($col['emp_Correo']) . '</p>';
-                                    $html .= '</div>';
-                                    $html .= '</a>';
-                                    echo $html;
-                                } //foreach
-                            } else {
-                                echo '
-                                <div class="alert alert-light alert-dismissible bg-light text-dark border-0 fade show text-center" role="alert">
-                                    No hay colaboradores para mostrar
-                                </div>';
-                            } //if count
-                        } else {
-                            echo '
-                            <div class="alert alert-light alert-dismissible bg-light text-dark border-0 fade show text-center" role="alert">
-                                No hay colaboradores para mostrar
-                            </div>';
-                        } //if isset
-                        ?>
+                        <div class="col-4">
+                            <h5>234</h5>
+                            <small>Incapacidades</small>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-8">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="card-box tilebox-one">
-                            <i class="dripicons-brightness-max float-right text-muted"></i>
-                            <h6 class="text-muted text-uppercase mt-0">Vacaciones</h6>
-                            <h2 class="" data-plugin="counterup"><?= $incidencias['vacaciones'] ?></h2>
-                        </div>
+            <div class="card">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#about">Mis datos</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#friends">Friends</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane body active" id="about">
+                        <small class="text-muted">Correo: </small>
+                        <p><?= $informacion['correo']; ?></p>
+                        <hr>
+                        <small class="text-muted">Phone: </small>
+                        <p>+ 202-555-0191</p>
+                        <hr>
+                        <ul class="list-unstyled">
+                            <li>
+                                <div>Photoshop</div>
+                                <div class="progress m-b-20">
+                                    <div class="progress-bar l-blue " role="progressbar" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100" style="width: 89%"> <span class="sr-only">62% Complete</span> </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div>Wordpress</div>
+                                <div class="progress m-b-20">
+                                    <div class="progress-bar l-green " role="progressbar" aria-valuenow="56" aria-valuemin="0" aria-valuemax="100" style="width: 56%"> <span class="sr-only">87% Complete</span> </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div>HTML 5</div>
+                                <div class="progress m-b-20">
+                                    <div class="progress-bar l-amber" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" style="width: 78%"> <span class="sr-only">32% Complete</span> </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div>Angular</div>
+                                <div class="progress m-b-20">
+                                    <div class="progress-bar l-blush" role="progressbar" aria-valuenow="43" aria-valuemin="0" aria-valuemax="100" style="width: 43%"> <span class="sr-only">56% Complete</span> </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="card-box tilebox-one">
-                            <i class="dripicons-bookmarks float-right text-muted"></i>
-                            <h6 class="text-muted text-uppercase mt-0">Permisos</h6>
-                            <h2 class=""><span data-plugin="counterup"><?= $incidencias['permisos'] ?></span></h2>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="card-box tilebox-one">
-                            <i class="dripicons-pulse float-right text-muted"></i>
-                            <h6 class="text-muted text-uppercase mt-0">Incapacidades</h6>
-                            <h2 class="" data-plugin="counterup"><?= $incidencias['incapacidades'] ?></h2>
-                        </div>
+                    <div class="tab-pane body" id="friends">
+                        <ul class="new_friend_list list-unstyled row">
+                            <li class="col-lg-4 col-md-2 col-sm-6 col-4">
+                                <a href="">
+                                    <img src="assets/images/sm/avatar1.jpg" class="img-thumbnail" alt="User Image">
+                                    <h6 class="users_name">Jackson</h6>
+                                    <small class="join_date">Today</small>
+                                </a>
+                            </li>
+                            <li class="col-lg-4 col-md-2 col-sm-6 col-4">
+                                <a href="">
+                                    <img src="assets/images/sm/avatar2.jpg" class="img-thumbnail" alt="User Image">
+                                    <h6 class="users_name">Aubrey</h6>
+                                    <small class="join_date">Yesterday</small>
+                                </a>
+                            </li>
+                            <li class="col-lg-4 col-md-2 col-sm-6 col-4">
+                                <a href="">
+                                    <img src="assets/images/sm/avatar3.jpg" class="img-thumbnail" alt="User Image">
+                                    <h6 class="users_name">Oliver</h6>
+                                    <small class="join_date">08 Nov</small>
+                                </a>
+                            </li>
+                            <li class="col-lg-4 col-md-2 col-sm-6 col-4">
+                                <a href="">
+                                    <img src="assets/images/sm/avatar4.jpg" class="img-thumbnail" alt="User Image">
+                                    <h6 class="users_name">Isabella</h6>
+                                    <small class="join_date">12 Dec</small>
+                                </a>
+                            </li>
+                            <li class="col-lg-4 col-md-2 col-sm-6 col-4">
+                                <a href="">
+                                    <img src="assets/images/sm/avatar1.jpg" class="img-thumbnail" alt="User Image">
+                                    <h6 class="users_name">Jacob</h6>
+                                    <small class="join_date">12 Dec</small>
+                                </a>
+                            </li>
+                            <li class="col-lg-4 col-md-2 col-sm-6 col-4">
+                                <a href="">
+                                    <img src="assets/images/sm/avatar5.jpg" class="img-thumbnail" alt="User Image">
+                                    <h6 class="users_name">Matthew</h6>
+                                    <small class="join_date">17 Dec</small>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div class="card-box">
-                    <h4 class="header-title mb-3">Perfil de puesto</h4>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Puesto:</label>
-                                <span><?= $val_Puesto ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Reporta a:</label>
-                                <div class="bootstrap-tagsinput" style="border: none; padding: 0px">
-                                    <?php
-                                    if (isset($perfilPuesto)) {
-                                        if (isset($perfilPuesto['puestosReporta'])) {
-                                            $puestosReporta = $perfilPuesto['puestosReporta'];
-                                            if (count($puestosReporta)) {
-                                                foreach ($puestosReporta as $pue) {
-                                                    echo '<span class="tag badge badge-warning" >' . trim($pue['puesto']) . '</span>';
-                                                }
-                                            } else
-                                                echo '<span class="tag badge badge-warning">No hay información disponible</span>';
-                                        } else
-                                            echo '<span class="tag badge badge-warning">No hay información disponible</span>';
-                                    } else
-                                        echo '<span class="tag badge badge-warning">No hay información disponible</span>';
-                                    ?>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-12">
+            <div class="card">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#project">Project</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#timeline">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#usersettings">Setting</a></li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="project">
+                    <div class="row clearfix">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="card project_widget">
+                                <div class="header">
+                                    <h2><strong>Mi departamento</strong><small class="text-muted"><?= session('departamentoNombre') ?></small></h2>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Coordina a:</label>
-                                <div class="bootstrap-tagsinput" style="border: none; padding: 0px">
-                                    <?php
-                                    if (isset($perfilPuesto)) {
-                                        if (isset($perfilPuesto['puestosCoordina'])) {
-                                            $puestosCoordina = $perfilPuesto['puestosCoordina'];
-                                            if (count($puestosCoordina)) {
-                                                foreach ($puestosCoordina as $pue) {
-                                                    echo '<span class="tag badge badge-warning">' . trim($pue['puesto']) . '</span>';
-                                                }
-                                            } else
-                                                echo '<span class="tag badge badge-warning">No hay información disponible</span>';
-                                        } else
-                                            echo '<span class="tag badge badge-warning">No hay información disponible</span>';
-                                    } else
-                                        echo '<span class="tag badge badge-warning">No hay información disponible</span>';
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Horario:</label>
-                                <span><?= $val_Horario ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Contrato:</label>
-                                <span><?= $val_Contrato ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Género:</label>
-                                <span><?= $val_Genero ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Edad:</label>
-                                <span><?= $val_Edad ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Estado civil:</label>
-                                <span><?= $val_EstadoCivil ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Idioma:</label>
-                                <span><?= $val_Idioma ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Nivel de idioma:</label>
-                                <span><?= $val_nivelIdioma ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Escolaridad:</label>
-                                <span><?= $val_Escolaridad ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Años experiencia:</label>
-                                <span><?= $val_Experiencia ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group mb-1">
-                                <label class="pr-6">Departamento:</label>
-                                <span><?= $val_Departamento ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Conocimientos:</label>
-                                <p style="text-align: justify"><?= $val_conocimientos ?></p>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group mb-1">
-                                <label class="pr-2">Objetivo:</label>
-                                <p style="text-align: justify"><?= $val_objetivo ?></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 mt-1">
-                            <label>Funciones</label>
-                        </div>
-                        <div class="col-md-12">
-                            <ul class="list-unstyled transaction-list  mb-4">
-                                <?php
-                                $emptyFunciones = '<li><div class="alert alert-light text-center">No hay funciones para este puesto</div></li>';
-                                if (isset($perfilPuesto)) {
-                                    if (isset($perfilPuesto['funciones'])) {
-                                        $funciones = json_decode($perfilPuesto['funciones'], true);
-                                        $total = count($funciones);
-                                        if ($total) {
-                                            for ($i = 1; $i <= $total; $i++)
-                                                echo '<li style="border-bottom: none; text-align: justify"><span>' . $i . '.-  ' . trim($funciones['F' . $i]) . '</span></li>';
-                                        } else
-                                            echo $emptyFunciones;
-                                    } else
-                                        echo $emptyFunciones;
-                                } else
-                                    echo $emptyFunciones;
-                                ?>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>Competencias</label>
-                        </div>
-                        <div class="col-md-12">
-                            <ul class="list-unstyled transaction-list  mb-1">
-                                <?php
-                                $emptyCompetencias = '<li><div class="alert alert-light text-center">No hay competencias asignadas a este puesto</div></li>';
-                                if (isset($competenciasPuesto)) {
-                                    if (count($competenciasPuesto)) {
-                                        $i = 1;
-                                        foreach ($competenciasPuesto as $compue) {
-                                            $claves = $db->query("SELECT * FROM clavecompetencia WHERE cla_CompetenciaID=" . $compue['com_CompetenciaID'])->getResultArray();
-                                            echo '<li style="border-bottom: none;"><span>' . $i . '.-  ' . trim($compue['com_Nombre']) . '</span></li>';
-                                            $i++;
-
-                                            foreach ($claves as $clave) {
-                                                echo '<li style="border-bottom: none; padding-left: 30px">' . trim($clave['cla_ClaveAccion']) . '</li>';
+                                <div class="body">
+                                    <ul class="list-unstyled team-info m-t-20">
+                                        <li class="m-r-15"><small>Team</small></li>
+                                        <?php $colaboradores = db()->query("SELECT emp_EmpleadoID,emp_Nombre FROM empleado WHERE emp_DepartamentoID=? AND emp_EmpleadoID != ?", [session('departamento'),session('id')])->getResultArray();
+                                        if ($colaboradores) {
+                                            foreach ($colaboradores as $col) {
+                                                echo '<li><img src="' . fotoPerfil(encryptDecrypt('encrypt', $col['emp_EmpleadoID'])) . '" alt="' . $col['emp_Nombre'] . '"></li>';
                                             }
-                                        }
-                                    } else
-                                        echo $emptyCompetencias;
-                                } else
-                                    echo $emptyCompetencias;
-                                ?>
-                            </ul>
+                                        } ?>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-2 text-right">
-                            <?php
-                            echo $puestoPDFbtn;
-                            ?>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="card project_widget">
+                                <div class="header">
+                                    <h2><strong>ID</strong> 32564 <small class="text-muted">Last Update: 12 Dec 2017</small></h2>
+                                    <ul class="header-dropdown">
+                                        <li class="edit">
+                                            <a role="button" class="boxs-edit"><i class="zmdi zmdi-edit"></i></a>
+                                        </li>
+                                        <li class="remove">
+                                            <a role="button" class="boxs-close"><i class="zmdi zmdi-close"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pw_img">
+                                    <img class="img-responsive" src="assets/images/image3.jpg" alt="About the image">
+                                </div>
+                                <div class="body">
+                                    <h6>eCommerce Website</h6>
+                                    <ul class="list-unstyled team-info m-t-20">
+                                        <li class="m-r-15"><small>Team</small></li>
+                                        <li><img src="assets/images/xs/avatar10.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar9.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar8.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar7.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar6.jpg" alt="Avatar"></li>
+                                    </ul>
+                                    <div class="progress-container progress-primary">
+                                        <span class="progress-badge">Project Status</span>
+                                        <div class="progress ">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="86" aria-valuemin="0" aria-valuemax="100" style="width: 86%;">
+                                                <span class="progress-value">86%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="card project_widget">
+                                <div class="header">
+                                    <h2><strong>ID</strong> 25846 <small class="text-muted">Last Update: 12 Dec 2017</small></h2>
+                                    <ul class="header-dropdown">
+                                        <li class="edit">
+                                            <a role="button" class="boxs-edit"><i class="zmdi zmdi-edit"></i></a>
+                                        </li>
+                                        <li class="remove">
+                                            <a role="button" class="boxs-close"><i class="zmdi zmdi-close"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pw_img">
+                                    <img class="img-responsive" src="assets/images/image1.jpg" alt="About the image">
+                                </div>
+                                <div class="body">
+                                    <h6>iOS Game Development</h6>
+                                    <ul class="list-unstyled team-info m-t-20">
+                                        <li class="m-r-15"><small>Team</small></li>
+                                        <li><img src="assets/images/xs/avatar3.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar4.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar5.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar6.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar7.jpg" alt="Avatar"></li>
+                                    </ul>
+                                    <div class="progress-container progress-success">
+                                        <span class="progress-badge">Project Status</span>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 23%;">
+                                                <span class="progress-value">23%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="card project_widget">
+                                <div class="header">
+                                    <h2><strong>ID</strong> 32564 <small class="text-muted">Last Update: 12 Dec 2017</small></h2>
+                                    <ul class="header-dropdown">
+                                        <li class="edit">
+                                            <a role="button" class="boxs-edit"><i class="zmdi zmdi-edit"></i></a>
+                                        </li>
+                                        <li class="remove">
+                                            <a role="button" class="boxs-close"><i class="zmdi zmdi-close"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pw_img">
+                                    <img class="img-responsive" src="assets/images/image4.jpg" alt="About the image">
+                                </div>
+                                <div class="body">
+                                    <h6>Home Development</h6>
+                                    <ul class="list-unstyled team-info m-t-20">
+                                        <li class="m-r-15"><small>Team</small></li>
+                                        <li><img src="assets/images/xs/avatar1.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar2.jpg" alt="Avatar"></li>
+                                        <li><img src="assets/images/xs/avatar3.jpg" alt="Avatar"></li>
+                                    </ul>
+                                    <div class="progress-container progress-info">
+                                        <span class="progress-badge">Project Status</span>
+                                        <div class="progress ">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="86" aria-valuemin="0" aria-valuemax="100" style="width: 68%;">
+                                                <span class="progress-value">68%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="timeline">
+                    <ul class="cbp_tmtimeline">
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-11-04T18:30"><span class="hidden">25/12/2017</span> <span class="large">Now</span></time>
+                            <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div>
+                            <div class="cbp_tmlabel empty"> <span>No Activity</span> </div>
+                        </li>
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-11-04T03:45"><span>03:45 AM</span> <span>Today</span></time>
+                            <div class="cbp_tmicon bg-info"><i class="zmdi zmdi-label"></i></div>
+                            <div class="cbp_tmlabel">
+                                <h2><a href="javascript:void(0);">Art Ramadani</a> <span>posted a status update</span></h2>
+                                <p>Tolerably earnestly middleton extremely distrusts she boy now not. Add and offered prepare how cordial two promise. Greatly who affixed suppose but enquire compact prepare all put. Added forth chief trees but rooms think may.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-11-03T13:22"><span>01:22 PM</span> <span>Yesterday</span></time>
+                            <div class="cbp_tmicon bg-green"> <i class="zmdi zmdi-case"></i></div>
+                            <div class="cbp_tmlabel">
+                                <h2><a href="javascript:void(0);">Job Meeting</a></h2>
+                                <p>You have a meeting at <strong>Laborator Office</strong> Today.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-10-22T12:13"><span>12:13 PM</span> <span>Two weeks ago</span></time>
+                            <div class="cbp_tmicon bg-blush"><i class="zmdi zmdi-pin"></i></div>
+                            <div class="cbp_tmlabel">
+                                <h2><a href="javascript:void(0);">Arlind Nushi</a> <span>checked in at</span> <a href="javascript:void(0);">New York</a></h2>
+                                <blockquote>
+                                    <p class="blockquote blockquote-primary">
+                                        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+                                        <br>
+                                        <small>
+                                            - Isabella
+                                        </small>
+                                    </p>
+                                </blockquote>
+                                <div class="row clearfix">
+                                    <div class="col-lg-12">
+                                        <div class="map m-t-10">
+                                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.91477011208!2d-74.11976308802028!3d40.69740344230033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2sin!4v1508039335245" frameborder="0" style="border:0; width: 100%;" allowfullscreen=""></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-10-22T12:13"><span>12:13 PM</span> <span>Two weeks ago</span></time>
+                            <div class="cbp_tmicon bg-orange"><i class="zmdi zmdi-camera"></i></div>
+                            <div class="cbp_tmlabel">
+                                <h2><a href="javascript:void(0);">Eroll Maxhuni</a> <span>uploaded</span> 4 <span>new photos to album</span> <a href="javascript:void(0);">Summer Trip</a></h2>
+                                <blockquote>Pianoforte principles our unaffected not for astonished travelling are particular.</blockquote>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-6 col-6"><a href="javascript:void(0);"><img src="assets/images/image1.jpg" alt="" class="img-fluid img-thumbnail m-t-30"></a> </div>
+                                    <div class="col-lg-3 col-md-6 col-6"><a href="javascript:void(0);"> <img src="assets/images/image2.jpg" alt="" class="img-fluid img-thumbnail m-t-30"></a> </div>
+                                    <div class="col-lg-3 col-md-6 col-6"><a href="javascript:void(0);"> <img src="assets/images/image3.jpg" alt="" class="img-fluid img-thumbnail m-t-30"> </a> </div>
+                                    <div class="col-lg-3 col-md-6 col-6"><a href="javascript:void(0);"> <img src="assets/images/image4.jpg" alt="" class="img-fluid img-thumbnail m-t-30"> </a> </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-11-03T13:22"><span>01:22 PM</span> <span>Two weeks ago</span></time>
+                            <div class="cbp_tmicon bg-green"> <i class="zmdi zmdi-case"></i></div>
+                            <div class="cbp_tmlabel">
+                                <h2><a href="javascript:void(0);">Job Meeting</a></h2>
+                                <p>You have a meeting at <strong>Laborator Office</strong> Today.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <time class="cbp_tmtime" datetime="2017-10-22T12:13"><span>12:13 PM</span> <span>Month ago</span></time>
+                            <div class="cbp_tmicon bg-blush"><i class="zmdi zmdi-pin"></i></div>
+                            <div class="cbp_tmlabel">
+                                <h2><a href="javascript:void(0);">Arlind Nushi</a> <span>checked in at</span> <a href="javascript:void(0);">Laborator</a></h2>
+                                <blockquote>Great place, feeling like in home.</blockquote>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="usersettings">
+                    <div class="card">
+                        <div class="header">
+                            <h2><strong>Security</strong> Settings</h2>
+                        </div>
+                        <div class="body">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Current Password">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="New Password">
+                            </div>
+                            <button class="btn btn-info btn-round">Save Changes</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">
+                            <h2><strong>Account</strong> Settings</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="First Name">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Last Name">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="City">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="E-mail">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Country">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <textarea rows="4" class="form-control no-resize" placeholder="Address Line 1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="checkbox">
+                                        <input id="procheck1" type="checkbox">
+                                        <label for="procheck1">Profile Visibility For Everyone</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <input id="procheck2" type="checkbox">
+                                        <label for="procheck2">New task notifications</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <input id="procheck3" type="checkbox">
+                                        <label for="procheck3">New friend request notifications</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn btn-primary btn-round">Save Changes</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card-box">
-                    <h4 class="header-title">Mis recibos de nómina</h4>
-                    <div id="recibosNomina"></div>
-                </div>
-            </div>
-        </div>
-    </div> <!-- end container-fluid -->
-</div> <!-- end content -->
+    </div>
+</div>

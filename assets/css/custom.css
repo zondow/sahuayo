@@ -2,23 +2,51 @@
     position: fixed !important;
 }
 
-section.content{
+section.content {
     z-index: auto !important;
 }
 
-.red_label{
-    color:rgba(255, 0, 0, 0.815);
+.red_label {
+    color: rgba(255, 0, 0, 0.815);
 }
 
-label{
+label {
     font-weight: 800;
 }
 
-.fc .fc-toolbar{
+.fc .fc-toolbar {
     background: #3974ba !important;
 }
 
-fc-day-grid-event fc-h-event fc-event fc-start fc-end{
-    border-radius: 5px;
-    color:white;
+.modal-content {
+    border-radius: 10px !important;
+}
+
+.fc .fc-view-container .fc-event {
+    border-radius: 5px !important;
+}
+
+.fc-title {
+    color: white;
+}
+
+.select2 {
+    width: 100% !important;
+}
+
+textarea.form-control {
+    padding: 2% !important;
+}
+
+/* Añadir estilo de botón al pasar el mouse */
+.badge.activarInactivar,
+.badge.btnActivo,
+.badge.btnInactivo {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.l-blush-azul {
+    background: linear-gradient(45deg, #0b4d81, #14bac8) !important;
+    color: #fff !important;
 }

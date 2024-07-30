@@ -55,6 +55,7 @@ class BaseController extends Controller
 		helper('excel');
 		helper('correo');
 		helper('plugins');
+		helper('database');
         /*helper('anticipos');
         helper('nomina');
         
@@ -67,5 +68,13 @@ class BaseController extends Controller
         //$this->permisos = getPermisos($this->session->get('id'),$this);
         //$this->session->set('permisos',$this->permisos);
 	}
+	
+    const LOGIN_TYPE = 'usuario';
+
+    public function __construct()
+    {
+        $this->BaseModel = model('App\Models\BaseModel', false);
+        $this->ConfiguracionModel = model('App\Models\ConfiguracionModel', false);
+    }
 
 }

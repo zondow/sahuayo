@@ -60,7 +60,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-warning",
+                className: "btn l-slategray",
             }
         ],
         language: {
@@ -81,7 +81,7 @@ $(document).ready(function (e) {
                 "sFirst": "Primero",
                 "sLast": "Último",
                 "sNext": "<i class='mdi mdi-chevron-right'>",
-                "sPrevious": "<i class='mdi mdi-chevron-left'>"
+                "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
         },

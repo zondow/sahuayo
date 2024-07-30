@@ -19,8 +19,8 @@ $(document).ready(function (e) {
         dom: 'Bfrtip',
         language: {
             paginate: {
-                previous:"<i class='mdi mdi-chevron-left'>",
-                next:"<i class='mdi mdi-chevron-right'>"
+                previous:"<i class='zmdi zmdi-caret-left'>",
+                next:"<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",

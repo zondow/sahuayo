@@ -922,12 +922,9 @@ function disponibilidadUsuario($disponibilidad)
 } //disponibilidadUsuario
 
 //Lia -> Obtiene el valor de las variables de configuracion
-function getSetting($key, $obj)
+function getSetting($key)
 {
-    $sql = "SELECT S.*
-            FROM settings S
-            WHERE S.set_Key=?";
-    return db()->query($sql, array($key))->getRowArray()['set_Value'];
+    return db()->query("SELECT S.* FROM settings S WHERE S.set_Key=?", array($key))->getRowArray()['set_Value'];
 } //getSetting
 
 //Diego -> Get file expediente

@@ -52,7 +52,7 @@ $(document).ready(function(e) {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
                 "sNext":    "<i class='mdi mdi-chevron-right'>",
-                "sPrevious": "<i class='mdi mdi-chevron-left'>"
+                "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
         "order": [[ 3, "desc" ]],
@@ -535,7 +535,7 @@ $(document).ready(function(e) {
                     "sFirst":    "Primero",
                     "sLast":     "Último",
                     "sNext":    "<i class='mdi mdi-chevron-right'>",
-                    "sPrevious": "<i class='mdi mdi-chevron-left'>"
+                    "sPrevious": "<i class='zmdi zmdi-caret-left'>"
                 },
             },
             "order": [[ 0, "asc" ]],
