@@ -8,7 +8,7 @@
     }
 </style>
 <div class="modal fade" id="modalSavePermisosRol" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="title">Permisos del rol</h4>
@@ -16,7 +16,7 @@
             </div>
             <form id="formPermisos" action="<?= base_url("Configuracion/savePermisosRol") ?>" method="post" autocomplete="off" role="form">
                 <input id="rol_RolIDP" name="rol_RolID" value="0" hidden>
-                <div class="col-md-4 pt-2 text-right mb-3">
+                <div class="col-md-12 pt-2 text-right mb-3">
                     <input id="txtSearch" type="text" class="form-control search" placeholder="Buscar...">
                 </div>
                 <div class="modal-body mySidebar ">

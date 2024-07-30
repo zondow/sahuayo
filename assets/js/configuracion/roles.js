@@ -57,7 +57,7 @@ $(document).ready(function (e) {
         let id = row.rol_RolID;
         let txt = row.rol_Nombre;
         if(revisarPermisos('Permisos','roles'))
-            output += '<button type="button" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down permisosRol"  data-id="'+id+'" title="Permisos del rol"><i class="zmdi zmdi-key"></i></button>';
+            output += '<button type="button" class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down permisosRol"  data-id="'+id+'" title="Permisos del rol"><i class="zmdi zmdi-key"></i></button>';
         if(revisarPermisos('Editar','roles'))
             output += '<button type="button" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down editRol"  data-id="'+id+'" title="Permisos del rol"><i class="zmdi zmdi-edit"></i></button>';
         if(revisarPermisos('Eliminar','roles'))
@@ -172,29 +172,35 @@ $(document).ready(function (e) {
                 let permisos = data.permisos;
                 let html = '';
 
-                    $.each(funciones, function (index, value) {
-                        let acciones = JSON.parse(value.fun_Acciones);
-
-                        html+='<div class="col-md-4 card-f">' +
-                            '<div class="card-box">' +
-                            '<div class="badge bg-blue find_Nombre">' + value['fun_Descripcion'] + '</div>';
-                                $.each(acciones, function (key, val) {
-                                    let c = '';
-                                    if (permisos !== null && permisos !== '') {
-                                        c = (jQuery.inArray(val, permisos[value['fun_Nombre']]) >= 0) ? 'checked' : '';
-                                    }
-                                    html += '' +
-                                        '   <p>' +
-                                        '       <div class="custom-control custom-checkbox">' +
-                                        '           <input type="checkbox" class="custom-control-input" id="' + value['fun_Nombre'] + key + '" name="' + value['fun_Nombre'] + '[]" value="' + val + '" ' + c + '>' +
-                                        '           <label class="custom-control-label" for="' + value['fun_Nombre'] + key + '">' + val + '</label>' +
-                                        '       </div>' +
-                                        '   </p>';
-
-                                });
-                        html+= '</div>' +
-                            '</div>';
+                html = '<table class="table table-bordered">';
+                html += '<thead><tr><th>Acciones</th><th>Módulo</th><th>Descripción</th></tr></thead>';
+                html += '<tbody>';
+                
+                $.each(funciones, function (index, value) {
+                    let acciones = JSON.parse(value.fun_Acciones);
+                
+                    html += '<tr>';
+                    html += '<td>';
+                
+                    $.each(acciones, function (key, val) {
+                        let c = '';
+                        if (permisos !== null && permisos !== '') {
+                            c = (jQuery.inArray(val, permisos[value['fun_Nombre']]) >= 0) ? 'checked' : '';
+                        }
+                        html += '<div class="checkbox">';
+                        html += '   <input type="checkbox"  id="' + value['fun_Nombre'] + key + '" name="' + value['fun_Nombre'] + '[]" value="' + val + '" ' + c + '>';
+                        html += '   <label for="' + value['fun_Nombre'] + key + '">' + val + '</label>';
+                        html += '</div>';
                     });
+                
+                    html += '</td>';
+                    html += '<td>' + value['fun_Modulo'] + '</td>';
+                    html += '<td class="find_Nombre">' + value['fun_Descripcion'] + '</td>';
+                    html += '</tr>';
+                });
+                
+                html += '</tbody>';
+                html += '</table>';
 
 
                 $("#bodyRolPermisos").html(html);
@@ -223,20 +229,21 @@ $(document).ready(function (e) {
     }
 
     $("#txtSearch").on("keyup", function() {
-        var  a; var i; var txtValue;
         var input = document.getElementById("txtSearch");
         var filter = input.value.toUpperCase();
-        var contenido = document.getElementById("bodyRolPermisos");
-        var card = contenido.getElementsByClassName("card-f");
-
-        for (i = 0; i < card.length; i++) {
-            a = card[i].getElementsByClassName("find_Nombre")[0];
-            txtValue = a.textContent || a.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                card[i].style.display = "";
-            } else {
-                card[i].style.display = "none";
-            }
-        }//for
+        var table = document.getElementById("bodyRolPermisos");
+        var rows = table.getElementsByTagName("tr");
+    
+        for (var i = 0; i < rows.length; i++) {
+            var descripcionCell = rows[i].getElementsByClassName("find_Nombre")[0];
+            if (descripcionCell) {
+                var txtValue = descripcionCell.textContent || descripcionCell.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }       
+        }
     });
 });
