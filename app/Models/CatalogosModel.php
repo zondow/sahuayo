@@ -6,35 +6,46 @@ use CodeIgniter\Model;
 
 class CatalogosModel extends Model
 {
-    //Diego -> obtener areas
-    public function getAreas()
-    {
-        $result = $this->db->query("SELECT * FROM area")->getResultArray();
-        $data = array();
-        foreach ($result as $r) {
-            $r['are_AreaID'] = encryptDecrypt('encrypt', $r['are_AreaID']);
-            array_push($data, $r);
-        }
-        return $data;
-    } //end getAreas
-
-    //traer informacion de un area por id
-    public function getInfoAreaByID($idArea)
-    {
-        return $this->db->query("SELECT * FROM area WHERE are_AreaID=?", array(encryptDecrypt('decrypt', $idArea)))->getRowArray();
-    } //end getInfoAreaByID
-
-    //Diego -> trae los empleados de su empresa
-    public function getEmpleados()
-    {
-        return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 AND emp_Estado='Activo' ORDER BY emp_Nombre ASC")->getResultArray();
-    } //end getEmpleados
 
     //Diego ->Get departamentos catalogo
     public function getCatalogoDepartamentos()
     {
         return $this->db->query("SELECT * FROM departamento")->getResultArray();
     } //end getCatalogoDepartamentos
+
+
+    //Diego -> obtener areas
+    public function getAreas()
+    {
+        $result = $this->db->query("SELECT * FROM area")->getResultArray();
+        foreach ($result as &$r) {
+            $r['are_AreaID'] = encryptDecrypt('encrypt', $r['are_AreaID']);
+        }
+        return $result;
+    } //end getAreas
+
+    //traer informacion de un area por id
+    public function getInfoAreaByID($idArea)
+    {
+        return $this->db->query("SELECT * FROM area WHERE are_AreaID= ?", array($idArea))->getRowArray();
+    } //end getInfoAreaByID
+
+
+
+
+
+
+
+
+
+
+    
+
+   
+
+   
+
+   
 
     //Lia->trae los puestos
     public function getPuestos()

@@ -167,7 +167,6 @@ $(document).ready(function(e) {
             text: txt,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#001689",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {
@@ -208,19 +207,24 @@ $(document).ready(function(e) {
 
 
     $('#txtSearch').keyup(function(){
-        var nombres = $('.nombre');
-        var buscando = $(this).val();
-        var item='';
-        for( var i = 0; i < nombres.length; i++ ){
-            item = $(nombres[i]).html().toLowerCase();
-            for(var x = 0; x < item.length; x++ ){
-                if( buscando.length == 0 || item.indexOf( buscando ) > -1 ){
-                    $(nombres[i]).parents('.item').show();
-                }else{
-                    $(nombres[i]).parents('.item').hide();
-                }
+       
+        var a;
+        var i;
+        var txtValue;
+        var input = document.getElementById("txtSearch");
+        var filter = input.value.toUpperCase();
+        var contenido = document.getElementById("divAreas");
+        var card = contenido.getElementsByClassName("item");
+
+        for (i = 0; i < card.length; i++) {
+            a = card[i].getElementsByClassName("find_Nombre")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card[i].style.display = "";
+            } else {
+                card[i].style.display = "none";
             }
-        }
+        } //for
     });
 });
 

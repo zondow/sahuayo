@@ -26,8 +26,9 @@ class BaseModel extends Model
         return $this->db->query('SELECT * FROM horario')->getResultArray();
     }
 
+
     public function getEmpleados()
     {
-        return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 ORDER BY emp_Nombre ASC")->getResultArray();
-    }
+        return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 AND emp_Estado='Activo' ORDER BY emp_Nombre ASC")->getResultArray();
+    } 
 }

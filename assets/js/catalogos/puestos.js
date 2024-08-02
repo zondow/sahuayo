@@ -21,7 +21,6 @@ $(document).ready(function (e) {
             text: txt,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {
@@ -62,5 +61,24 @@ $(document).ready(function (e) {
 
         });//ajax
     }
+
+    $("#txtSearch").on("keyup", function() {
+
+        var  a; var i; var txtValue;
+        var input = document.getElementById("txtSearch");
+        var filter = input.value.toUpperCase();
+        var contenido = document.getElementById("contenido-puestos");
+        var carPuestos = contenido.getElementsByClassName("card-puesto");
+
+        for (i = 0; i < carPuestos.length; i++) {
+            a = carPuestos[i].getElementsByClassName("find_Nombre")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                carPuestos[i].style.display = "";
+            } else {
+                carPuestos[i].style.display = "none";
+            }
+        }//for
+    });
 
 })

@@ -2,8 +2,9 @@
 
 defined('WRITEPATH') or exit('No direct script access allowed');
 
-function load_plugins($plugins,&$data){
-    foreach($plugins as $plugin){
+function load_plugins($plugins, &$data)
+{
+    foreach ($plugins as $plugin) {
         $function_name = 'load_' . $plugin;
         if (function_exists($function_name)) {
             call_user_func_array($function_name, array(&$data));
@@ -59,13 +60,15 @@ function load_datables4(&$data)
     $data['scripts'][] = base_url('assets/libs/datatables/dataTables.responsive.min.js');
 }
 
-function load_sweetalert(&$data){
+function load_sweetalert(&$data)
+{
     $data['styles'][] = base_url("assets/plugins/sweetalert/sweetalert.css");
     $data['scripts'][] = base_url("assets/plugins/sweetalert/sweetalert.min.js");
     $data['scripts'][] = base_url("assets/plugins/sweetalert/jquery.sweet-alert.custom.js");
 }
 
-function load_datatables_buttons(&$data) {
+function load_datatables_buttons(&$data)
+{
     $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
     $data['styles'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/css/buttons.bootstrap4.css');
     $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
@@ -79,31 +82,49 @@ function load_datatables_buttons(&$data) {
     $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.colVis.js');
 }
 
-function load_moment_locales(&$data){
+function load_moment_locales(&$data)
+{
     $data['scripts'][] = base_url('assets/plugins/momentjs/moment-with-locales.js');
 }
 
-function load_datetimepicker(&$data){
+function load_datetimepicker(&$data)
+{
     $data['styles'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css');
     $data['scripts'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js');
 }
 
-function load_jstree(&$data){
+function load_jstree(&$data)
+{
     $data['styles'][] = base_url("assets/plugins/jstree/css/style.min.css");
     $data['scripts'][] = base_url("assets/plugins/jstree/jstree.min.js");
 }
 
-function load_tooltipster(&$data){
+function load_tooltipster(&$data)
+{
     $data['styles'][] = base_url("assets/libs/tooltipster/tooltipster.bundle.min.css");
     $data['scripts'][] = base_url("assets/libs/tooltipster/tooltipster.bundle.min.js");
 }
 
-function load_dropzone(&$data){
+function load_dropzone(&$data)
+{
     $data['styles'][] = base_url('assets/plugins/dropzone/min/dropzone.min.css');
     $data['scripts'][] = base_url('assets/plugins/dropzone/min/dropzone.min.js');
 }
 
-function load_datepicker(&$data){
+function load_datepicker(&$data)
+{
     $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
     $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
+}
+
+function load_custombox(&$data)
+{
+    $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.css');
+    $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.js');
+}
+
+function load_footable(&$data)
+{
+    $data['styles'][] = base_url("assets/libs/footable/footable.core.min.css");
+    $data['scripts'][] = base_url("assets/libs/footable/footable.all.min.js");
 }
