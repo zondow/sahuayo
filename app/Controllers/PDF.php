@@ -24,7 +24,7 @@ class PDF extends BaseController
     {
         $idpuesto = encryptDecrypt('decrypt', $idpuesto);
         //datos
-        $model = new PdfModel();
+        $model = $this->PdfModel;
         $perfilPuesto = $model->getPerfilPuestoid($idpuesto);
         if ($perfilPuesto['puestosReporta'] !== null) {
             $puestos = json_decode($perfilPuesto['puestosReporta']);
@@ -42,7 +42,8 @@ class PDF extends BaseController
                 $perfilPuesto['puestosReporta'][$count]["puesto"] = $comite;
             }
         }
-        if ($perfilPuesto['puestosCoordina'] !== null) {
+       
+        if ($perfilPuesto['puestosCoordina'] !== "null") {
             $perfilPuesto['puestosCoordina'] = $model->getPuestosCoordinaReporta(implode(",", json_decode($perfilPuesto['puestosCoordina'])));
         }
         $perfilPuesto['competenciasPuesto'] = $model->getCompetenciasPuesto($idpuesto);
@@ -246,136 +247,112 @@ class PDF extends BaseController
         return  $html;
     } //plantillaPuesto
 
-    //Diego - plantilla para generar el pdf
-    public function plantillaPuesto($data)
-    {
+  
+    public function plantillaPuesto($data){
         $fecha = $data['fechaCreacion'];
-        $cordina = "";
-        $reporta = "";
-        $fun = "";
-        $comp = "";
-        $cla = "";
-        $logo = base_url('assets/images/LOGO_AMA.png');
-
-        if (count($data['puestosReporta']) > 0) {
-            foreach ($data['puestosReporta'] as $item) {
-                $reporta .= '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;';
-            }
-        } else {
-            $reporta = "No hay información disponible";
-        }
-
-        if (count($data['puestosCoordina']) > 0) {
-            foreach ($data['puestosCoordina'] as $item) {
-                $cordina .= '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;';
-            }
-        } else {
-            $cordina = "No hay información disponible";
-        }
-
+        $logo = base_url('assets/images/image1.jpg');
+        
+        $reporta = $data['puestosReporta'] !== "null" ? implode(' ', array_map(fn($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosReporta'])) : "No hay información disponible";
+        $coordina = $data['puestosCoordina'] !== "null" ? implode(' ', array_map(fn($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosCoordina'])) : "No hay información disponible";
+        
         $funciones = json_decode($data['funciones'], true);
-        $total = count($funciones);
-        if ($total) {
-            for ($i = 1; $i <= $total; $i++) {
-
-                if ($i == $total) {
-                    $fun .= '<li>' . trim($funciones['F' . $i]) . '</li>';
-                } else {
-                    $fun .= '<li>' . trim($funciones['F' . $i]) . '</li><br>';
-                }
-            }
-        } else {
-            $fun = "No hay información disponible";
-        }
-
-        if (count($data['competenciasPuesto'])) {
-            $i = 1;
-            foreach ($data['competenciasPuesto'] as $compue) {
-                $claves = $this->db->query("SELECT * FROM clavecompetencia WHERE cla_CompetenciaID=" . $compue['com_CompetenciaID'])->getResultArray();
-
-                $comp .= '<li  style="border-bottom: none;">' . $i . '.-  ' . trim($compue['com_Nombre']) . '</li>';
-                $i++;
-                foreach ($claves as $clave) {
-                    $comp .= '<li style="border-bottom: none; padding-left: 30px">' . trim($clave['cla_ClaveAccion']) . '</li>';
-                }
-            }
-        } else {
-            $comp = "No hay información disponible";
-        }
-
+        $fun = !empty($funciones) ? implode('<br>', array_map(fn($i) => '<li>' . trim($funciones['F' . $i]) . '</li>', range(1, count($funciones)))) : "No hay información disponible";
+        
+        $comp = !empty($data['competenciasPuesto']) ? implode('', array_map(function($i, $compue) {
+            $claves = $this->db->query("SELECT * FROM clavecompetencia WHERE cla_CompetenciaID=" . $compue['com_CompetenciaID'])->getResultArray();
+            $clavesHtml = implode('', array_map(fn($clave) => '<li style="border-bottom: none; padding-left: 30px">' . trim($clave['cla_ClaveAccion']) . '</li>', $claves));
+            return '<li style="border-bottom: none;">' . $i . '.-  ' . trim($compue['com_Nombre']) . '</li>' . $clavesHtml;
+        }, range(1, count($data['competenciasPuesto'])), $data['competenciasPuesto'])) : "No hay información disponible";
+        
         $html = '
+        
+        
             <header class="clearfix">
-                  <div id="logo" class="center">
+                <div id="logo" class="center">
                     <img style="width: 150px;" src="' . $logo . '">
-                  </div>
-                  <div class="head">
-                       <h5>' . $fecha . '</h5>
-                  </div>
-                  <h3>' . strtoupper(getSetting('nombre_empresa', $this)) . '</h3>
-                   <div class="contenedor2"><h3> <span class="bold2">' . $data['puesto'] . '</span></h3></div>
-                   <div class="contenedor3"><h4>Descripcion y perfil de puesto</h4></div>
-
+                </div>
+                <div class="head">
+                    <h5>' . $fecha . '</h5>
+                </div>
+                <h3>' . strtoupper(getSetting('nombre_empresa', $this)) . '</h3>
+                <div class="contenedor2"><h3><span class="bold2">' . $data['puesto'] . '</span></h3></div>
+                <div class="contenedor3"><h4>Descripcion y perfil de puesto</h4></div>
             </header>
-        ';
-
-        $html .= '
             <main>
-            <div class="contenedor">
-                <div class="center">
-                    <div class="first"><p class="bold">Reporta a: </p>
-                   ' . $reporta . '
-                    </div>
-                    <div class="second"><p class="bold">Coordina a: </p>
-                    ' . $cordina . '
-                    </div>
-                </div>
-                 <div class="center">
-                    <div class="first"><span class="bold"> Horario: </span>' . $data['horario'] . '</div>
-                    <div class="second"><span class="bold">Contrato: ' . $data['tipoContrato'] . '</div>
-                </div>
-                 <div class="center">
-                    <div class="first"><span class="bold">Género: </span>' . $data['genero'] . '</div>
-                    <div class="second"><span class="bold">Edad: </span>' . $data['edad'] . '</div>
-                </div>
-                 <div class="center">
-                    <div class="first"><span class="bold">Estado civil: </span>' . $data['estadoCivil'] . '</div>
-                    <div class="second"><span class="bold">Idioma: </span>' . $data['idioma'] . '</div>
-                </div>
-                 <div class="center">
-                    <div class="first"><span class="bold">Nivel de idioma: </span>' . $data['idiomaNivel'] . '</div>
-                    <div class="second"><span class="bold">Escolaridad: </span>' . $data['escolaridad'] . '</div>
-                </div>
-                 <div class="center">
-                    <div class="first"><span class="bold">Años experiencia: </span>' . $data['aniosExperiencia'] . '</div>
-                    <div class="second"><span class="bold">Departamento: </span>' . $data['departamento'] . '</div>
-                </div>
-            </div>
-                <div class="center2">
-                   <p class="bold">Conocimientos:</p>
-                   ' . $data['conocimientos'] . '
-                </div>
-                <div class="center2">
-                <p class="bold">Objetivo:</p>
-                ' . $data['objetivo'] . '
-             </div>
-                <div class="center2">
-                   <p class="bold">Funciones:</p>
-                   <ol>
-                       ' . $fun . '
-                    </ol>
-                </div>
-                <div class="center2">
-                   <p class="bold">Competencias:</p>
-                   <ul class="list-unstyled mb-1">
-                     ' . $comp . '
-                    </ul>
-
-                </div>
-           </main>
+                <table>
+                    <tr>
+                        <th colspan="2">PERFIL DEL PUESTO</th>
+                    </tr>
+                    <tr>
+                        <td class="bold">Puesto de trabajo</td>
+                        <td>' . $data['puesto'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Reporta</td>
+                        <td>' . $reporta . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Coordina</td>
+                        <td>' . $coordina . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Horario</td>
+                        <td>' . $data['puesto'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Tipo de contrato</td>
+                        <td>' . $data['tipoContrato'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Genero</td>
+                        <td>' . $data['genero'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Edad</td>
+                        <td>' . $data['edad'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Esatado Civil</td>
+                        <td>' . $data['estadoCivil'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Idioma</td>
+                        <td>' . $data['idioma'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Nivel de Idioma</td>
+                        <td>' . $data['idiomaNivel'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Escolaridad</td>
+                        <td>' . $data['escolaridad'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Años de experiencia</td>
+                        <td>' . $data['aniosExperiencia'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Departamento</td>
+                        <td>' . $data['departamento'] . '</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Funciones y responsabilidades del puesto</td>
+                        <td><ul>' . $fun . '</ul></td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Aptitudes necesarias</td>
+                        <td><ul>' . $comp . '</ul></td>
+                    </tr>
+                     <tr>
+                        <td class="bold">Objetivo</td>
+                        <td><ul>' . $data['objetivo'] . '</ul></td>
+                    </tr>
+                </table>
+            </main>
         ';
-
-        return  $html;
-    } //plantillaPuesto
+        
+        return $html;
+    }
 
     //Lia -> Imprimir solicitud de vacaciones
     public function imprimirSolicitudVacaciones($idVacacion)

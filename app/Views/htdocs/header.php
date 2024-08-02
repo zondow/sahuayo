@@ -42,6 +42,9 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/css/custom.css") ?>" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/main.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/css/color_skins.css") ?>">
+
+	<!-- LOAD JQUERY FIRST -->
+	<script src="<?=base_url("assets/js/jquery-3.3.1.min.js")?>"></script>
 </head>
 
 <body class="theme-cyan">

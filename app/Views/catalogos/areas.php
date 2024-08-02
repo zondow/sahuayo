@@ -1,9 +1,9 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
 <div class="content pt-0">
     <div class="row mb-3">
-        <div class="col-md-12 mt-2 ">
+        <div class="col-md-12 mt-2 text-right">
             <?php if (revisarPermisos('Agregar', $this)) { ?>
-                <button type="button" id="addArea" class="btn btn-success waves-effect waves-light"><i class="dripicons-plus" style="top: 2px !important; position: relative"></i> Agregar</button>
+                <button type="button" id="addArea" class="btn btn-success btn-round"> <i class="zmdi zmdi-plus"></i> Agregar </button>
             <?php } ?>
         </div>
     </div>
@@ -35,8 +35,10 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button id="guardar" type="button" class="btn btn-primary waves-effect waves-light">Guardar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button id="guardar" type="button" class="btn btn-success btn-round">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>

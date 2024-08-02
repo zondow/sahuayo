@@ -19,21 +19,10 @@
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
     <ul class="ml-menu">
-        <li> <a href="ui_kit.html">UI KIT</a> </li>
-        <li> <a href="alerts.html">Alerts</a> </li>
-        <li> <a href="collapse.html">Collapse</a> </li>
-        <li> <a href="colors.html">Colors</a> </li>
-        <li> <a href="dialogs.html">Dialogs</a> </li>
-        <li> <a href="icons.html">Icons</a> </li>
-        <li> <a href="list-group.html">List Group</a> </li>
-        <li> <a href="media-object.html">Media Object</a> </li>
-        <li> <a href="modals.html">Modals</a> </li>
-        <li> <a href="notifications.html">Notifications</a></li>
-        <li> <a href="progressbars.html">Progress Bars</a></li>
-        <li> <a href="range-sliders.html">Range Sliders</a></li>
-        <li> <a href="sortable-nestable.html">Sortable & Nestable</a></li>
-        <li> <a href="tabs.html">Tabs</a></li>
-        <li> <a href="waves.html">Waves</a></li>
+        <li> <a href="<?=base_url('Catalogos/departamentos')?>">Departamentos</a> </li>
+        <li> <a href="<?=base_url('Catalogos/areas')?>">Areas</a> </li>
+        <li> <a href="<?=base_url('Catalogos/puestos')?>">Puestos</a> </li>
+        <li> <a href="colors.html">Cooperativas</a> </li>
     </ul>
 </li>
 <li class="header">Personal</li>

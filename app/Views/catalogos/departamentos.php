@@ -1,26 +1,19 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
-<?php function nombreempleado($id)
-{
-    return db()->query("select emp_Nombre from empleado where emp_EmpleadoID =?",array($id))->getRowArray()['emp_Nombre'];
-}
+<?php
 $db = \Config\Database::connect();
 ?>
 <div class="content pt-0">
     <div class="row mb-3">
-        <div class="col-md-12 mt-2 ">
+        <div class="col-md-12 text-right">
             <?php if (revisarPermisos('Agregar', $this)) { ?>
-                <button type="button" data-toggle="modal" data-target="#addDepartamento" class="btn btn-success waves-effect waves-light"><i class="dripicons-plus" style="top: 2px !important; position: relative"></i> Agregar</button>
+                <button type="button" data-toggle="modal" data-target="#addDepartamento" class="btn btn-success btn-round"> <i class="zmdi zmdi-plus"></i> Agregar </button>
+            <?php } ?>
+            <?php if (revisarPermisos('Exportar', $this)) { ?>
+                <a href="<?= base_url('Excel/generarExcelDepartamentos'); ?>" class="btn btn-warning btn-round"><i class="zmdi zmdi-cloud-download"></i> Exportar</a>
             <?php } ?>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12  text-right">
-            <?php if (revisarPermisos('Exportar', $this)) { ?>
-                <a href="<?= base_url('Excel/generarExcelDepartamentos'); ?>" class="btn btn-warning"><i class="mdi mdi-cloud-download"></i> Exportar</a>
-            <?php } ?>
-        </div>
-    </div>
     <div class="row mb-3">
         <div class="col-md-4 pt-2 text-right">
             <input id="txtSearch" type="text" class="form-control search" placeholder="Buscar...">
@@ -31,87 +24,96 @@ $db = \Config\Database::connect();
     </div>
 
     <div class="row" id="contenido-departamentos">
-
-        <?php
+    <?php
         if (!empty($departamentos)) {
+            $totalColaboradores = $db->query("SELECT COUNT(*) AS 'total' FROM empleado WHERE emp_Estatus=1")->getRowArray();
             foreach ($departamentos as $departamento) {
                 $style = '';
                 $estatus = '';
-                $totalColaboradores = $db->query("SELECT COUNT(*) AS 'total' FROM empleado WHERE emp_Estatus= 1 ")->getRowArray();
-                $noColaboradores = $db->query("SELECT COUNT(*) AS 'total' FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=" . (int)$departamento['dep_DepartamentoID'])->getRowArray();
-                $puestos = $db->query("SELECT DISTINCT(emp_PuestoID) as puestos FROM empleado  WHERE emp_Estatus=1 AND emp_DepartamentoID=" . (int)$departamento['dep_DepartamentoID'])->getResultArray();
-                $colaboradores = $db->query("SELECT emp_Nombre , emp_EmpleadoID FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=" . (int)$departamento['dep_DepartamentoID'] . " ORDER BY emp_Nombre ASC LIMIT 5")->getResultArray();
-
+            
+                $departamentoID = (int)$departamento['dep_DepartamentoID'];
+                $noColaboradores = $db->query("SELECT COUNT(*) AS 'total' FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=$departamentoID")->getRowArray();
+                $puestos = $db->query("SELECT DISTINCT(emp_PuestoID) AS puestos FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=$departamentoID")->getResultArray();
+                $colaboradores = $db->query("SELECT emp_Nombre, emp_EmpleadoID FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=$departamentoID ORDER BY emp_Nombre ASC LIMIT 5")->getResultArray();
+                
                 if (revisarPermisos('Baja', $this)) {
-                    if ($departamento['dep_Estatus'] == 1) {
-                        $estatus .= '<a class="dropdown-item activarInactivar" href="#" data-id="' . encryptDecrypt('encrypt', $departamento['dep_DepartamentoID']) . '" data-estado="0" title="Da clic para cambiar a Inactivo">
-                                   Inactivo </a>';
-                        if (revisarPermisos('Editar', $this)) {
-                            $estatus .= '<a class="dropdown-item editar" id="departamentoID" data-id="' . encryptDecrypt('encrypt', $departamento['dep_DepartamentoID']) . '" href="#">Editar</a>';
-                        }
+                    $depStatus = (int)$departamento['dep_Estatus'];
+                    $encryptedID = encryptDecrypt('encrypt', $departamentoID);
+                    
+                    if ($depStatus == 1) {
+                        $estatus .= '<a role="button" class="activarInactivar" data-id="' . $encryptedID . '" data-estado="0" title="Da clic para cambiar a Inactivo"><i class="zmdi zmdi-check-circle"></i></a>';
+                                
                     } else {
-                        $estatus .= '<a class="dropdown-item activarInactivar" href="#" data-id="' . encryptDecrypt('encrypt', $departamento['dep_DepartamentoID']) . '" data-estado="1" title="Da clic para cambiar a Activo">
-                                    Activo</a>';
+                        $estatus .= '<a role"button" class="activarInactivar" data-id="' . $encryptedID . '" data-estado="1" title="Da clic para cambiar a Activo"><i class="zmdi zmdi-check-circle"></i></a>';
                         $style = 'style="background-color: #e6e6e6"';
                     }
                 }
-        ?>
-                <div class="col-xl-4 card-d">
-                    <div class="card-box project-box" <?= $style ?>>
-                        <div class="dropdown float-right">
-                            <a href="#" class="dropdown-toggle card-drop arrow-none" data-toggle="dropdown" aria-expanded="false">
-                                <h3 class="m-0 text-muted"><i class="mdi mdi-dots-horizontal"></i></h3>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                                <?= $estatus ?>
-
+                ?>
+                <div class="col-lg-4 col-md-6 col-sm-12 card-d">
+                    <div class="card project_widget " <?= $style ?>>
+                        <div class="header">
+                            <p><h2><strong class="find_Nombre"><?= strtoupper($departamento['dep_Nombre']) ?> </strong> </h2></p>
+                            <ul class="header-dropdown">
+                                <?php if (revisarPermisos('Editar', $this)) { ?>
+                                    <li class="edit">
+                                        <a role="button" class="editar" id="departamentoID" data-id="<?= $encryptedID?>" href="#" title="Da clic para editar"><i class="zmdi zmdi-edit"></i></a>
+                                    </li>
+                               <?php } ?>
+                               <li>
+                                <?=$estatus?>
+                               </li>
+                                
+                            </ul>
+                        </div>
+                        
+                        <div class="body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h5><?= $noColaboradores['total'] ?></h5>
+                                    <small>Colaboradores</small>
+                                </div>
+                                <div class="col-6">
+                                    <h5><?=count($puestos)?></h5>
+                                    <small>Puestos</small>
+                                </div>                        
                             </div>
-                        </div>
-                        <h6 class=" mb-2"><span class="text-dark find_Nombre"><?= $departamento['dep_Nombre'] ?></span></h6>
-                        <ul class="list-inline">
-                            <li class="list-inline-item">
-                                <h3 class="mb-0"><?= $noColaboradores['total'] ?></h3>
-                                <p class="text-muted">Colaboradores</p>
-                            </li>
-                            <li class="list-inline-item">
-                                <h3 class="mb-0"><?= count($puestos) ?></h3>
-                                <p class="text-muted">Puestos</p>
-                            </li>
-                        </ul>
-                        <div class="project-members mb-3">
-                            <?php if ($departamento['dep_JefeID'] == NULL) {
-                                echo '<label class="mr-3 ">Jefe :<span class="badge badge-danger " style="position: static"> Sin asignar</span> </label>';
-                            } else {
-                                echo '<label class="mr-3 ">Jefe : ' . nombreempleado($departamento['dep_JefeID']);
-                            } ?>
-                        </div>
-                        <div class="project-members mb-3">
-                            <label class="mr-3">Team :</label>
-                            <?php
-                            if (!empty($colaboradores)) {
-                                foreach ($colaboradores as $colaborador) { ?>
-
-                                    <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?= $colaborador['emp_Nombre'] ?>">
-                                        <img src="<?= fotoPerfil(encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID'])) ?>" class="rounded-circle avatar-sm" alt="friend" />
-                                    </a>
-                            <?php  }
-                            }
-                            ?>
-                            <?php if ($noColaboradores['total'] > 5) { ?>
-                                <a data-toggle="tooltip" data-placement="top" title="">
-                                    <img src="<?= base_url("assets/images/add.png") ?>" class="rounded-circle avatar-sm" alt="friend" />
-                                </a>
-                            <?php } ?>
-                        </div>
-                        <label>Colaboradores de la empresa: <span class="text-primary"><?= $noColaboradores['total'] ?>/<?= $totalColaboradores['total'] ?></span></label>
-                        <div class="progress mb-1" style="height: 7px;">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="<?= $noColaboradores['total'] ?>" aria-valuemin="0" aria-valuemax="<?= $totalColaboradores['total'] ?>" style="width: <?= $noColaboradores['total'] ?>%;">
+                            <ul class="list-unstyled team-info ">
+                                <?php if ($departamento['dep_JefeID'] == NULL) {
+                                    echo '<label">Jefe :  <span class="badge badge-danger"> Sin asignar</span> </label>';
+                                } else {
+                                    echo '<label">Jefe : ' . nombreEmpleadoById($departamento['dep_JefeID']);
+                                } ?>
+                            </ul>
+                            <ul class="list-unstyled team-info m-t-20">
+                                <li class="m-r-15"><small>Team</small></li>
+                                <?php
+                                if (!empty($colaboradores)) {
+                                    foreach ($colaboradores as $colaborador) { ?>
+                                        <li>
+                                            <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?= $colaborador['emp_Nombre'] ?>">
+                                                <img src="<?= fotoPerfil(encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID'])) ?>" class="rounded-circle avatar-sm" alt="friend" />
+                                            </a>
+                                        </li>
+                                <?php  }
+                                }
+                                ?>
+                            </ul>
+                            <div class="progress-container">
+                                <span class="progress-badge">Colaboradores</span>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="<?= ($noColaboradores['total'] / $totalColaboradores['total']) * 100 ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= ($noColaboradores['total'] / $totalColaboradores['total']) * 100 ?>%;">
+                                        <span class="progress-value"><?= round(($noColaboradores['total'] / $totalColaboradores['total']) * 100, 2) ?>%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div><!-- end col-->
-        <?php }
-        } ?>
+                <?php
+            }
+        }
+        ?>
+
     </div>
 </div>
 
@@ -131,7 +133,7 @@ $db = \Config\Database::connect();
                     </div>
                     <div class="form-group">
                         <label for="selectJefeID">* Jefe del departamento </label>
-                        <select id="selectJefeID" name="dep_JefeID" class=" form-control" data-placeholder="Asignar jefe de departamento" style="width: 100%" required>
+                        <select id="selectJefeID" name="dep_JefeID" class=" select2 form-control"  required>
                             <option hidden value=""></option>
                             <?php
                             if (!empty($empleados)) {
@@ -146,9 +148,11 @@ $db = \Config\Database::connect();
                 </div>
 
                 <div class="modal-footer">
-                    <input id="id" name="id" hidden>
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button id="guardar" type="submit" class="btn btn-primary waves-effect waves-light guardar">Guardar</button>
+                    <div class="col-md-12 text-right">
+                        <input id="id" name="id" hidden>
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button id="guardar" type="submit" class="btn btn-success btn-round guardar">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -176,17 +180,12 @@ $db = \Config\Database::connect();
             } //for
         });
 
-        $('#selectJefeID').select2({
-            minimumResultsForSearch: Infinity,
-            minimumResultsForSearch: '',
-            language: {
-                noResults: function() {
-                    return "No hay resultado";
-                },
-                searching: function() {
-                    return "Buscando..";
-                }
-            }
-        });
+
+       $(".select2").select2({
+            closeOnSelect: true,
+            dropdownParent: $("#addDepartamento"),
+            minimumResultsForSearch: 0,
+       });
+
     });
 </script>

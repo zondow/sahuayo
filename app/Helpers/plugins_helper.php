@@ -86,3 +86,13 @@ function load_moment_locales(&$data){
 function load_datetimepicker(&$data){
     $data['scripts'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js');
 }
+
+function load_custombox(&$data){
+    $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.css');
+    $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.js');
+}
+
+function load_footable(&$data){
+    $data['styles'][] = base_url("assets/libs/footable/footable.core.min.css");
+    $data['scripts'][] = base_url("assets/libs/footable/footable.all.min.js");
+}

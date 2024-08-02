@@ -2070,3 +2070,8 @@ function archivoAnuncio($anuncioID)
         return null;
     }
 }
+
+function nombreEmpleadoById($id)
+{
+    return db()->query("select emp_Nombre from empleado where emp_EmpleadoID =?",array($id))->getRowArray()['emp_Nombre'];
+}
