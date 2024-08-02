@@ -60,7 +60,6 @@ class UsuarioModel extends Model{
 
     //Lia-> Mi informacion
     function miInformacion(){
-        $id = (int)session("id");
         $sql = "select
                     E.emp_Nombre as 'nombre',
                     E.emp_Username as 'username',
@@ -75,14 +74,15 @@ class UsuarioModel extends Model{
                     E.emp_Telefono as 'telefono',
                     D.dep_Nombre as 'departamento',
                     PU.pue_Nombre as 'puesto',
-                    E.emp_Jefe as 'jefe',
+                    JEFE.emp_Nombre as 'jefe',
                     E.emp_FechaMatrimonio as 'fechaMatrimonio',
                     E.emp_EstadoCivil as 'estadoCivil'
                 from empleado E
                     left join departamento D on D.dep_DepartamentoID = E.emp_DepartamentoID
                     left join puesto PU on PU.pue_PuestoID = E.emp_PuestoID
+                    left join empleado JEFE on JEFE.emp_Numero = E.emp_Jefe
                 where E.emp_EmpleadoID = ?";
-        return $this->db->query($sql,array($id))->getRowArray();
+        return $this->db->query($sql,[(int)session("id")])->getRowArray();
     }//miInformacion
 
     //Lia-> Get colaboradores por departamento

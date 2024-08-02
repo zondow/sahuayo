@@ -549,9 +549,9 @@ class Configuracion extends BaseController
     {
         $post = $this->request->getPost();
         $fechas = explode('al', $post['txtFechas']);
-        $guardiaHorario=4;
-        if((int)encryptDecrypt('decrypt', $post['colaborador'])!==105){
-            $guardiaHorario=2;
+        $guardiaHorario = 4;
+        if ((int)encryptDecrypt('decrypt', $post['colaborador']) !== 105) {
+            $guardiaHorario = 2;
         }
         $data = array(
             "gua_EmpleadoID" => (int)encryptDecrypt('decrypt', $post['colaborador']),
@@ -1107,12 +1107,12 @@ class Configuracion extends BaseController
         foreach ($datos as $row) {
             $row = (array) $row;
             //Consulta el datos del empleado
-            $empleado = db()->query("SELECT emp_EmpleadoID FROM empleado WHERE emp_Numero=? AND emp_Estatus=1",[(int)$row['colaborador']])->getRowArray();
+            $empleado = db()->query("SELECT emp_EmpleadoID FROM empleado WHERE emp_Numero=? AND emp_Estatus=1", [(int)$row['colaborador']])->getRowArray();
 
             if (!empty($empleado['emp_EmpleadoID'])) {
-                if(get_nombre_dia($row['fecha sabado'])=='Domingo'){
+                if (get_nombre_dia($row['fecha sabado']) == 'Domingo') {
                     $fecha = $row['fecha sabado'];
-                    $row['fecha sabado'] =date('Y-m-d', strtotime("{$fecha} -1 day"));
+                    $row['fecha sabado'] = date('Y-m-d', strtotime("{$fecha} -1 day"));
                 }
 
                 //Consulta si ya se subio la asistencia de esas fechas
@@ -1121,12 +1121,14 @@ class Configuracion extends BaseController
 
                 if (count($asistencia) <= 0) {
                     //Guardar registro
-                    $row['fecha inicio'] =date('Y-m-d', strtotime($row['fecha sabado']." -5 day"));
-                    $row['fecha fin'] =$row['fecha sabado'];
-                    $horarioGuardia=2;
-                    if($empleado['emp_EmpleadoID']==105){$horarioGuardia=4;}
+                    $row['fecha inicio'] = date('Y-m-d', strtotime($row['fecha sabado'] . " -5 day"));
+                    $row['fecha fin'] = $row['fecha sabado'];
+                    $horarioGuardia = 2;
+                    if ($empleado['emp_EmpleadoID'] == 105) {
+                        $horarioGuardia = 4;
+                    }
                     $dataA = array(
-                        'gua_EmpleadoID' =>(int) $empleado['emp_EmpleadoID'],
+                        'gua_EmpleadoID' => (int) $empleado['emp_EmpleadoID'],
                         'gua_FechaInicio' => $row['fecha inicio'],
                         'gua_FechaFin' => $row['fecha fin'],
                         'gua_EmpleadoIDCreo' => session('id'),
@@ -1134,8 +1136,8 @@ class Configuracion extends BaseController
                     );
                     $builder = db()->table("guardia");
                     $builder->insert($dataA);
-                    $count =0;
-                }  else {
+                    $count = 0;
+                } else {
                     $count += 1;
                 }
             }
@@ -1192,12 +1194,13 @@ class Configuracion extends BaseController
         }
     }
 
-    public function actualizarSabado(){
+    public function actualizarSabado()
+    {
         $guardias = db()->query("SELECT * FROM guardia")->getResultArray();
-        foreach($guardias as $g){
+        foreach ($guardias as $g) {
             $fechafin = $g['gua_FechaFin'];
-            if(get_nombre_dia($fechafin)=='Domingo'){
-                $fechaFinUp =date('Y-m-d', strtotime("{$fechafin} -1 day"));
+            if (get_nombre_dia($fechafin) == 'Domingo') {
+                $fechaFinUp = date('Y-m-d', strtotime("{$fechafin} -1 day"));
             }
             $builder = db()->table('guardia');
             $builder->update(array('gua_FechaFin' => $fechaFinUp), array('gua_GuardiaID' => $g['gua_GuardiaID']));

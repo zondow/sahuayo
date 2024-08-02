@@ -37,7 +37,7 @@
                     <br>
                     <div class="col-md-12">
                         <label for="motivo"><b>* Tipo</b></label>
-                        <select class="select2 form-control" id="dia_MedioDia" name="dia_MedioDia">
+                        <select class="select2" id="dia_MedioDia" name="dia_MedioDia">
                             <option value="" hidden>Seleccione</option>
                             <option value="0">Día completo</option>
                             <option value="1">Mediodía</option>
@@ -46,9 +46,11 @@
                     <br>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect " data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="addDiaIn" class="btn btn-primary waves-effect waves-light">Guardar</button>
+                <div class="modal-footer row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-round btn-light waves-effect " data-dismiss="modal">Cancelar</button>
+                        <button type="button" id="addDiaIn" class="btn btn-round btn-success waves-effect waves-light">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -75,15 +77,16 @@
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light waves-effect " data-dismiss="modal">Cancelar</button>
-                <?php if (revisarPermisos('Eliminar', $this)) { ?>
-                    <div id="botonEliminar" name="botonEliminar">
-                        <button type="button" id="deleteDiaIn" name="deleteDiaIn" class="btn btn-primary waves-effect waves-light">Eliminar</button>
-                    </div>
-                <?php } ?>
-            </div>
+            <div class="modal-footer row">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-round btn-light waves-effect " data-dismiss="modal">Cancelar</button>
+                    <?php if (revisarPermisos('Eliminar', $this)) { ?>
+                        <div id="botonEliminar" name="botonEliminar">
+                            <button type="button" id="deleteDiaIn" name="deleteDiaIn" class="btn btn-round btn-success waves-effect waves-light">Eliminar</button>
+                        </div>
+                    <?php } ?>
+                </div>
 
+            </div>
         </div>
     </div>
-</div>

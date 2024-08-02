@@ -18,10 +18,10 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer ">
+            <div class="modal-footer row">
                 <div class="col-md-12 text-right">
-                    <button type="button" class="btn btn-light" data-dismiss="modal"> Cancelar</button>
-                    <button id="btnUpdate" type="button" class="btn btn-success"> Guardar</button>
+                    <button type="button" class="btn btn-round btn-light" data-dismiss="modal"> Cancelar</button>
+                    <button id="btnUpdate" type="button" class="btn btn-round btn-success"> Guardar</button>
                 </div>
             </div>
         </div>

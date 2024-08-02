@@ -222,7 +222,11 @@ function eliminarDia() {
         });
     });
 }
-$(".select2").select2();
+$(".select2").select2({
+    closeOnSelect: true,
+    dropdownParent: $('#modalDiaInhabil'),
+    minimumResultsForSearch: Infinity
+});
 $(".select2-multiple").select2({
     language: "es",
     selectOnClose: false,

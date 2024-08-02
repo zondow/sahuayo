@@ -2,9 +2,11 @@
 
 <div class="card">
     <div class="card-body">
-        <div class="col-md-12 text-left" style="padding-bottom: 2%">
+        <div class="col-md-12 text-right" style="padding-bottom: 2%">
             <?php if (revisarPermisos('Agregar', $this)) { ?>
-                <a type="button" style="color: #FFFFFF" class=" btnAddExpediente btn btn-success waves-effect waves-light"><i class="dripicons-plus"></i> Agregar</a>
+                <button class="btn btn-success btn-round btnAddExpediente">
+                    <i class="zmdi zmdi-plus"></i> Agregar
+                </button>
             <?php } ?>
         </div>
         <table class="table table-hover  m-0 table-centered tickets-list table-actions-bar dt-responsive " cellspacing="0" width="100%" id="datatable">
@@ -76,9 +78,11 @@
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button id="guardar" type="submit" class="btn btn-primary waves-effect waves-light guardar">Guardar</button>
+                <div class="modal-footer row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-round btn-light waves-effect" data-dismiss="modal">Cancelar</button>
+                        <button id="guardar" type="submit" class="btn btn-round btn-success waves-effect waves-light guardar">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>

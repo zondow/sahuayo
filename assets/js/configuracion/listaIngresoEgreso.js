@@ -7,12 +7,12 @@ $(document).ready(function (e) {
 
     var tblCheklist = $("#tblCheklist").DataTable({
         destroy: true,
-        lengthMenu: [[10, 25, 50,100,500, -1], [10, 25, 50,100,500, "Todos"]],
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "Todos"]],
         fixedHeader: true,
         //scrollY: "200px",
         scrollCollapse: true,
-        scrollX:        true,
-        paging:         true,
+        scrollX: true,
+        paging: true,
         ajax: {
             url: BASE_URL + "Configuracion/ajax_getChecklistIngresoEgreso",
             dataType: "json",
@@ -21,20 +21,20 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "id",render: function (data,type,row) {return accionesChecklist(data)}},
-            { "data": "id"},
-            { "data": "tipo",render:function (data,type,row) {return tipoChecklist(data,row)}},
-            { "data": "name"},
-            { "data": "responsable"},
-            { "data": "status",render: function (data,type,row) {return statusChecklist(data,row)}},
+            { "data": "id" },
+            { "data": "tipo", render: function (data, type, row) { return tipoChecklist(data, row) } },
+            { "data": "name" },
+            { "data": "responsable" },
+            { "data": "status", render: function (data, type, row) { return statusChecklist(data, row) } },
+            { "data": "id", render: function (data, type, row) { return accionesChecklist(data) } },
         ],
         columnDefs: [
-            {targets:3,className: 'text-center'},
+            { targets: 3, className: 'text-center' },
         ],
-        responsive:true,
-        stateSave:false,
+        responsive: true,
+        stateSave: false,
         //dom: 'Blfrtip',
-        dom:'<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
+        dom: '<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
         buttons: [
             {
                 extend: 'excelHtml5',
@@ -67,28 +67,28 @@ $(document).ready(function (e) {
         ],
         language: {
             paginate: {
-                previous:"<i class='zmdi zmdi-caret-left'>",
-                next:"<i class='zmdi zmdi-caret-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
             lengthMenu: "Registros por página _MENU_",
-            info:"Mostrando _START_ a _END_ de _TOTAL_ registros",
-            infoEmpty:"Mostrando 0 a 0 de 0 registros",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "Mostrando 0 a 0 de 0 registros",
             zeroRecords: "No hay datos para mostrar",
             loadingRecords: "Cargando...",
-            infoFiltered:"(filtrado de _MAX_ registros)",
+            infoFiltered: "(filtrado de _MAX_ registros)",
             "processing": "Procesando...",
             "oPaginate": {
-                "sFirst":    "Primero",
-                "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "<i class='mdi mdi-chevron-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
         },
-        "order": [[ 1, "asc" ]],
-        "processing":false
+        "order": [[1, "asc"]],
+        "processing": false
     });
 
     btnAddChecklist.click(function (e) {
@@ -103,24 +103,24 @@ $(document).ready(function (e) {
         checklist.requerido = $("#txtRequerido").val();
         checklist.tipo = $("#txtTipo").val();
 
-        if(checklist.nombre != ''){
-            if(checklist.resposable != ''){
-                if(checklist.requerido != ''){
-                    if(checklist.tipo != ''){
+        if (checklist.nombre != '') {
+            if (checklist.resposable != '') {
+                if (checklist.requerido != '') {
+                    if (checklist.tipo != '') {
                         ajax_guardarChecklist(checklist);
-                    }else
-                        showNotification("warning","¡Selecciona el tipo de checklist!");
-                }else
-                    showNotification("warning","¡Selecciona si es requerido o no!")
+                    } else
+                        showNotification("warning", "¡Selecciona el tipo de checklist!");
+                } else
+                    showNotification("warning", "¡Selecciona si es requerido o no!")
             }
             else
-                showNotification("warning","¡Selecciona el /los responsables!");
+                showNotification("warning", "¡Selecciona el /los responsables!");
         }
         else
-            showNotification("warning","¡Escribe nombre!");
+            showNotification("warning", "¡Escribe nombre!");
     });
 
-    $("body").on("click",".btnActivo",function (e) {
+    $("body").on("click", ".btnActivo", function (e) {
         var checklistID = $(this).data("checklist");
         Swal.fire({
             title: 'INACTIVAR',
@@ -130,12 +130,12 @@ $(document).ready(function (e) {
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
         }).then((result) => {
-            ajax_changeEstatusChecklist(checklistID,0);
+            ajax_changeEstatusChecklist(checklistID, 0);
 
         })//swal
     });
 
-    $("body").on("click",".btnInactivo",function (e) {
+    $("body").on("click", ".btnInactivo", function (e) {
         var checklistID = $(this).data("checklist");
         Swal.fire({
             title: 'ACTIVAR',
@@ -145,13 +145,13 @@ $(document).ready(function (e) {
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
         }).then((result) => {
-            if(result.value)
-                ajax_changeEstatusChecklist(checklistID,1);
+            if (result.value)
+                ajax_changeEstatusChecklist(checklistID, 1);
 
         })//swal
     });
 
-    $("body").on("click",".btnEditChecklist",function (e) {
+    $("body").on("click", ".btnEditChecklist", function (e) {
         var checklistID = $(this).data("checklist");
         ajax_GetChecklistByID(checklistID);
 
@@ -165,20 +165,20 @@ $(document).ready(function (e) {
         checklist.requerido = $("#txt_Requerido").val();
         checklist.tipo = $("#txt_Tipo").val();
 
-        if(checklist.nombre != ''){
-            if(checklist.responsable != ''){
-                if(checklist.requerido != ''){
-                    if(checklist.tipo != ''){
+        if (checklist.nombre != '') {
+            if (checklist.responsable != '') {
+                if (checklist.requerido != '') {
+                    if (checklist.tipo != '') {
                         ajax_updateChecklist(checklist);
-                    }else
-                        showNotification("warning","¡Selecciona el tipo de checklist!");
-                }else
-                    showNotification("warning","¡Selecciona si es requerido o no!");
-            }else
-                showNotification("warning","¡Selecciona el/ los responsables!");
+                    } else
+                        showNotification("warning", "¡Selecciona el tipo de checklist!");
+                } else
+                    showNotification("warning", "¡Selecciona si es requerido o no!");
+            } else
+                showNotification("warning", "¡Selecciona el/ los responsables!");
         }
         else
-            showNotification("warning","¡Escribe nombre!");
+            showNotification("warning", "¡Escribe nombre!");
     });
 
     /**FUNCTIONS*/
@@ -189,38 +189,40 @@ $(document).ready(function (e) {
         placeholder: " Seleccione",
 
     });
-    function statusChecklist(status,row){
+    $('.select2').select2({
+        closeOnSelect: true,
+        dropdownParent: $('#modalAddChecklist,#modalEditChecklist'),
+        minimumResultsForSearch: 0
+    });
+    function statusChecklist(status, row) {
 
         var id = row.id;
-        if(status == 1)
-            return '<button class="btn btn-outline-success btn-rounded ' +
-                'waves-light waves-effect pt-0 pb-0 btnActivo" data-checklist="'+id+'">Activo</button>';
-
-        return '<button class="btn btn-outline-danger btn-rounded ' +
-            'waves-light waves-effect pt-0 pb-0 btnInactivo" data-checklist="'+id+'">Inactivo</button>';
-
+        return status == 1 ?
+            '<span class="badge badge-info btnActivo" data-checklist="' + id + '" >Activo</span>' :
+            '<span class="badge badge-default btnInactivo" data-checklist="' + id + '">Inactivo</span>';
+    
     }//statusChecklist
 
-    function showNotification(tipo,msg){
+    function showNotification(tipo, msg) {
         $.toast({
-            text:msg,
+            text: msg,
             icon: tipo,
             loader: true,
             loaderBg: '#c6c372',
             position: 'top-right',
-            allowToastClose : true,
+            allowToastClose: true,
         });
     }//showNotification
 
-    function ajax_guardarChecklist(checklist){
+    function ajax_guardarChecklist(checklist) {
         $.ajax({
-            url: BASE_URL+'Configuracion/ajax_guardarCheklist',
+            url: BASE_URL + 'Configuracion/ajax_guardarCheklist',
             cache: false,
             type: 'post',
             dataType: 'json',
             data: checklist
-        }).done(function(data){
-            if (data.code === 1){
+        }).done(function (data) {
+            if (data.code === 1) {
                 tblCheklist.ajax.reload();
                 modalAddChecklist.modal("toggle");
                 clear();
@@ -230,24 +232,24 @@ $(document).ready(function (e) {
                     showConfirmButton: false,
                     timer: 2000
                 })
-            }else{
-                showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
+            } else {
+                showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
             }//if-else
-        }).fail(function(data){
-            showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
-        }).always(function(e){
+        }).fail(function (data) {
+            showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
+        }).always(function (e) {
         });//ajax
     }//ajax_guardarChecklist
 
-    function ajax_updateChecklist(checklist){
+    function ajax_updateChecklist(checklist) {
         $.ajax({
-            url: BASE_URL+'Configuracion/ajax_updateCheklist',
+            url: BASE_URL + 'Configuracion/ajax_updateCheklist',
             cache: false,
             type: 'post',
             dataType: 'json',
             data: checklist
-        }).done(function(data){
-            if (data.code === 1){
+        }).done(function (data) {
+            if (data.code === 1) {
                 tblCheklist.ajax.reload();
                 modalEditChecklist.modal("toggle");
                 clear();
@@ -257,37 +259,37 @@ $(document).ready(function (e) {
                     showConfirmButton: false,
                     timer: 2000
                 })
-            }else{
-                showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
+            } else {
+                showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
             }//if-else
-        }).fail(function(data){
-            showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
-        }).always(function(e){
+        }).fail(function (data) {
+            showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
+        }).always(function (e) {
         });//ajax
     }//ajax_updateChecklist
 
-    function clear(){
+    function clear() {
         $("#txtNombre").val("");
         $("#txtResponsable").val('').trigger("change");
         $("#txtRequerido").val('').trigger("change");
         $("#txtTipo").val(0).trigger("change");
     }//clear
 
-    function tipoChecklist(tipo){
-        if(tipo == 'Ingreso')
-            return '<span class="badge badge-info">INGRESO</span>';
-        return '<span class="badge badge-danger">EGRESO</span>';
-    }//tipoChecklist
+    function tipoChecklist(tipo) {
+        return tipo == 'Ingreso' 
+            ? '<span class="badge badge-info">INGRESO</span>' 
+            : '<span class="badge badge-danger">EGRESO</span>';
+    }    
 
-    function ajax_changeEstatusChecklist(id, st){
+    function ajax_changeEstatusChecklist(id, st) {
         $.ajax({
-            url: BASE_URL+'Configuracion/ajax_changeEstatusChecklist',
+            url: BASE_URL + 'Configuracion/ajax_changeEstatusChecklist',
             cache: false,
             type: 'post',
             dataType: 'json',
-            data: {id:id,status:st}
-        }).done(function(data){
-            if (data.code === 1){
+            data: { id: id, status: st }
+        }).done(function (data) {
+            if (data.code === 1) {
                 tblCheklist.ajax.reload();
                 Swal.fire({
                     type: 'success',
@@ -295,34 +297,35 @@ $(document).ready(function (e) {
                     showConfirmButton: false,
                     timer: 2000
                 })
-            }else{
-                showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
+            } else {
+                showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
             }//if-else
-        }).fail(function(data){
-            showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
-        }).always(function(e){
+        }).fail(function (data) {
+            showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
+        }).always(function (e) {
         });//ajax
     }//ajax_changeEstatusChecklist
 
-    function accionesChecklist(id){
+    function accionesChecklist(id) {
 
         var editButton = '';
-        if(revisarPermisos('Editar','configChecklistIngresoEgreso')) {
-            editButton = '<button type="button" data-checklist="' + id + '" class="btn btn-purple btnEditChecklist">' +
-                '<i class="fa fa-edit"></i></button>';
+        if (revisarPermisos('Editar', 'configChecklistIngresoEgreso')) {
+            editButton = '<button type="button" data-checklist="' + id + '" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down btnEditChecklist">' +
+                '<i class="zmdi zmdi-edit" title="Editar"></i></button>';
         }
+
         return editButton;
     }//accionesChecklist
 
-    function ajax_GetChecklistByID(id){
+    function ajax_GetChecklistByID(id) {
         $.ajax({
-            url: BASE_URL+'Configuracion/ajax_getCheklist',
+            url: BASE_URL + 'Configuracion/ajax_getCheklist',
             cache: false,
             type: 'post',
             dataType: 'json',
-            data: {id:id}
-        }).done(function(data){
-            if (data.code === 1){
+            data: { id: id }
+        }).done(function (data) {
+            if (data.code === 1) {
                 var checklist = data.checklist;
                 $("#txt_CatalogoID").val(checklist.cat_CatalogoID);
                 $("#txt_Nombre").val(checklist.cat_Nombre);
@@ -331,12 +334,12 @@ $(document).ready(function (e) {
                 $("#txt_Requerido").val(checklist.cat_Requerido).trigger("change");
                 $("#txt_Tipo").val(checklist.cat_Tipo).trigger("change");
                 modalEditChecklist.modal("show");
-            }else{
-                showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
+            } else {
+                showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
             }//if-else
-        }).fail(function(data){
-            showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
-        }).always(function(e){
+        }).fail(function (data) {
+            showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
+        }).always(function (e) {
         });//ajax
     }//ajax_GetChecklistByID
 });

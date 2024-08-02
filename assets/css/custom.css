@@ -50,3 +50,14 @@ textarea.form-control {
     background: linear-gradient(45deg, #0b4d81, #14bac8) !important;
     color: #fff !important;
 }
+
+.datepicker {
+    padding: 0px 6px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    border-radius: 6px !important;
+    transform: unset !important;
+    -webkit-transform: unset !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}

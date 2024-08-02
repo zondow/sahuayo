@@ -75,6 +75,7 @@ class BaseController extends Controller
     {
         $this->BaseModel = model('App\Models\BaseModel', false);
         $this->ConfiguracionModel = model('App\Models\ConfiguracionModel', false);
+		$this->UsuarioModel = model('App\Models\UsuarioModel', false);
     }
 
 }

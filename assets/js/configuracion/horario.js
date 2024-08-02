@@ -23,12 +23,10 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "hor_HorarioID",render: function(data){return accionesHorario(data)}},
             { "data": "hor_Nombre"},
             { "data": "hor_Tolerancia"},
-            { "data": "hor_Estatus",render: function (data,type,row) {return estatusHorario(data,row)}}
-            //{ "data": "emp_EmpleadoID", render: function(data,type,row){return accionesEliminar(data,type,row)} },
-            //{ "data": "dep_Estatus", render: function(data,type,row){return estatus(data,type,row)} },
+            { "data": "hor_Estatus",render: function (data,type,row) {return estatusHorario(data,row)}},
+            { "data": "hor_HorarioID",render: function(data){return accionesHorario(data)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -90,7 +88,7 @@ $(document).ready(function (e) {
             },
 
         },
-        "order": [[ 1, "asc" ]],
+        "order": [[ 0, "asc" ]],
         "processing":false
     });
 
@@ -149,17 +147,17 @@ $(document).ready(function (e) {
     /*******************FUNCTIONS***************/
     function estatusHorario(value,row){
         let id = row['hor_HorarioID'] ;
-        return value == 1 ?
-            '<a class="btn btn-outline-success btn-rounded waves-light waves-effect pt-0 pb-0 btnActivo" title="Click para cambiar estatus" href="'+BASE_URL+'Configuracion/cambioEstatusHorario/'+ id+'/0" >Activo</a>' :
-            '<a class="btn btn-outline-danger btn-rounded waves-light waves-effect pt-0 pb-0 "  title="Click para cambiar estatus" href="'+BASE_URL+'Configuracion/cambioEstatusHorario/'+ id+'/1" >Inactivo</a>';
+        return value == 1 ? '<a class="badge badge-info" title="Click para cambiar estatus" href="'+BASE_URL+'Configuracion/cambioEstatusHorario/'+ id+'/0"  >Activo</a>' :
+            '<a class="badge badge-default" title="Click para cambiar estatus" href="'+BASE_URL+'Configuracion/cambioEstatusHorario/'+ id+'/1" >Inactivo</a>';
+    
     }//estatusHorario
 
     function accionesHorario(horarioID){
         let output = '';
         if(revisarPermisos('Editar','horarios'))
-            output+= '<a type="button" style="color: #FFFFFF" data-horario="' + horarioID + '"' +
-            'class="btn waves-effect waves-light btn-warning btnVerHorario">' +
-            '<i class="far fa-clock "></i></a>';
+            output+= '<button type="button" style="color: #FFFFFF" data-horario="' + horarioID + '"' +
+            'class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down btnVerHorario">' +
+            '<i class="zmdi zmdi-key"></i></button>';
         return output;
     }//accionesHorario
 

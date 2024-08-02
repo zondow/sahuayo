@@ -53,8 +53,8 @@ class Catalogos extends BaseController
         validarSesion(self::LOGIN_TYPE);
         $data['title'] = 'Departamentos';
         $data['breadcrumb'] = array(
-            array("titulo" => 'Inicio', "link" => base_url('Usuario/index')),
-            array("titulo" => 'Catálogo de departamentos', "link" => base_url('Catalogos/departamentos')),
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'),'class'=>''),
+            array("titulo" => 'Catálogo de departamentos', "link" => base_url('Catalogos/departamentos'),'class'=>''),
         );
 
         $model = new CatalogosModel();

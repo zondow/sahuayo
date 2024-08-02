@@ -8,25 +8,33 @@
 </style>
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box">
-            <div class="row">
-                <div class="col-md-2 mb-2 ">
-                    <?php if (revisarPermisos('Agregar', $this)) { ?>
-                        <a href="#" id="addGuardia" class="btn btn-success waves-light waves-effect"><i class="dripicons-plus" style="top: 2px !important; position: relative"></i> Agregar</a>
-                    <?php } ?>
-                </div>
-                <div class="col-md-2 mb-2">
-                        <a href="#" id="addGuardia" class="btn btn-secondary waves-light waves-effect btnModalImportarGuardia"><i class="far fa-file-excel " style="top: 2px !important; position: relative"></i> Importar masivo</a>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="ml-auto d-flex align-items-center">
+                        <div class="mr-2">
+                            <?php if (revisarPermisos('Agregar', $this)) { ?>
+                                <button id="addGuardia" class="btn btn-success btn-round">
+                                    <i class="zmdi zmdi-plus"></i> Agregar
+                                </button>
+                            <?php } ?>
+                        </div>
+                        <div>
+                            <button class="btn btn-success btn-round btnModalImportarGuardia" style="background-color: #1c693f;">
+                                <i class="zmdi zmdi-import-export"></i> Importar masivo
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-12">
                     <div>
                         <table id="tblGuardia" class="table table-hover text-center m-0 table-centered tickets-list table-actions-bar dt-responsive " cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th width="5%">Acciones</th>
                                     <th>Colaborador</th>
                                     <th>Fecha Inicio</th>
                                     <th>Fecha Fin</th>
+                                    <th width="5%">Acciones</th>
                                 </tr>
                             </thead>
                         </table>
@@ -44,31 +52,52 @@
                 <h4 class="title">&nbsp;Nueva guardia</h4>
                 <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
-            <form id="frmGuardia" action="<?= site_url('Configuracion/addGuardia') ?>" method="post" autocomplete="off" role="form">
+            <form id="frmGuardia" action="<?= base_url('Configuracion/addGuardia') ?>" method="post" autocomplete="off" role="form">
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="nombre"> *Nombre</label>
-                            <select style="width: 100%;" id="colaborador" name="colaborador" class="form-control select2">
-                                <option hidden>Seleccione</option>
+                            <label for="nombre"> <span style="color:red">*</span>Nombre</label>
+                            <select id="colaborador" name="colaborador" class="select2 ">
+                                <option></option>
                                 <?php foreach ($empleados as $empleado) { ?>
                                     <option value="<?= encryptDecrypt('encrypt', $empleado['emp_EmpleadoID']) ?>"><?= $empleado['emp_Nombre'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="nombre"> *Semana</label>
-                            <input type="text" class="input-sm form-control datepicker" name="txtFechas" id="txtFechas" placeholder="Selecciona la semana" />
+                            <label for="nombre"> <span style="color:red">*</span>Semana</label>
+                            <input type="text" class="datepicker" name="txtFechas" id="txtFechas" placeholder="Selecciona la semana" />
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer ">
                     <div class="col-md-12 text-right">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"> Cancelar</button>
-                        <button type="submit" class="btn btn-success"> Guardar</button>
+                        <button type="button" class="btn btn-round btn-light" data-dismiss="modal"> Cancelar</button>
+                        <button type="submit" class="btn btn-round btn-success"> Guardar</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            closeOnSelect: true,
+            dropdownParent: $('#modalAddGuardia'),
+            minimumResultsForSearch: 0
+        });
+
+        $('#txtFechas').datepicker({
+            autoclose: true,
+            format: 'yyyy/mm/dd',
+            forceParse: false,
+            todayHighlight: !0,
+            daysOfWeekDisabled: [0],
+        }).on("changeDate", function(e) {
+            firstDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
+            lastDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(6).format("YYYY-MM-DD");
+            $("#txtFechas").val(firstDate + "   al   " + lastDate);
+        });
+    });
+</script>

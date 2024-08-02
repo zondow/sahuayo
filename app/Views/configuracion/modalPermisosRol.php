@@ -27,8 +27,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="col-md-12 text-right">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"><span class="iconsminds-close"></span> Cancelar</button>
-                        <button type="submit" class="btn btn-success"><span class="iconsminds-yes"></span> Guardar</button>
+                        <button type="button" class="btn btn-round btn-light" data-dismiss="modal"> Cancelar</button>
+                        <button type="submit" class="btn btn-round btn-success">Guardar</button>
                     </div>
                 </div>
             </form>

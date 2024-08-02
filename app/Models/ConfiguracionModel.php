@@ -50,38 +50,44 @@ class ConfiguracionModel extends Model
     } //getConfiguracionPermisosById
 
     //HUGO->Get schedule
-    public function getScheduleByID($scheduleID){
-        return $this->db->query('select * from horario where hor_HorarioID = ?',array((int)$scheduleID))->getRowArray();
-    }//getScheduleByID
+    public function getScheduleByID($scheduleID)
+    {
+        return $this->db->query('select * from horario where hor_HorarioID = ?', array((int)$scheduleID))->getRowArray();
+    } //getScheduleByID
 
     //Diego-> get checklist ingreso y egreso
-    public function getChecklistIngresoEgreso(){
+    public function getChecklistIngresoEgreso()
+    {
         $sql = "select CC.cat_CatalogoID as 'id', CC.cat_Nombre as 'name', CC.cat_Estatus as 'status', CC.cat_Tipo as 'tipo', CC.cat_ResponsableID as 'responsable' from catalogochecklist CC";
         return $this->db->query($sql)->getResultArray();
-    }//getChecklistIngresoEgreso
+    } //getChecklistIngresoEgreso
 
     //Diego->get checlist by id
-    public function getChecklistByID($id){
+    public function getChecklistByID($id)
+    {
         $sql = 'select * from catalogochecklist where cat_CatalogoID = ?';
-        return $this->db->query($sql,array($id))->getRowArray();
-    }//getChecklistByID
+        return $this->db->query($sql, array($id))->getRowArray();
+    } //getChecklistByID
 
     //Lia->Trae la configuracion de las vacaciones, aguinaldo, porcentaje de prima actual
-    public function getConfiguracionPrestacionesActuales(){
-        $builder=db()->table("vacacionconfig");
-        $response = $builder->getWhere(array("vco_Tipo"=>'Actual'));
+    public function getConfiguracionPrestacionesActuales()
+    {
+        $builder = db()->table("vacacionconfig");
+        $response = $builder->getWhere(array("vco_Tipo" => 'Actual'));
         return ($response) ? $response->getRowArray() : null;
-    }//end getConfiguracionPrestacionesActuales
+    } //end getConfiguracionPrestacionesActuales
 
     //Lia->Trae las prestaciones de puntualidad
-    public function getPrestacionAdicional(){
+    public function getPrestacionAdicional()
+    {
         $response = $this->db->query("SELECT * FROM prestacion");
         return ($response) ? $response->getRowArray() : null;
-    }//end getPrestacionAdicional
+    } //end getPrestacionAdicional
 
     //Diego - traer los expedientes
-    public function getExpedientes (){
+    public function getExpedientes()
+    {
         return $this->db->query("SELECT * FROM expediente order by exp_Categoria,exp_Numero ASC")->getResultArray();
-    }//end getExpedientes
+    } //end getExpedientes
 
 }

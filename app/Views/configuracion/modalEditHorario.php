@@ -10,12 +10,12 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="nombre"> *Nombre</label>
+                            <label for="nombre"><span style="color:red">*</span>Nombre</label>
                             <input id="txtNombreEdit" name="txtNombreEdit" class="form-control">
                             <input id="txtHorarioID" name="txtHorarioID" class="form-control" hidden>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="nombre"> *Tolerancia</label>
+                            <label for="nombre"><span style="color:red">*</span>Tolerancia</label>
                             <input id="txtToleranciaEdit" name="txtToleranciaEdit" class="form-control numeric">
                         </div>
                     </div>
@@ -141,8 +141,8 @@
                 </div>
                 <div class="modal-footer row">
                     <div class="col-md-12 text-right">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"> Cancelar</button>
-                        <button id="btnActualizarHorario" type="button" class="btn btn-success"> Guardar</button>
+                        <button type="button" class="btn btn-round btn-light" data-dismiss="modal"> Cancelar</button>
+                        <button id="btnActualizarHorario" type="button" class="btn btn-round btn-success"> Guardar</button>
                     </div>
                 </div>
             </form>

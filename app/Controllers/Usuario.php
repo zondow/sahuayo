@@ -21,11 +21,6 @@ class Usuario extends BaseController
          \/   |_____|_____/   |_/_/    \_\_____/
     */
 
-    public function pruebaRetardo(){
-        $model = new UsuarioModel();
-        echo $model->getRetardosColaboradorPrueba();
-    }
-
     public function index()
     {
         //Validar sessión
@@ -35,13 +30,12 @@ class Usuario extends BaseController
         $data['breadcrumb'] = array(
             array('titulo' => 'Inicio', 'link' => base_url('Usuario/index'), 'class' => 'active'),
         );
-        $model = new UsuarioModel();
-        $data['colaboradores'] = $model->getColaboradoresJefe();
-        $data['retardos'] = $model->getRetardosColaborador();
-        $data['misSanciones'] = $model->getMisSanciones();
-        $data['welcome'] = $model->getWelcome();
-        $data['galeria']=$model->getUltimaGaleria();
-        $data['anuncio']= $model->getAnuncioActivo();
+        $data['colaboradores'] = $this->UsuarioModel->getColaboradoresJefe();
+        $data['retardos'] = $this->UsuarioModel->getRetardosColaborador();
+        $data['misSanciones'] = $this->UsuarioModel->getMisSanciones();
+        $data['welcome'] = $this->UsuarioModel->getWelcome();
+        $data['galeria'] = $this->UsuarioModel->getUltimaGaleria();
+        $data['anuncio'] = $this->UsuarioModel->getAnuncioActivo();
 
         $data['styles'][] = base_url('assets/plugins/fullcalendar/fullcalendar.min.css');
         $data['styles'][] = base_url('assets/plugins/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
@@ -75,40 +69,40 @@ class Usuario extends BaseController
 
         $data['title'] = "Mi perfil";
 
-        $model = new UsuarioModel();
-        $data['informacion'] = $model->miInformacion();
-        $data['colaboradores'] = $model->getColaboradores();
-
-        //Get perfil de puesto
-        $perfilPuesto = $model->getPerfilPuesto();
-        $data['incidencias'] = $model->getIncidenciasByEmpleado(session("id"));
+        $data['informacion'] = $this->UsuarioModel->miInformacion();
+        $data['colaboradores'] = $this->UsuarioModel->getColaboradores();
+        $perfilPuesto = $this->UsuarioModel->getPerfilPuesto();
+        $data['incidencias'] = $this->UsuarioModel->getIncidenciasByEmpleado(session("id"));
 
         if ($perfilPuesto != null) {
             $puestos = json_decode($perfilPuesto['puestosReporta']);
-            $count = count($puestos) - 1;
             $comite = '';
-            for ($i = 0; $i <= $count; $i++) {
-                if ($puestos[$i] == 999) {
-                    unset($puestos[$i]);
+
+            foreach ($puestos as $key => $puesto) {
+                if ($puesto == 999) {
+                    unset($puestos[$key]);
                     $comite = 'COMITE';
                 }
             }
-            $perfilPuesto['puestosReporta'] = $perfilPuesto['puestosReporta'] != "null" ? $model->getPuestosCoordinaReporta(implode(",", json_decode($perfilPuesto['puestosReporta']))) : array();
-            if ($perfilPuesto['puestosReporta']) {
-                $count = count($perfilPuesto['puestosReporta']);
-            } else {
-                $count = 0;
-            }
+
+            $perfilPuesto['puestosReporta'] = $perfilPuesto['puestosReporta'] != "null"
+                ? $this->UsuarioModel->getPuestosCoordinaReporta(implode(",", $puestos))
+                : [];
+
             if (!empty($comite)) {
-                $perfilPuesto['puestosReporta'][$count]["puesto"] = $comite;
+                $perfilPuesto['puestosReporta'][]["puesto"] = $comite;
             }
-            $perfilPuesto['puestosCoordina'] = $perfilPuesto['puestosCoordina'] != "null" ? $model->getPuestosCoordinaReporta(implode(",", json_decode($perfilPuesto['puestosCoordina']))) : array();
+
+            $perfilPuesto['puestosCoordina'] = $perfilPuesto['puestosCoordina'] != "null"
+                ? $this->UsuarioModel->getPuestosCoordinaReporta(implode(",", json_decode($perfilPuesto['puestosCoordina'])))
+                : [];
         }
+
 
         $data['perfilPuesto'] = $perfilPuesto;
 
         //Get competencias puesto
-        $data['competenciasPuesto'] = $model->getCompetenciasPuesto((int)session("puesto"));
+        $data['competenciasPuesto'] = $this->UsuarioModel->getCompetenciasPuesto((int)session("puesto"));
 
 
         $data['breadcrumb'] = array(
@@ -116,11 +110,7 @@ class Usuario extends BaseController
             array("titulo" => 'Mi perfil', "link" => base_url('Usuario/miPerfil'), "class" => "active"),
         );
 
-        $data['styles'][] = base_url("assets/plugins/jstree/css/style.min.css");
-        $data['scripts'][] = base_url("assets/plugins/jstree/jstree.min.js");
-
-        $data['styles'][] = base_url("assets/libs/tooltipster/tooltipster.bundle.min.css");
-        $data['scripts'][] = base_url("assets/libs/tooltipster/tooltipster.bundle.min.js");
+        load_plugins(['jstree', 'tooltipster'], $data);
 
         $data['scripts'][] = base_url("assets/js/miPerfil.js");
 
@@ -159,7 +149,8 @@ class Usuario extends BaseController
         echo view('htdocs/footer');
     }
 
-    public function anuncio(){
+    public function anuncio()
+    {
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
 
@@ -252,82 +243,93 @@ class Usuario extends BaseController
         }
     }
 
-    public function addAnuncio(){
-        $code=0;
-        $id=null;
-        $msg='';
+    public function addAnuncio()
+    {
+        $code = 0;
+        $id = null;
+        $msg = '';
         $post = $this->request->getPost();
-        $nombreRepetido = $this->db->query("SELECT * FROM anuncio WHERE anu_Titulo=?",[$post['anu_Titulo']])->getResultArray();
-        if($nombreRepetido==null){
-            if($post['anu_Estatus']=='Si'){
-                $post['anu_Estatus']=1;
+        $nombreRepetido = $this->db->query("SELECT * FROM anuncio WHERE anu_Titulo=?", [$post['anu_Titulo']])->getResultArray();
+        if ($nombreRepetido == null) {
+            if ($post['anu_Estatus'] == 'Si') {
+                $post['anu_Estatus'] = 1;
                 $this->db->query("UPDATE anuncio SET anu_Estatus=0 WHERE anu_Estatus=1");
-                $msg=' y se ha publicado';
-            }else{
-                $post['anu_Estatus']=0;
+                $msg = ' y se ha publicado';
+            } else {
+                $post['anu_Estatus'] = 0;
             }
             $data = array(
-                'anu_Titulo'=>$post['anu_Titulo'],
-                'anu_FechaRegistro'=>date('Y-m-d'),
-                'anu_Estatus'=> $post['anu_Estatus']
+                'anu_Titulo' => $post['anu_Titulo'],
+                'anu_FechaRegistro' => date('Y-m-d'),
+                'anu_Estatus' => $post['anu_Estatus']
             );
             $builder = db()->table('anuncio');
             $builder->insert($data);
             $id = $this->db->insertID();
-            if($id){
-                $directorio = dirname(WRITEPATH)."/assets/uploads/anuncios/".encryptDecrypt('encrypt',$id).'/';
-                if (!file_exists($directorio)){ mkdir($directorio, 0777, true);}
+            if ($id) {
+                $directorio = dirname(WRITEPATH) . "/assets/uploads/anuncios/" . encryptDecrypt('encrypt', $id) . '/';
+                if (!file_exists($directorio)) {
+                    mkdir($directorio, 0777, true);
+                }
                 $tmpFilePath = $_FILES['files']['tmp_name'];
-                if ($tmpFilePath != ""){
-                    $newFilePath = $directorio. $_FILES['files']['name'];
+                if ($tmpFilePath != "") {
+                    $newFilePath = $directorio . $_FILES['files']['name'];
                     move_uploaded_file($tmpFilePath, $newFilePath);
                 }
-                $code =1;
+                $code = 1;
             }
-        }else{
-            $code=2;
+        } else {
+            $code = 2;
         }
 
-        switch($code){
-            case 1:$this->session->setFlashdata(array('response'=>'success','txttoastr'=>'Se ha guardado el anuncio '.$msg)); break;
-            case 2:$this->session->setFlashdata(array('response'=>'error','txttoastr'=>'Existe otro anuncio con el mismo nombre')); break;
-            case 0:$this->session->setFlashdata(array('response'=>'error','txttoastr'=>'¡Ocurrio un error intente mas tarde!')); break;
+        switch ($code) {
+            case 1:
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha guardado el anuncio ' . $msg));
+                break;
+            case 2:
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'Existe otro anuncio con el mismo nombre'));
+                break;
+            case 0:
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
+                break;
         }
         return redirect()->to($_SERVER['HTTP_REFERER']);
     }
 
-    public function estatusAnuncio($estatus,$id){
-        $anuncioActivo = $this->db->query("SELECT * FROM anuncio WHERE anu_Estatus=1 AND anu_AnuncioID!=?",array(encryptDecrypt('decrypt',$id)))->getRowArray();
-        if($anuncioActivo){
-            $this->session->setFlashdata(array('response'=>'error','txttoastr'=>'Existe otro anuncio habilitado, deshabilitalo para poder continuar'));
-        }else{
+    public function estatusAnuncio($estatus, $id)
+    {
+        $anuncioActivo = $this->db->query("SELECT * FROM anuncio WHERE anu_Estatus=1 AND anu_AnuncioID!=?", array(encryptDecrypt('decrypt', $id)))->getRowArray();
+        if ($anuncioActivo) {
+            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'Existe otro anuncio habilitado, deshabilitalo para poder continuar'));
+        } else {
             $builder = db()->table('anuncio');
-            $result =$builder->update(array('anu_Estatus'=>$estatus),array('anu_AnuncioID'=>encryptDecrypt('decrypt',$id)));
-            if($result){
-                $this->session->setFlashdata(array('response'=>'success','txttoastr'=>'Se ha actualizado el anuncio'));
-            }else{
-                $this->session->setFlashdata(array('response'=>'error','txttoastr'=>'No se ha podido actualizar el anuncio'));
+            $result = $builder->update(array('anu_Estatus' => $estatus), array('anu_AnuncioID' => encryptDecrypt('decrypt', $id)));
+            if ($result) {
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha actualizado el anuncio'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'No se ha podido actualizar el anuncio'));
             }
         }
         return redirect()->to($_SERVER['HTTP_REFERER']);
     }
 
-    public function borrarAnuncio($id){
+    public function borrarAnuncio($id)
+    {
         $url = FCPATH . "/assets/uploads/anuncios/" . $id . "/";
         if (!file_exists($url)) mkdir($url, 0777, true);
         $files = preg_grep('/^([^.])/', scandir($url));
         $builder = db()->table('anuncio');
-        if($files){
+        if ($files) {
             sort($files);
-            if(unlink($url.$files[0])){
-                $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt',$id)));
-                $this->session->setFlashdata(array('response'=>'success','txttoastr'=>'Se ha eliminado el anuncio'));
-            }else{
-                $this->session->setFlashdata(array('response'=>'error','txttoastr'=>'No se ha podido eliminar el anuncio'));
+            if (unlink($url . $files[0])) {
+                $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt', $id)));
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha eliminado el anuncio'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'No se ha podido eliminar el anuncio'));
             }
-        }else{
-            $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt',$id)));
-            $this->session->setFlashdata(array('response'=>'success','txttoastr'=>'Se ha eliminado el anuncio'));
+        } else {
+            $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt', $id)));
+            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha eliminado el anuncio'));
         }
         return redirect()->to($_SERVER['HTTP_REFERER']);
     }
@@ -555,7 +557,7 @@ class Usuario extends BaseController
                         "end" => $fin,
                         'tipo' => "capacitacion",
                         'className' => "bg-dark",
-                        'img' => $convocatoria[0] ?? null ,
+                        'img' => $convocatoria[0] ?? null,
                         'texto' => $texto
                     );
                 }
@@ -658,14 +660,11 @@ class Usuario extends BaseController
     //Lia->Actualizar password
     public function ajax_actualizarPassword()
     {
+        $data['code'] = 0;
         $empleadoID = (int)session("id");
-        $pw = post("pw");
-        $password = encryptKey($pw);
-        $builder = $this->db->table('empleado');
-        $builder->update(array("emp_Password" => $password), array("emp_EmpleadoID" => $empleadoID));
-        $response = $this->db->affectedRows();
-        if ($response)
-            $data['code'] = 1;
+        $password = encryptKey(post("pw"));
+        $response = update('empleado', ['emp_Password' => $password], ['emp_EmpleadoID' => $empleadoID]);
+        if ($response) $data['code'] = 1;
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     } //ajax_actualizarPassword
 
@@ -1016,69 +1015,317 @@ class Usuario extends BaseController
 
             foreach ($notificaciones as $not) {
                 switch ($not['not_Titulo']) {
-                    case 'Convocatoria de capacitación'; $link = $not['not_URL']; $icono = 'fas fa-graduation-cap'; $color = 'notify-icon bg-warning'; break;
-                    case 'Nueva solicitud de personal'; $link = $not['not_URL']; $icono = 'mdi mdi-account-search'; $color = 'notify-icon bg-info'; break;
-                    case 'Nueva solicitud de personal por revisar'; $link = $not['not_URL']; $icono = 'mdi mdi-account-search'; $color = 'notify-icon bg-info'; break;
-                    case 'Solicitud de personal autorizada'; $link = $not['not_URL']; $icono = 'mdi mdi-account-search'; $color = 'notify-icon bg-success'; break;
-                    case 'Solicitud de personal rechazada'; $link = $not['not_URL']; $icono = 'mdi mdi-account-search'; $color = 'notify-icon bg-danger'; break;
-                    case 'Se ha contratado el candidato seleccionado'; $link = $not['not_URL']; $icono = 'fas fa-user-check '; $color = 'notify-icon bg-success'; break;
-                    case 'Selecciona candidatos Finalistas';$link='Reclutamiento/requisicionPersonal';$icono = 'mdi mdi-clipboard-account-outline';$color = 'notify-icon bg-warning';break;
-                    case 'Candidato registrado';$link=$not['not_URL'];$icono = 'fas fa-user-plus ';$color = 'notify-icon bg-info';break;
-                    case 'El solicitante ha elegido candidatos';$link=$not['not_URL'];$icono = 'mdi mdi-clipboard-account-outline';$color = 'notify-icon bg-warning';break;
-                    case 'Candidato seleccionado'; $link = $not['not_URL']; $icono = 'mdi mdi-clipboard-account-outline'; $color = 'notify-icon bg-success'; break;
-                    case 'Actualización de normativas'; $link = $not['not_URL']; $icono = 'fas fa-gavel'; $color = 'notify-icon bg-dark'; break;
-                    case 'Nuevo comunicado'; $link = 'Comunicados/misComunicados'; $icono = 'mdi mdi-comment'; $color = 'notify-icon bg-primary'; break;
-                    case 'Nuevo informe de salidas'; $link = 'Incidencias/informeSalidasMisEmpleados'; $icono = 'fe-log-out'; $color = 'notify-icon bg-purple'; break;
-                    case 'Informe de salidas AUTORIZADO'; $link = 'Incidencias/reporteSalidas'; $icono = 'fe-log-out'; $color = 'notify-icon bg-purple'; break;
-                    case 'Informe de salidas APLICADO'; $link = 'Incidencias/reporteSalidas'; $icono = 'fe-log-out'; $color = 'notify-icon bg-purple'; break;
-                    case 'Informe de salidas RECHAZADO';$link = 'Incidencias/reporteSalidas';$icono = 'fe-log-out';$color = 'notify-icon bg-purple';break;
-                    case 'Nueva solicitud de vacaciones';$link = $not['not_URL'];$icono = 'mdi mdi mdi-weather-sunny';$color = 'notify-icon bg-warning';break;
-                    case 'Solicitud de vacaciones AUTORIZADO';$link = 'Incidencias/misVacaciones';$icono = 'mdi mdi mdi-weather-sunny';$color = 'notify-icon bg-warning';break;
-                    case 'Solicitud de vacaciones APLICADO';$link = 'Incidencias/misVacaciones';$icono = 'mdi mdi mdi-weather-sunny';$color = 'notify-icon bg-warning';break;
-                    case 'Solicitud de vacaciones RECHAZADO';$link = 'Incidencias/misVacaciones';$icono = 'mdi mdi mdi-weather-sunny';$color = 'notify-icon bg-warning';break;
-                    case 'Solicitud de vacaciones por aplicar';$link = $not['not_URL'];$icono = 'mdi mdi mdi-weather-sunny';$color = 'notify-icon bg-warning';break;
-                    case 'Nueva solicitud de permiso';$link = $not['not_URL'];$icono = 'mdi mdi-comment-account-outline';$color = 'notify-icon bg-success';break;
-                    case 'Solicitud de permiso AUTORIZADO';$link = 'Incidencias/misPermisos';$icono = 'mdi mdi-comment-account-outline';$color = 'notify-icon bg-info';break;
-                    case 'Solicitud de permiso APLICADO';$link = 'Incidencias/misPermisos';$icono = 'mdi mdi-comment-account-outline';$color = 'notify-icon bg-success';break;
-                    case 'Solicitud de permiso RECHAZADO';$link = 'Incidencias/misPermisos';$icono = 'mdi mdi-comment-account-outline';$color = 'notify-icon bg-danger';break;
-                    case 'Solicitud de permiso por APLICAR';$link = $not['not_URL'];$icono = 'mdi mdi-comment-account-outline';$color = 'notify-icon bg-success';break;
-                    case 'Nueva solicitud de horas extra';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra PRE-AUTORIZADO';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra por autorizar';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra AUTORIZADO';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra RECHAZADO';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra RECHAZADO_RH';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra por aplicar';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de horas extra APLICADO';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Horas extra pagadas';$link = $not['not_URL'];$icono = 'fas fa-business-time  ';$color = 'notify-icon bg-primary';break;
-                    case 'Nuevo periodo de evaluación';$link = $not['not_URL'];$icono = 'mdi mdi-format-list-checks';$color = 'notify-icon bg-dark';break;
-                    case 'Nueva solicitud de prestamo de fondo de ahorro.';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Solicitud adelanto fondo de ahorro';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Solicitud de adelanto AUTORIZADO';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Solicitud de adelanto RECHAZADO';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Prestamo de fondo de ahorro APLICADO';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Solicitud adelanto fondo de ahorro';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Solicitud de prestamo de fondo de ahorro APLICADO';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Solicitud de prestamo de fondo de ahorro RECHAZADO';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-purple';break;
-                    case 'Dia extraordinario solicitado';$link = $not['not_URL'];$icono = 'dripicons-clock';$color = 'notify-icon bg-warning';break;
-                    case 'Solicitud de prestamo autorizado';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de prestamo rechazado';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de prestamo aplicado';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar ';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de prestamo no aplicado';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar ';$color = 'notify-icon bg-primary';break;
-                    case 'Nueva solicitud de prestamo';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de prestamo por autorizar';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar';$color = 'notify-icon bg-primary';break;
-                    case 'Solicitud de prestamo revisado';$link = $not['not_URL'];$icono = 'fas fa-comment-dollar ';$color = 'notify-icon bg-primary';break;
-                    case 'Incapacidad registrada';$link = $not['not_URL'];$icono = 'dri dripicons-medical';$color = 'notify-icon bg-warning';break;
-                    case 'Una incapacidad ha sido registrada';$link = $not['not_URL'];$icono = 'dri dripicons-medical';$color = 'notify-icon bg-info';break;
-                    case 'Resolucion de Incapacidad';$link = $not['not_URL'];$icono = 'dri dripicons-medical';$color = 'notify-icon bg-warning';break;
-                    case 'Se le ha generado una sancion';$link = $not['not_URL'];$icono = 'dri dripicons-warning';$color = 'notify-icon bg-warning';break;
-                    case 'Nuevo recibo de nomina';$link = $not['not_URL'];$icono = 'fas fa-money-check-alt';$color = 'notify-icon bg-info';break;
-                    case 'Nueva solicitud de horas';$link = $not['not_URL'];$icono = 'fas fa-business-time';$color = 'notify-icon bg-info';break;
-                    case 'Solicitud de vacaciones-horas Aplicada';$link = $not['not_URL'];$icono = 'fas fa-business-time';$color = 'notify-icon bg-success';break;
-                    case 'Solicitud de vacaciones-horas Rechazada';$link = $not['not_URL'];$icono = 'fas fa-business-time';$color = 'notify-icon bg-danger';break;
-                    case 'Reporte de salidas por aplicar';$link=$not['not_URL'];$icono = 'fe-log-out';$color = 'notify-icon bg-purple';break;
+                    case 'Convocatoria de capacitación';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-graduation-cap';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Nueva solicitud de personal';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-account-search';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'Nueva solicitud de personal por revisar';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-account-search';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'Solicitud de personal autorizada';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-account-search';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Solicitud de personal rechazada';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-account-search';
+                        $color = 'notify-icon bg-danger';
+                        break;
+                    case 'Se ha contratado el candidato seleccionado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-user-check ';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Selecciona candidatos Finalistas';
+                        $link = 'Reclutamiento/requisicionPersonal';
+                        $icono = 'mdi mdi-clipboard-account-outline';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Candidato registrado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-user-plus ';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'El solicitante ha elegido candidatos';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-clipboard-account-outline';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Candidato seleccionado';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-clipboard-account-outline';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Actualización de normativas';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-gavel';
+                        $color = 'notify-icon bg-dark';
+                        break;
+                    case 'Nuevo comunicado';
+                        $link = 'Comunicados/misComunicados';
+                        $icono = 'mdi mdi-comment';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Nuevo informe de salidas';
+                        $link = 'Incidencias/informeSalidasMisEmpleados';
+                        $icono = 'fe-log-out';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Informe de salidas AUTORIZADO';
+                        $link = 'Incidencias/reporteSalidas';
+                        $icono = 'fe-log-out';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Informe de salidas APLICADO';
+                        $link = 'Incidencias/reporteSalidas';
+                        $icono = 'fe-log-out';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Informe de salidas RECHAZADO';
+                        $link = 'Incidencias/reporteSalidas';
+                        $icono = 'fe-log-out';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Nueva solicitud de vacaciones';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi mdi-weather-sunny';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Solicitud de vacaciones AUTORIZADO';
+                        $link = 'Incidencias/misVacaciones';
+                        $icono = 'mdi mdi mdi-weather-sunny';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Solicitud de vacaciones APLICADO';
+                        $link = 'Incidencias/misVacaciones';
+                        $icono = 'mdi mdi mdi-weather-sunny';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Solicitud de vacaciones RECHAZADO';
+                        $link = 'Incidencias/misVacaciones';
+                        $icono = 'mdi mdi mdi-weather-sunny';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Solicitud de vacaciones por aplicar';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi mdi-weather-sunny';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Nueva solicitud de permiso';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-comment-account-outline';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Solicitud de permiso AUTORIZADO';
+                        $link = 'Incidencias/misPermisos';
+                        $icono = 'mdi mdi-comment-account-outline';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'Solicitud de permiso APLICADO';
+                        $link = 'Incidencias/misPermisos';
+                        $icono = 'mdi mdi-comment-account-outline';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Solicitud de permiso RECHAZADO';
+                        $link = 'Incidencias/misPermisos';
+                        $icono = 'mdi mdi-comment-account-outline';
+                        $color = 'notify-icon bg-danger';
+                        break;
+                    case 'Solicitud de permiso por APLICAR';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-comment-account-outline';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Nueva solicitud de horas extra';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra PRE-AUTORIZADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra por autorizar';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra AUTORIZADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra RECHAZADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra RECHAZADO_RH';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra por aplicar';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de horas extra APLICADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Horas extra pagadas';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time  ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Nuevo periodo de evaluación';
+                        $link = $not['not_URL'];
+                        $icono = 'mdi mdi-format-list-checks';
+                        $color = 'notify-icon bg-dark';
+                        break;
+                    case 'Nueva solicitud de prestamo de fondo de ahorro.';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Solicitud adelanto fondo de ahorro';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Solicitud de adelanto AUTORIZADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Solicitud de adelanto RECHAZADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Prestamo de fondo de ahorro APLICADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Solicitud adelanto fondo de ahorro';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Solicitud de prestamo de fondo de ahorro APLICADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Solicitud de prestamo de fondo de ahorro RECHAZADO';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-purple';
+                        break;
+                    case 'Dia extraordinario solicitado';
+                        $link = $not['not_URL'];
+                        $icono = 'dripicons-clock';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Solicitud de prestamo autorizado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de prestamo rechazado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de prestamo aplicado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de prestamo no aplicado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Nueva solicitud de prestamo';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de prestamo por autorizar';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Solicitud de prestamo revisado';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-comment-dollar ';
+                        $color = 'notify-icon bg-primary';
+                        break;
+                    case 'Incapacidad registrada';
+                        $link = $not['not_URL'];
+                        $icono = 'dri dripicons-medical';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Una incapacidad ha sido registrada';
+                        $link = $not['not_URL'];
+                        $icono = 'dri dripicons-medical';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'Resolucion de Incapacidad';
+                        $link = $not['not_URL'];
+                        $icono = 'dri dripicons-medical';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Se le ha generado una sancion';
+                        $link = $not['not_URL'];
+                        $icono = 'dri dripicons-warning';
+                        $color = 'notify-icon bg-warning';
+                        break;
+                    case 'Nuevo recibo de nomina';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-money-check-alt';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'Nueva solicitud de horas';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time';
+                        $color = 'notify-icon bg-info';
+                        break;
+                    case 'Solicitud de vacaciones-horas Aplicada';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time';
+                        $color = 'notify-icon bg-success';
+                        break;
+                    case 'Solicitud de vacaciones-horas Rechazada';
+                        $link = $not['not_URL'];
+                        $icono = 'fas fa-business-time';
+                        $color = 'notify-icon bg-danger';
+                        break;
+                    case 'Reporte de salidas por aplicar';
+                        $link = $not['not_URL'];
+                        $icono = 'fe-log-out';
+                        $color = 'notify-icon bg-purple';
+                        break;
 
-                    default:$icono = 'mdi mdi-comment-account-outline';$link = '#';$color = 'notify-icon bg-success';break;
+                    default:
+                        $icono = 'mdi mdi-comment-account-outline';
+                        $link = '#';
+                        $color = 'notify-icon bg-success';
+                        break;
                 }
                 $html = '<a href="#" class="dropdown-item notify-item checkNotificacion" data-id="' . $not['not_NotificacionID'] . '" data-link="' . $link . '">
                             <div class="' . $color . '"><i class="' . $icono . '"></i></div>
@@ -1190,66 +1437,61 @@ class Usuario extends BaseController
 
     public function ajax_GetRecibosNomina()
     {
-        $empleado = db()->query("SELECT emp_Nombre,emp_Numero,emp_EmpleadoID,YEAR(emp_FechaIngreso) as 'emp_FechaIngreso' FROM empleado WHERE emp_EmpleadoID=" . session('id'))->getRowArray();
+        $empleado = db()->query("SELECT emp_Nombre, emp_Numero, emp_EmpleadoID, YEAR(emp_FechaIngreso) as 'emp_FechaIngreso' FROM empleado WHERE emp_EmpleadoID=" . session('id'))->getRowArray();
         $url = FCPATH . "/assets/uploads/recibosnomina/";
+
         if (!file_exists($url)) mkdir($url, 0777, true);
+
         $anios = preg_grep('/^([^.])/', scandir($url));
         $anioIngreso = $empleado['emp_FechaIngreso'];
-        if ($anioIngreso == date('Y')) {
-            $aniosFiltrados = array_filter($anios, function ($anio) use ($anioIngreso) {
-                return intval($anio) >= $anioIngreso;
-            });
-            $anios = $aniosFiltrados;
-        }
-        $tree = array();
-        foreach ($anios as $anio) {
-            $children = array();
+
+        $anios = array_filter($anios, function ($anio) use ($anioIngreso) {
+            return intval($anio) >= $anioIngreso;
+        });
+
+        $tree = array_map(function ($anio) use ($url, $empleado) {
+            $children = [];
             $num = $empleado['emp_Numero'];
             $id = encryptDecrypt('encrypt', $empleado['emp_EmpleadoID']);
             $periodos = preg_grep('/^([^.])/', scandir($url . '/' . $anio . '/' . $id));
+
             foreach ($periodos as $periodo) {
                 $urlD = base_url("/assets/uploads/recibosnomina/" . $anio . '/' . $id . '/' . $periodo);
-                $itemp = array(
+                $children[] = [
                     "id" => $anio . $num . $periodo,
                     "text" => $anio . $num . $periodo,
                     "icon" => "mdi mdi-zip-box ",
-                    "state" => array(
-                        "opened" => false,
-                        "disabled" => false,
-                    ),
-                    "a_attr" => array("href" => $urlD),
-                    "li_attr" => array("tipo" => "periodo"),
-                );
-                array_push($children, $itemp);
+                    "state" => ["opened" => false, "disabled" => false],
+                    "a_attr" => ["href" => $urlD],
+                    "li_attr" => ["tipo" => "periodo"]
+                ];
             }
 
-            $node = array(
+            return [
                 "text" => $anio,
-                "state" => array(
-                    "opened" => true,
-                    "disabled" => false,
-                    "selected" => false,
-                ),
+                "state" => ["opened" => true, "disabled" => false, "selected" => false],
                 "children" => $children,
-                "li_attr" => array("tipo" => "year")
-            );
-            array_push($tree, $node);
-        }
+                "li_attr" => ["tipo" => "year"]
+            ];
+        }, $anios);
+
         echo json_encode($tree);
     }
-    
-    public function ajax_getAnuncio(){
+
+
+    public function ajax_getAnuncio()
+    {
         $anuncios = $this->db->query("SELECT * FROM anuncio ORDER BY anu_AnuncioID DESC")->getResultArray();
         $data = array();
-        foreach($anuncios as $anuncio){
-            $anuncio['anu_AnuncioID'] = encryptDecrypt('encrypt',$anuncio['anu_AnuncioID']);
-            $anuncio['anu_FechaRegistro']= longDate($anuncio['anu_FechaRegistro']);
-            if(archivoAnuncio($anuncio['anu_AnuncioID'])){
-                $anuncio['archivo']= archivoAnuncio($anuncio['anu_AnuncioID']);
+        foreach ($anuncios as $anuncio) {
+            $anuncio['anu_AnuncioID'] = encryptDecrypt('encrypt', $anuncio['anu_AnuncioID']);
+            $anuncio['anu_FechaRegistro'] = longDate($anuncio['anu_FechaRegistro']);
+            if (archivoAnuncio($anuncio['anu_AnuncioID'])) {
+                $anuncio['archivo'] = archivoAnuncio($anuncio['anu_AnuncioID']);
             }
-            array_push($data,$anuncio);
+            array_push($data, $anuncio);
         }
-        $data['data']=$data;
-        echo json_encode($data,JSON_UNESCAPED_SLASHES);
+        $data['data'] = $data;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
 }

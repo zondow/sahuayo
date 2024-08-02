@@ -73,7 +73,6 @@ $(document).ready(function (e) {
             text: '¿Esta seguro que desea eliminar el registro seleccionado?',
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#25c5d2",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {

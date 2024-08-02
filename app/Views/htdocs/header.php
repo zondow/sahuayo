@@ -16,7 +16,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
-	<title>PEOPLE</title>
+	<title>PEOPLE<?php if ($title) echo " - $title" ?></title>
 	<link rel="icon" href="<?= base_url("favicon.ico") ?>" type="image/x-icon">
 	<!-- GC CSS FILES -->
 	<?php
@@ -38,10 +38,13 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css") ?>" />
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/morrisjs/morris.min.css") ?>" />
 	<!-- Custom Css -->
-	<link href="<?=base_url("assets/libs/jquery-toast/jquery.toast.min.css")?>" rel="stylesheet" type="text/css" />
+	<link href="<?= base_url("assets/libs/jquery-toast/jquery.toast.min.css") ?>" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/custom.css") ?>" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/main.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/css/color_skins.css") ?>">
+	
+    <!-- LOAD JQUERY FIRST -->
+	<script src="<?=base_url("assets/js/jquery-3.3.1.min.js")?>"></script>
 </head>
 
 <body class="theme-cyan">
@@ -55,12 +58,14 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 		}
 	</script>
 	<!-- Page Loader -->
-	<div class="page-loader-wrapper">
-		<div class="loader">
-			<div class="m-t-30"><img class="zmdi-hc-spin" src="<?= base_url("assets/images/monedaAlianza.svg") ?>" width="48" height="48" alt="Compass"></div>
-			<p>Cargando...</p>
+	<?php if (ENVIRONMENT == 'production') { ?>
+		<div class="page-loader-wrapper">
+			<div class="loader">
+				<div class="m-t-30"><img class="zmdi-hc-spin" src="<?= base_url("assets/images/monedaAlianza.svg") ?>" width="48" height="48" alt="Compass"></div>
+				<p>Cargando...</p>
+			</div>
 		</div>
-	</div>
+	<?php } ?>
 	<!-- Overlay For Sidebars -->
 	<div class="overlay"></div>
 

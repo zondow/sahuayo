@@ -84,5 +84,26 @@ function load_moment_locales(&$data){
 }
 
 function load_datetimepicker(&$data){
+    $data['styles'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css');
     $data['scripts'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js');
+}
+
+function load_jstree(&$data){
+    $data['styles'][] = base_url("assets/plugins/jstree/css/style.min.css");
+    $data['scripts'][] = base_url("assets/plugins/jstree/jstree.min.js");
+}
+
+function load_tooltipster(&$data){
+    $data['styles'][] = base_url("assets/libs/tooltipster/tooltipster.bundle.min.css");
+    $data['scripts'][] = base_url("assets/libs/tooltipster/tooltipster.bundle.min.js");
+}
+
+function load_dropzone(&$data){
+    $data['styles'][] = base_url('assets/plugins/dropzone/min/dropzone.min.css');
+    $data['scripts'][] = base_url('assets/plugins/dropzone/min/dropzone.min.js');
+}
+
+function load_datepicker(&$data){
+    $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
+    $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
 }

@@ -10,11 +10,11 @@
         <li><a href="<?= base_url('Configuracion/configuracionExpediente') ?>">Expedientes</a></li>
         <li> <a href="javascript:void(0);" class="menu-toggle"><b>Horarios</b></a>
         <ul class="ml-menu">
-            <li><a href="horarios">Crear Horarios</a></li>
-            <li><a href="guardias">Guardias</a></li>
+            <li><a href="<?= base_url('Configuracion/horarios') ?>">Crear Horarios</a></li>
+            <li><a href="<?= base_url('Configuracion/guardias') ?>">Guardias</a></li>
         </ul>
 
-        <li><a href="blog-dashboard.html">Onboarding y Offboarding</a></li>
+        <li><a href="<?= base_url('Configuracion/configChecklistIngresoEgreso') ?>">Onboarding y Offboarding</a></li>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>

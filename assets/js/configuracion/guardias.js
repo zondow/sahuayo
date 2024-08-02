@@ -16,10 +16,10 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "gua_GuardiaID",render: function(data){return accionesGuardia(data)}},
             { "data": "emp_Nombre"},
             { "data": "gua_FechaInicio"},
             { "data": "gua_FechaFin"},
+            { "data": "gua_GuardiaID",render: function(data){return accionesGuardia(data)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -80,16 +80,16 @@ $(document).ready(function (e) {
             },
 
         },
-        "order": [[ 1, "asc" ]],
+        "order": [[ 0, "asc" ]],
         "processing":false
     });
 
     function accionesGuardia(guardiaID){
         let output = '';
         if(revisarPermisos('Eliminar','guardias'))
-            output+= '<a type="button" style="color: #FFFFFF" data-id="' + guardiaID + '"' +
-            'class="btn waves-effect btn-block waves-light btn-danger btnDeleteGuardia">' +
-            '<i class="dripicons-trash"></i></a>';
+            output+= '<button type="button" data-id="' + guardiaID + '"' +
+            'class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down btnDeleteGuardia" title="Eliminar rol">' +
+            '<i class="zmdi zmdi-delete"></i></button>';
         return output;
     }//accionesGuardia
 
@@ -259,21 +259,6 @@ $(document).ready(function (e) {
     }
 
 
-    $('.select2').select2({});
 
-    $('#txtFechas').datepicker({
-        autoclose: true,
-        format :'yyyy/mm/dd',
-        forceParse :false,
-        todayHighlight:!0,
-        daysOfWeekDisabled: [0],
-    }).on("changeDate", function(e) {
-
-        firstDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
-        lastDate =  moment($('#txtFechas').val(), "YYYY-MM-DD").day(6).format("YYYY-MM-DD");
-        $("#txtFechas").val(firstDate + "   al   " + lastDate);
-
-        diasSemana(firstDate,lastDate,1);
-    });
 });
 Dropzone.autoDiscover = false;
