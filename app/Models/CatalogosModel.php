@@ -162,4 +162,14 @@ class CatalogosModel extends Model
         return $this->db->query("SELECT * FROM sucursal ")->getResultArray();
     } //getSucursales
 
+    public function getInfoPuestoByID($pue_PuestoID)
+    {
+       return $this->db->query("Select * from puesto where pue_Estatus=1 and pue_PuestoID=?", array(encryptDecrypt('decrypt', $pue_PuestoID)))->getRowArray();
+    }
+
+    public function getPerfilPuestoByPuestoId($pue_PuestoID)
+    { 
+        return $this->db->query("select * from perfilpuesto where per_PuestoID=" . (int)encryptDecrypt('decrypt', $pue_PuestoID))->getRowArray();
+    }
+
 }//end CatalogosModel

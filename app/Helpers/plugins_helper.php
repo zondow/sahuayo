@@ -128,3 +128,15 @@ function load_footable(&$data)
     $data['styles'][] = base_url("assets/libs/footable/footable.core.min.css");
     $data['scripts'][] = base_url("assets/libs/footable/footable.all.min.js");
 }
+
+function load_toastr(&$data){
+    $data['scripts'][] = base_url('assets/libs/jquery-toast/jquery.toast.min.js');
+    $data['scripts'][] = base_url('assets/js/pages/toastr.init.js');
+}
+
+
+function load_chosen(&$data){
+    $data['styles'][] = base_url('assets/plugins/chosen2/chosen.css');
+    $data['scripts'][] = base_url('assets/plugins/chosen2/chosen.jquery.js');
+    $data['scripts'][] = base_url('assets/plugins/chosen2/docsupport/init.js');
+}

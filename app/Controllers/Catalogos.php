@@ -95,6 +95,47 @@ class Catalogos extends BaseController
         echo view('htdocs/footer');
     } //puestos
 
+    //Lia->Vista Crear Perfil de Puestos
+    public function crearPerfilPuesto($pue_PuestoID)
+    {
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Perfil del Puesto';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "active"),
+            array("titulo" => 'Catálogo de puestos', "link" => base_url('Catalogos/puestos'), "class" => "active"),
+            array("titulo" => 'Perfil del puesto', "link" => base_url('Catalogos/CrearPerfilPuesto/' . $pue_PuestoID), "class" => "active"),
+        );
+
+      
+        $data['puestos'] = $this->CatalogosModel->getPuestosDifByID($pue_PuestoID);
+        $infoPuesto = $this->CatalogosModel->getInfoPuestoByID($pue_PuestoID);
+        $data['departamentos'] = $this->CatalogosModel->getDepartamentos();
+        $perifilPuesto = $this->CatalogosModel->getPerfilPuestoByPuestoId($pue_PuestoID);
+        $data['nombrePuesto'] = $infoPuesto['pue_Nombre'];
+        $data['PuestoID'] = encryptDecrypt('encrypt', $infoPuesto['pue_PuestoID']);
+        $data['competencias'] = $this->CatalogosModel->getCompetencias();
+
+        $data['perfilpuesto'] = $perifilPuesto;
+        if($perifilPuesto){
+            $data['puestosDep'] = $perifilPuesto['per_DepartamentoID'];
+            $data['idiomasR'] = $perifilPuesto['per_Idioma'];
+            $data['perfilPuestoID'] = $perifilPuesto['per_PerfilPuestoID'];
+            $data['puestosC'] = json_decode($perifilPuesto['per_PuestoCoordina']);
+            $data['puestosR'] = json_decode($perifilPuesto['per_PuestoRepota']);
+            $data['puestosF'] = json_decode($perifilPuesto['per_Funcion'], true);
+        }
+
+        //pluggins
+        load_plugins(['select2','footable','footable','load_select','chosen'],$data);
+
+        //custom scripts
+        //$data['scripts'][] = base_url('assets/js/catalogos/perfilPuesto.js');
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('catalogos/perfilPuestos');
+        echo view('htdocs/footer');
+    } //end crearPerfilPuesto
 
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____

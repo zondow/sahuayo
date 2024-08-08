@@ -1,6 +1,7 @@
 $('body').on('click', '.editar', function(e) {
     e.preventDefault();
     $("#departamento")[0].reset();
+    $("#myModalLabel").html("Editar departamento");
     let departamentoID = $(this).data('id');
     $.ajax({
         url: BASE_URL + "Catalogos/ajax_getInfoDepartamento/"+departamentoID ,
@@ -27,6 +28,14 @@ $('body').on('click', '.editar', function(e) {
         });
     });
 
+    $("body").on("click","#addDepartamento",function (e) {
+        e.preventDefault();
+        $("#departamento")[0].reset();
+        $("#titleModal").html('Editar departamento');
+        $("#id").val(0);
+       // modal.modal("show");
+    });
+   
     $("#addDepartamento").modal("show");
 
     $('body').on('click', '.guardar', function(evt) {

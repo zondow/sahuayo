@@ -1,7 +1,10 @@
 $(document).ready(function (e) {
 
-    $(".select2").select2();
+   
 
+    
+
+   
     $puestoID=$('#PuestoID').val();
 
     var i=contador;
