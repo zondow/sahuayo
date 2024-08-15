@@ -136,3 +136,14 @@ function load_tomselect(&$data){
     $data['styles'][] = "https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css";
     $data['scripts'][] = "https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js";
 }
+
+function load_toastr(&$data){
+    $data['scripts'][] = base_url('assets/libs/jquery-toast/jquery.toast.min.js');
+    $data['scripts'][] = base_url('assets/js/pages/toastr.init.js');
+}
+
+function load_chosen(&$data){
+    $data['styles'][] = base_url('assets/plugins/chosen2/chosen.css');
+    $data['scripts'][] = base_url('assets/plugins/chosen2/chosen.jquery.js');
+    $data['scripts'][] = base_url('assets/plugins/chosen2/docsupport/init.js');
+}
