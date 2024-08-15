@@ -49,6 +49,9 @@ function load_jquery_ui(&$data)
 function load_select(&$data)
 {
     $data['styles'][] = base_url('assets/plugins/bootstrap-select/css/bootstrap-select.css');
+    $data['scripts'][] = base_url('assets/plugins/bootstrap-select/js/i18n/defaults-es_ES.js');
+    $data['scripts'][] = base_url('assets/plugins/bootstrap-select/js/bootstrap-select.js');
+    
 }
 
 function load_datables4(&$data)
@@ -127,4 +130,9 @@ function load_footable(&$data)
 {
     $data['styles'][] = base_url("assets/libs/footable/footable.core.min.css");
     $data['scripts'][] = base_url("assets/libs/footable/footable.all.min.js");
+}
+
+function load_tomselect(&$data){
+    $data['styles'][] = "https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css";
+    $data['scripts'][] = "https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js";
 }

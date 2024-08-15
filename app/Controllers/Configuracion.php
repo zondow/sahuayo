@@ -220,7 +220,7 @@ class Configuracion extends BaseController
         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => '#', "class" => "");
         $data['breadcrumb'][] = array("titulo" => 'Catálogo de checklist', "link" => base_url('Configuracion/configChecklistIngresoEgreso'), "class" => "active");
 
-        load_plugins(['select2', 'sweetalert2', 'datatables_buttons'], $data);
+        load_plugins(['select2', 'sweetalert2', 'datatables_buttons', 'select'], $data);
 
         //Custom Styles
         //Custom Scripts

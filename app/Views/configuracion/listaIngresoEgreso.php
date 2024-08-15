@@ -52,7 +52,7 @@
     <div class="modal-dialog ">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="title"></i>&nbsp;Añadir al checklist</h4>
+                <h4 class="title">&nbsp;Añadir al checklist</h4>
                 <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -63,7 +63,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="txtReponsable">*Responsable (s)</label>
-                        <select id="txtResponsable" name="txtResponsable[]" class="form-control select2-multiple" multiple="multiple" data-placeholder="Seleccionar responsable (s)" style="width: 100% !important;">
+                        <select id="txtResponsable" name="txtResponsable[]" class="show-tick" multiple="multiple" data-live-search="true" data-placeholder="Seleccionar responsable (s)"  data-width="100%">
                             <?php
                             foreach ($empleados as $emp) {
                                 echo '<option value="' . $emp['emp_EmpleadoID'] . '">' . $emp['emp_Nombre'] . '</option>';
@@ -72,18 +72,18 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-md-12">
+                    <div class="col-md-12">
                         <label for="txtTipo">*Tipo</label>
-                        <select id="txtTipo" name="txtTipo" class="select2" data-placeholder="Seleccionar tipo" style="width: 100% !important;">
+                        <select id="txtTipo" name="txtTipo" class="show-tick" data-placeholder="Seleccionar tipo" data-width="100%">
                             <option hidden>Seleccione</option>
                             <option value="Ingreso">Ingreso</option>
                             <option value="Egreso">Egreso</option>
                         </select>
                     </div>
 
-                    <div class="form-group col-md-12">
+                    <div class="col-md-12">
                         <label for="txtRequerido">*Requerido</label>
-                        <select id="txtRequerido" name="txtRequerido" class="select2" data-placeholder="Seleccionar" style="width: 100% !important;">
+                        <select id="txtRequerido" name="txtRequerido" class="show-tick" data-placeholder="Seleccionar" data-width="100%">
                             <option hidden>Seleccione</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>
@@ -93,7 +93,7 @@
             </div>
             <div class="modal-footer ">
                 <div class="col-md-12 text-right">
-                <button type="button" class="btn btn-round btn-light" data-dismiss="modal"></span> Cancelar</button>
+                    <button type="button" class="btn btn-round btn-light" data-dismiss="modal"> Cancelar</button>
                     <button id="btnGuardarChecklist" type="button" class="btn btn-round btn-primary"> Guardar</button>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="txt_Responsable">*Responsable</label>
-                        <select id="txt_Responsable" name="txt_Responsable" class="form-control select2-multiple" multiple="multiple" data-placeholder="Seleccionar responsable (s)" style="width: 100% !important;">
+                        <select id="txt_Responsable" name="txt_Responsable" class="form-control select2-multiple" multiple="multiple" data-placeholder="Seleccionar responsable (s)" data-width="100%">
 
                             <?php
                             foreach ($empleados as $emp) {
@@ -130,7 +130,7 @@
 
                     <div class="form-group col-md-12">
                         <label for="txt_Tipo">*Tipo</label>
-                        <select id="txt_Tipo" name="txt_Tipo" class="select2" data-placeholder="Seleccionar tipo" style="width: 100% !important;">
+                        <select id="txt_Tipo" name="txt_Tipo" class="select-tom" data-placeholder="Seleccionar tipo" data-width="100%">
                             <option hidden>Seleccione</option>
                             <option value="Ingreso">Ingreso</option>
                             <option value="Egreso">Egreso</option>
@@ -139,7 +139,7 @@
 
                     <div class="form-group col-md-12">
                         <label for="txt_Requerido">*Requerido</label>
-                        <select id="txt_Requerido" name="txt_Requerido" class="select2" data-placeholder="Seleccionar" style="width: 100% !important;">
+                        <select id="txt_Requerido" name="txt_Requerido" class="select-tom" data-placeholder="Seleccionar" data-width="100%">
                             <option hidden>Seleccione</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>

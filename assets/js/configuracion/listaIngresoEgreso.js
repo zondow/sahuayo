@@ -182,25 +182,13 @@ $(document).ready(function (e) {
     });
 
     /**FUNCTIONS*/
-    $(".select2-multiple").select2({
-        language: "es",
-        selectOnClose: false,
-        allowClear: true,
-        placeholder: " Seleccione",
-
-    });
-    $('.select2').select2({
-        closeOnSelect: true,
-        dropdownParent: $('#modalAddChecklist,#modalEditChecklist'),
-        minimumResultsForSearch: 0
-    });
     function statusChecklist(status, row) {
 
         var id = row.id;
         return status == 1 ?
             '<span class="badge badge-info btnActivo" data-checklist="' + id + '" >Activo</span>' :
             '<span class="badge badge-default btnInactivo" data-checklist="' + id + '">Inactivo</span>';
-    
+
     }//statusChecklist
 
     function showNotification(tipo, msg) {
@@ -276,10 +264,10 @@ $(document).ready(function (e) {
     }//clear
 
     function tipoChecklist(tipo) {
-        return tipo == 'Ingreso' 
-            ? '<span class="badge badge-info">INGRESO</span>' 
+        return tipo == 'Ingreso'
+            ? '<span class="badge badge-info">INGRESO</span>'
             : '<span class="badge badge-danger">EGRESO</span>';
-    }    
+    }
 
     function ajax_changeEstatusChecklist(id, st) {
         $.ajax({

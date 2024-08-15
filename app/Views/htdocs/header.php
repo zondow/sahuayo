@@ -26,14 +26,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<?php endforeach;
 	} ?>
 
-	<!-- CUSTOM STYLES -->
-	<?php
-	if (isset($styles)) {
-		foreach ($styles as $style) {
-			echo '<link href="' . $style . '" rel="stylesheet" type="text/css" />';
-		} //foreach
-	} //if scripts
-	?>
+
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/bootstrap/css/bootstrap.min.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css") ?>" />
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/morrisjs/morris.min.css") ?>" />
@@ -43,8 +36,17 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/css/main.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/css/color_skins.css") ?>">
 
-	<!-- LOAD JQUERY FIRST -->
-	<script src="<?=base_url("assets/js/jquery-3.3.1.min.js")?>"></script>
+	<!-- LOAD JQUERY FIRST 
+	<script src="<?=base_url("assets/js/jquery-3.3.1.min.js")?>"></script>-->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+	<!-- CUSTOM STYLES -->
+	<?php
+	if (isset($styles)) {
+		foreach ($styles as $style) {
+			echo '<link href="' . $style . '" rel="stylesheet" type="text/css" />';
+		} //foreach
+	} //if scripts
+	?>
 </head>
 
 <body class="theme-cyan">
