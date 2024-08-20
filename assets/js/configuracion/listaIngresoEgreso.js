@@ -258,9 +258,9 @@ $(document).ready(function (e) {
 
     function clear() {
         $("#txtNombre").val("");
-        $("#txtResponsable").val('').trigger("change");
-        $("#txtRequerido").val('').trigger("change");
-        $("#txtTipo").val(0).trigger("change");
+        $("#txtResponsable").val('').trigger("chosen:updated");
+        $("#txtRequerido").val('').trigger("chosen:updated");
+        $("#txtTipo").val(0).trigger("chosen:updated");
     }//clear
 
     function tipoChecklist(tipo) {
@@ -318,9 +318,9 @@ $(document).ready(function (e) {
                 $("#txt_CatalogoID").val(checklist.cat_CatalogoID);
                 $("#txt_Nombre").val(checklist.cat_Nombre);
                 let responsables = JSON.parse(data.checklist.cat_ResponsableID);
-                $("#txt_Responsable").val(responsables).trigger('change');
-                $("#txt_Requerido").val(checklist.cat_Requerido).trigger("change");
-                $("#txt_Tipo").val(checklist.cat_Tipo).trigger("change");
+                $("#txt_Responsable").val(responsables).trigger('chosen:updated');
+                $("#txt_Requerido").val(checklist.cat_Requerido).trigger("chosen:updated");
+                $("#txt_Tipo").val(checklist.cat_Tipo).trigger("chosen:updated");
                 modalEditChecklist.modal("show");
             } else {
                 showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");

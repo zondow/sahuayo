@@ -25,9 +25,8 @@ if (isset($scripts)) {
 
 <!-- App js -->
 <script src="<?= base_url("assets/libs/jquery-toast/jquery.toast.min.js") ?>"></script>
-<script src="<?= base_url('assets/plugins/push/push.min.js') ?>"></script>
 <script src="<?= base_url('assets/plugins/push/serviceWorker.min.js') ?>"></script>
-
+<script src="<?= base_url("assets/plugins/bootstrap-notify/bootstrap-notify.js")?>"></script> <!-- Bootstrap Notify Plugin Js -->
 <!--Sonido notificacion-->
 <!--<script src='https://code.jquery.com/jquery-2.2.0.min.js'></script>
 <script src='https://cdn.rawgit.com/admsev/jquery-play-sound/master/jquery.playSound.js'></script>-->

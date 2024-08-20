@@ -59,12 +59,12 @@ textarea.form-control {
     transform: unset !important;
     -webkit-transform: unset !important;
     max-width: 100% !important;
-    width: 100% !important;
+    /*width: 100% !important;*/
 }
 
 .bootstrap-select {
     visibility: hidden !important;
-    width: 1%;
+    display: none !important;
 }
 
 .chosen-container {
@@ -86,14 +86,13 @@ textarea.form-control {
 .chosen-container-single .chosen-single div {
     top: 3px;
 }
-
-.chosen-container-multi .chosen-choices {
-    border-radius: 32px;
-    background: transparent;
-    height: auto;
-    align-content: center;
+.notify .heartbit {
+    border-color: #eddd34 !important;
+}
+.notify .point{
+    background-color: #eddd34 !important;
 }
 
-select {
-    width: 100%;
+.dropdown-menu {
+    width: 500px !important;
 }

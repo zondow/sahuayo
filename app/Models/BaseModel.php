@@ -26,9 +26,18 @@ class BaseModel extends Model
         return $this->db->query('SELECT * FROM horario')->getResultArray();
     }
 
-
     public function getEmpleados()
     {
         return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 AND emp_Estado='Activo' ORDER BY emp_Nombre ASC")->getResultArray();
-    } 
+    }
+
+    public function getNotificacionesPush()
+    {
+        return $this->db->query("SELECT * FROM notificacion WHERE not_Estatus=1 AND not_Push=1 AND not_EmpleadoID=" . (int)session("id"))->getResultArray();
+    }
+
+    public function getNotificaciones()
+    {
+        return $this->db->query("SELECT * FROM notificacion WHERE not_Estatus=1 AND not_EmpleadoID=" . (int)session("id"))->getResultArray();
+    }
 }

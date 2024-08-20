@@ -3,7 +3,6 @@ $db = \Config\Database::connect();
 if (!isset($title)) $title = 'Inicio';
 // Notificaciones
 $notificaciones = APPPATH . 'Views/htdocs/notificaciones.php';
-// Mensajes
 $mensajes = APPPATH . 'views/htdocs/mensajes.php';
 $permisos = session('permisos');
 $navigation = APPPATH . "Views/usuario/navigation.php";
@@ -76,7 +75,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 		<div class="col-12">
 			<div class="navbar-header">
 				<a href="javascript:void(0);" class="bars"></a>
-				<a class="navbar-brand" href="#"><img src="<?= base_url('assets/images/logo_horizontal.png') ?>" width="140"></a>
+				<a class="navbar-brand" href="<?= base_url('Usuario/index') ?>"><img src="<?= base_url('assets/images/logo_horizontal.png') ?>" width="140"></a>
 			</div>
 			<ul class="nav navbar-nav navbar-left">
 				<li><a href="javascript:void(0);" class="ls-toggle-btn" data-close="true"><i class="zmdi zmdi-swap"></i></a></li>
