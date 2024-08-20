@@ -1,72 +1,16 @@
 $(document).ready(function () {
-    $('#datatable').DataTable({
-        language:
-            {
-                paginate: {
-                    previous:"<i class='zmdi zmdi-caret-left'>",
-                    next:"<i class='zmdi zmdi-caret-right'>"
-                },
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla.",
-                "sInfo":           "",
-                "sInfoEmpty":      "",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "<i class='zmdi zmdi-caret-right'>",
-                    "sPrevious": "<i class='zmdi zmdi-caret-left'>"
-                },
-            },
-        "order": [[ 1, "asc" ]],
-        dom:'<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                title: 'Sucursales',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
-                titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
-                autoFilter: true,
-                exportOptions: {
-                    columns: ':visible'
-                },
-            },
-            {
-                extend: 'pdfHtml5',
-                title: 'Sucursales',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
-                titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
-                orientation: 'landscape',
-                pageSize: 'LETTER',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-            {
-                extend: 'colvis',
-                text: 'Columnas',
-                className: "btn l-slategray",
-            }
-        ],
-    });
-
+   
     $("body").on("click",".btnAddSucursal",function (e) {
         e.preventDefault();
         $("#formSucursal")[0].reset();
         $("#suc_SucursalID").val(0);
+        $("#myModalLabel").html('Nueva Sucursal');
         $("#modalSucursal").modal("show");
     });
+
     $('body').on('click', '.editarSucursal', function(e) {
         e.preventDefault();
+        $("#myModalLabel").html('Editar Sucursal');
         $("#formSucursal")[0].reset();
         let sucursalID = $(this).data('id');
         $.ajax({
@@ -92,8 +36,65 @@ $(document).ready(function () {
         });
 
         $("#modalSucursal").modal("show");
-
-
     });
+
+
+    $("body").on("click",".activarInactivar",function (e) {
+        var sucursalID = $(this).data("id");
+        var estado = $(this).data("estado");
+
+        if(estado === 0){
+            txt='¿Estás seguro que deseas inactivar la sucursal seleccionada?';
+            est=0;
+        } else {
+            txt='¿Estás seguro que deseas activar la sucursal seleccionada?';
+            est=1;
+        }
+
+        let fd  = {"sucursalID":sucursalID,"estado":est};
+        Swal.fire({
+            title: '',
+            text: txt,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if(result.value)
+                ajaxCambiarEstado(fd);
+        })
+    });
+
+    function ajaxCambiarEstado(fd){
+        $.ajax({
+            url: BASE_URL + "Catalogos/ajaxCambiarEstadoSucursal",
+            cache: false,
+            type: 'post',
+            dataType: 'json',
+            data:fd
+        }).done(function (data) {
+            if(data.code === 1) {
+                $.toast({
+                    text:'Se cambio el estado de la sucursal seleccionada.',
+                    icon: "success",
+                    loader: true,
+                    loaderBg: '#c6c372',
+                    position: 'top-right',
+                    allowToastClose : true,
+                });
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1300);
+            }
+            else {
+                $.toast({text: "¡Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.!", icon: "error", loader: false, position: 'top-right',allowToastClose : false});
+            }
+
+        }).fail(function (data) {
+            $.toast({text: "¡Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.!", icon: "error", loader: false, position: 'top-right',allowToastClose : false});
+        }).always(function (e) {
+
+        });//ajax
+    }
 });
 

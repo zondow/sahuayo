@@ -64,6 +64,7 @@ textarea.form-control {
 
 .bootstrap-select {
     visibility: hidden !important;
+    width: 1%;
 }
 
 .chosen-container {
@@ -75,11 +76,24 @@ textarea.form-control {
     border-radius: 15px;
     height: 32px;
     align-content: center;
-    border:1px solid #aaa;
+    border: 1px solid #aaa;
 }
-.chosen-container-single .chosen-single span{
-    color:grey;
+
+.chosen-container-single .chosen-single span {
+    color: grey;
 }
-.chosen-container-single .chosen-single div{
+
+.chosen-container-single .chosen-single div {
     top: 3px;
+}
+
+.chosen-container-multi .chosen-choices {
+    border-radius: 32px;
+    background: transparent;
+    height: auto;
+    align-content: center;
+}
+
+select {
+    width: 100%;
 }

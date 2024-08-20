@@ -15,6 +15,7 @@ $('body').on('click', '.editar', function(e) {
             $("#id").val(data.result.dep_DepartamentoID);
             $("#nombre").val(data.result.dep_Nombre);
             $("#selectJefeID").val(data.result.dep_JefeID);
+            $("#selectJefeID").trigger('chosen:updated');
             
         }
     }).fail(function () {

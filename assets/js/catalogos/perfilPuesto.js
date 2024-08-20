@@ -1,10 +1,6 @@
 $(document).ready(function (e) {
 
-   
 
-    
-
-   
     $puestoID=$('#PuestoID').val();
 
     var i=contador;
@@ -17,7 +13,7 @@ $(document).ready(function (e) {
                     '<textarea class="form-control" name="Funciones[]" placeholder="Ingresar función" required></textarea>' +
                 '</div>'+
                 '<div class="form-group col-md-1 text-center pt-3">' +
-                    '<button  class="btn btn-danger waves-effect waves-light btnEliminar" data-id="'+i+'"><i class="dripicons-trash"></i></button>'+
+                    '<button  class="btn btn-danger btn-icon  btn-icon-mini btn-round btn-sm btnEliminar" data-id="'+i+'"><i class="zmdi zmdi-minus"></i></button>'+
                 '</div>'+
             '</div>';
         $("#funciones").append(funcionesAdd);
@@ -84,8 +80,8 @@ $(document).ready(function (e) {
                 row += '<td data-expanded="true">'+nivel+'</td>';
                 row += '<td data-expanded="true">'+tipo+'</td>';
                 row += '<td data-expanded="true" class="text-center">';
-                row += '<button class="btn btn-danger btn-sm btn-icon btnDeleteCompetencia" data-competencia="'+id+'" data-puesto="'+puestoID+'">';
-                row += '<i class="fa fa-times"></i>';
+                row += '<button class="btn btn-danger btn-icon btn-sm btn-icon-mini btn-round btnDeleteCompetencia" data-competencia="'+id+'" data-puesto="'+puestoID+'">';
+                row += '<i class="zmdi zmdi-minus"></i>';
                 row += '</button>';
                 row += '</td>';
                 row += '</tr>';

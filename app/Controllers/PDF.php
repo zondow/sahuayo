@@ -250,7 +250,7 @@ class PDF extends BaseController
   
     public function plantillaPuesto($data){
         $fecha = $data['fechaCreacion'];
-        $logo = base_url('assets/images/image1.jpg');
+        $logo = base_url('assets/images/moneda.jpg');
         
         $reporta = $data['puestosReporta'] !== "null" ? implode(' ', array_map(fn($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosReporta'])) : "No hay información disponible";
         $coordina = $data['puestosCoordina'] !== "null" ? implode(' ', array_map(fn($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosCoordina'])) : "No hay información disponible";

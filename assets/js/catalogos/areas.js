@@ -204,27 +204,5 @@ $(document).ready(function(e) {
 
         });//ajax
     }
-
-
-    $('#txtSearch').keyup(function(){
-       
-        var a;
-        var i;
-        var txtValue;
-        var input = document.getElementById("txtSearch");
-        var filter = input.value.toUpperCase();
-        var contenido = document.getElementById("divAreas");
-        var card = contenido.getElementsByClassName("item");
-
-        for (i = 0; i < card.length; i++) {
-            a = card[i].getElementsByClassName("find_Nombre")[0];
-            txtValue = a.textContent || a.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                card[i].style.display = "";
-            } else {
-                card[i].style.display = "none";
-            }
-        } //for
-    });
 });
 

@@ -24,7 +24,6 @@ class Catalogos extends BaseController
     //Diego->Catalogo de departamentos
     public function departamentos()
     {
-        //Validar sessión
         validarSesion(self::LOGIN_TYPE);
         $data['title'] = 'Departamentos';
         $data['breadcrumb'] = array(
@@ -36,7 +35,7 @@ class Catalogos extends BaseController
         $data['departamentos'] = $this->CatalogosModel->getCatalogoDepartamentos();
 
         //pluggins
-        load_plugins(['select2','datatables','sweetalert2'],$data);
+        load_plugins(['sweetalert2','chosen'],$data);
        
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/departamentos.js');
@@ -57,8 +56,10 @@ class Catalogos extends BaseController
             array("titulo" => 'Catálogo de areas', "link" => base_url('Catalogos/areas'), "class" => "active"),
         );
 
+        $data['areas'] = $this->CatalogosModel->getAreas();
+
         //pluggins
-        load_plugins(['select2','sweetalert2'],$data);
+        load_plugins(['sweetalert2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/areas.js');
@@ -74,8 +75,6 @@ class Catalogos extends BaseController
     {
         validarSesion(self::LOGIN_TYPE);
         $data['title'] = 'Puestos';
-
-       
         $data['puestos'] = $this->CatalogosModel->getPuestos();
 
         $data['breadcrumb'] = array(
@@ -84,7 +83,7 @@ class Catalogos extends BaseController
         );
 
         //pluggins
-        load_plugins(['select2','sweetalert2','footable'],$data);
+        load_plugins(['sweetalert2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url("assets/js/catalogos/puestos.js");
@@ -105,7 +104,6 @@ class Catalogos extends BaseController
             array("titulo" => 'Catálogo de puestos', "link" => base_url('Catalogos/puestos'), "class" => "active"),
             array("titulo" => 'Perfil del puesto', "link" => base_url('Catalogos/CrearPerfilPuesto/' . $pue_PuestoID), "class" => "active"),
         );
-
       
         $data['puestos'] = $this->CatalogosModel->getPuestosDifByID($pue_PuestoID);
         $infoPuesto = $this->CatalogosModel->getInfoPuestoByID($pue_PuestoID);
@@ -126,16 +124,38 @@ class Catalogos extends BaseController
         }
 
         //pluggins
-        load_plugins(['select2','footable','footable','load_select','chosen'],$data);
+        load_plugins(['footable','chosen'],$data);
 
         //custom scripts
-        //$data['scripts'][] = base_url('assets/js/catalogos/perfilPuesto.js');
+        $data['scripts'][] = base_url('assets/js/catalogos/perfilPuesto.js');
 
         //Cargar vistas
         echo view('htdocs/header', $data);
         echo view('catalogos/perfilPuestos');
         echo view('htdocs/footer');
     } //end crearPerfilPuesto
+
+    //Diego -> Catalogo de sucursales
+    public function sucursales(){
+        validarSesion(self::LOGIN_TYPE);
+
+        $data['title'] = 'Sucursales';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link"=>base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Catálogo de sucursales', "link" => base_url('Catalogos/sucursales'), "class" => "active");
+
+        $data['sucursales']=$this->CatalogosModel->getSucursales();
+
+        //pluggins
+        load_plugins(['sweetalert2'],$data);
+
+        //custom scripts
+        $data['scripts'][] = base_url('assets/js/catalogos/sucursales.js');
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('catalogos/sucursales', $data);
+        echo view('htdocs/footer', $data);
+    }//end sucursales
 
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
@@ -182,6 +202,79 @@ class Catalogos extends BaseController
         } else $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
         return redirect()->to($_SERVER['HTTP_REFERER']);
     } //end addPuesto
+
+    //Diego->añadir editar sucursal
+    function addSucursal(){
+        $post = $this->request->getPost();
+        $builder = db()->table('sucursal');
+        if(empty($post['suc_SucursalID'])){
+            unset($post['suc_SucursalID']);
+            $post['suc_EmpleadoID']=session('id');
+            $builder->insert($post);
+            $result=$this->db->insertID();
+            if($result) {
+                insertLog($this,session('id'),'Insertar','sucursal',$result);
+                $this->session->setFlashdata(array('response'=>'success','txttoastr'=>'¡Se registro la sucursal correctamente!'));
+            }else {
+                $this->session->setFlashdata(array('response'=>'error','txttoastr'=>'¡Ocurrio un error al registro intente mas tarde!'));
+            }
+        }else{
+            $result=$builder->update(array('suc_Sucursal'=>$post['suc_Sucursal']),array('suc_SucursalID'=>(int)encryptDecrypt('decrypt',$post['suc_SucursalID'])));
+            if($result) {
+                insertLog($this,session('id'),'Actualizar','sucursal',encryptDecrypt('decrypt',$post['suc_SucursalID']));
+                $this->session->setFlashdata(array('response'=>'success','txttoastr'=>'¡Se actualizó la sucursal correctamente!'));
+            }else {
+                $this->session->setFlashdata(array('response'=>'error','txttoastr'=>'¡Ocurrio un error al actualizar intente mas tarde!'));
+            }
+        }
+
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    }//end addSucursal
+
+    public function updatePerfilPuesto()
+    {
+        $post = $this->request->getPost();
+        $funciones = array();
+        $puestoID = (int)encryptDecrypt('decrypt', $post['PuestoID']);
+        $i = 1;
+        foreach ($post['Funciones'] as $funcion) {
+            $funciones['F' . $i] = $funcion;
+            $i++;
+        }
+        $fjsom = json_encode($funciones);
+
+        $resultado = $this->db->query("select COUNT(per_PuestoID) as contador from perfilpuesto where per_PuestoID=" . $puestoID)->getRowArray();
+        $contador = $resultado['contador'];
+        $data = array(
+            "per_PuestoID" => $puestoID,
+            "per_PuestoRepota" => json_encode($post['selectReporta']),
+            "per_PuestoCoordina" => json_encode($post['selectCoordina']),
+            "per_Horario" => $post['selectHorario'],
+            "per_TipoContrato" => $post['selectContrato'],
+            "per_Genero" => $post['selectGenero'],
+            "per_Edad" => $post['inputEdad'],
+            "per_EstadoCivil" => $post['selectEC'],
+            "per_Escolaridad" => $post['inputEscolaridad'],
+            "per_AnosExperiencia" => $post['inputAnosEx'],
+            "per_DepartamentoID" => $post['selectDepartamento'],
+            "per_Objetivo" => $post['inputObjetivo'],
+            "per_Funcion" => $fjsom,
+            "per_FechaCreacion" => date("Y-m-d h:i:sa"),
+            "per_Conocimientos" =>  $post['inputConocimiento'],
+        );
+
+        $builder = db()->table('perfilpuesto');
+        if ($contador == 0) {
+            $result = $builder->insert($data);
+            if ($result) $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se guardo el perfil del puesto correctamente!'));
+            else $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al actualizar intente mas tarde!'));
+        } else {
+            $result = $builder->update($data, array("per_PuestoID" => "$puestoID"));
+            if ($result) $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizo el perfil del puesto correctamente!'));
+            else $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al actualizar intente mas tarde!'));
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    } //end updatePerfilPuesto
 
     /*
                    _         __   __
@@ -246,37 +339,45 @@ class Catalogos extends BaseController
         $areasArray = array();
 
         if (!empty($areas)) {
-            foreach ($areas as $area) {
-                $style = '';
-                $estatus = '';
+            $html = 
+            '
+                <table class="table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Área</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>';
 
-                if ((int)$area['are_Estatus'] === 0) {
-                    $estatus = '<a role="button" class="activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" ><i class="zmdi zmdi-check-circle"></i></a>';
-                    $style = 'style="background-color: #e6e6e6"';
-                } else $estatus = '<a role="button" class=" activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" ><i class="zmdi zmdi-check-circle"></i></a>';
+                foreach ($areas as $area) {
+                    $style = '';
+                    $estatus = '';
 
+                    if ((int)$area['are_Estatus'] === 0) {
+                        $estatus = '<a role="button" class="btn btn-primary btn-icon  btn-icon-mini btn-round  activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
+                        $style = 'style="background-color: #e6e6e6"';
+                    } else {
+                        $estatus = '<a role="button" class="btn btn-primary btn-icon  btn-icon-mini btn-round activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
+                    }
 
-                $html = '<div class="col-lg-4 col-md-6 col-sm-12 item" >
-                            <div class="card project_widget" ' . $style . '>
-                                <div class="header">
-                                    <p><h2><strong class="find_Nombre">'. strtoupper( $area['are_Nombre']).'</strong> </h2></p>
-                                    <ul class="header-dropdown">
-                                        <li class="edit">
-                                            <a role="button" class="editarArea"  data-id="'.$area["are_AreaID"].'"  title="Da clic para editar"><i class="zmdi zmdi-edit"></i></a>
-                                        </li>
-                                        <li>' . $estatus . '</li>
-                                    </ul>
-                                    
-                                </div>
-                                <div class="pw_img mb-3" style="text-align: center;">
-                                    <img class="img-responsive" src="' . base_url("assets/images/monedaAlianza.png") . '" style="max-width: 25%;" >
-                                </div>
-                            </div>
-                        </div>';
+                    $html .= '<tr ' . $style . '>
+                                <td class="find_Nombre"><strong>' . strtoupper($area['are_Nombre']) . '</strong></td>
+                                <td>
+                                    <a role="button" class="btn btn-info btn-icon  btn-icon-mini btn-round  editarArea" data-id="' . $area["are_AreaID"] . '" title="Da clic para editar" href="#"><i class="zmdi zmdi-edit pt-2"></i></a> 
+                                    ' . $estatus . '
+                                </td>
+                            </tr>';
+                }
+
+            $html .= '</tbody>
+                </table>
+            ';
+        
 
                 array_push($areasArray, $html);
             }
-        }
+        
         echo json_encode(array("areas" => $areasArray), JSON_UNESCAPED_SLASHES);
     }//end ajaxGetAreas
 
@@ -348,4 +449,75 @@ class Catalogos extends BaseController
         } else $data['code'] = 0;
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     } //end updatePuestoEstatus
+
+
+    //Lia->Get competencia - puesto
+    public function ajax_getCompetenciaPuesto()
+    {
+        $puestoID = post("puestoID");
+        $data['code'] = 1;
+        $model = new CatalogosModel();
+        $data['competencias'] = $model->getCompetenciasPuesto($puestoID);
+        $data['puesto'] = encryptDecrypt('encrypt', $puestoID);
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_getCompetenciaPuesto
+
+    //Lia->Asignar competencia a puesto
+    public function ajax_asignarCompetencia()
+    {
+        $puestoID = post("puestoID");
+        $competenciaID = (int)post("competenciaID");
+        $nivel = (int)post("nivel");
+        $data['code'] = 0;
+        $model = new CatalogosModel();
+        if ($model->competenciaAsignada($puestoID, $competenciaID)) {
+            $data['code'] = 2;
+        } elseif ($model->asignarCompetenciaPuesto($puestoID, $competenciaID, $nivel)) {
+            $data['code'] = 1;
+            $data['competencias'] = $model->getCompetenciasPuesto($puestoID);
+            $data['puesto'] = encryptDecrypt('encrypt', $puestoID);
+        } //if
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_asignarCompetencia
+
+    //Lia->Eliminar competencia del puesto
+    public function ajax_eliminarCompetenciaPuesto()
+    {
+        $id = (int)post("id");
+        $puestoID = encryptDecrypt('decrypt', post("puesto"));
+        $data['code'] = 0;
+        $model = new CatalogosModel();
+        if ($model->eliminarCompetenciasPuesto($id)) {
+            $data['competencias'] = $model->getCompetenciasPuesto($puestoID);
+            $data['puesto'] = $puestoID;
+            $data['code'] = 1;
+        }
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_eliminarCompetenciaPuesto
+
+
+    //Lia->cambia el estatus del area
+    public function ajaxCambiarEstadoSucursal()
+    {
+        $sucursalID = (int) encryptDecrypt('decrypt', post("sucursalID"));
+        $estado = post("estado");
+        $builder = db()->table("sucursal");
+        $response = $builder->update(array('suc_Estatus' => (int)$estado), array("suc_SucursalID" => $sucursalID));
+        $data['code'] = $response ? 1 : 0;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
+
+    //Diego -> obtener informacion del sucursal
+    function ajax_getInfoSucursal($sucursalID){
+        $result= $this->db->query("SELECT * FROM sucursal WHERE suc_SucursalID = ".(int)encryptDecrypt('decrypt',$sucursalID))->getRowArray();
+        if($result){
+            $result['suc_SucursalID']=encryptDecrypt('encrypt',$result['suc_SucursalID']);
+            unset($result['suc_EmpleadoID'],$result['suc_Estatus']);
+            echo json_encode(array("response"=>"success","result"=>$result));
+        }else{
+            echo json_encode(array("response"=>"error","msg"=>'Ocurrio un error. Intentelo nuevamente'));
+        }
+    }//end ajax_getInfoSucursal
+
 }
