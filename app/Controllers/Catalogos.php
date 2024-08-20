@@ -126,7 +126,7 @@ class Catalogos extends BaseController
         }
 
         //pluggins
-        load_plugins(['select2','footable','footable','load_select','chosen'],$data);
+        load_plugins(['footable','chosen'],$data);
 
         //custom scripts
         //$data['scripts'][] = base_url('assets/js/catalogos/perfilPuesto.js');

@@ -1,27 +1,33 @@
-<li class="header">Dashboard</li>
+<?php
+$result = db()->query('SELECT fun_Nombre, fun_Modulo FROM funcion WHERE fun_Estatus = 1')->getResultArray();
+foreach ($result as $row) {
+    ${strtolower($row['fun_Modulo'])}[] = $row['fun_Nombre'];
+}
+?>
+<li class="header">Inicio</li>
 <li class="active"> <a href="<?= base_url("Usuario/index") ?>"><i class="zmdi zmdi-home"></i><span>Dashboard</span></a></li>
-<li class="header">Configuracion y Catalogos</li>
-<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-settings"></i><span>Configuración</span> </a>
-    <ul class="ml-menu">
-        <li><a href="<?= base_url('Configuracion/roles') ?>">Roles y permisos</a></li>
-        <li><a href="<?= base_url('Configuracion/diasInhabiles') ?>">Dias Inhabiles</a></li>
-        <li><a href="<?= base_url('Configuracion/prestaciones') ?>">Prestaciones</a></li>
-        <li><a href="<?= base_url('Configuracion/configuracionPermisos') ?>">Permisos</a></li>
-        <li><a href="<?= base_url('Configuracion/configuracionExpediente') ?>">Expedientes</a></li>
-        <li> <a href="javascript:void(0);" class="menu-toggle"><b>Horarios</b></a>
+<?php if (showMenu($configuracion)) { ?>
+    <li class="header">Configuracion y Catalogos</li>
+    <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-settings"></i><span>Configuración</span> </a>
         <ul class="ml-menu">
-            <li><a href="<?= base_url('Configuracion/horarios') ?>">Crear Horarios</a></li>
-            <li><a href="<?= base_url('Configuracion/guardias') ?>">Guardias</a></li>
+            <?php
+            echo addMenuOption('roles', 'Configuracion', 'Roles y permisos');
+            echo addMenuOption('diasInhabiles', 'Configuracion', 'Dias Inhabiles');
+            echo addMenuOption('prestaciones', 'Configuracion', 'Prestaciones');
+            echo addMenuOption('configuracionPermisos', 'Configuracion', 'Permisos');
+            echo addMenuOption('configuracionExpediente', 'Configuracion', 'Expedientes');
+            echo showSubMenu(array(['horarios','Configuracion','Crear Horarios'],['guardias','Configuracion','Guardias']),'Horarios');
+            echo addMenuOption('configChecklistIngresoEgreso','Configuracion','Onboarding y Offboarding');
+            ?>
+            
         </ul>
-
-        <li><a href="<?= base_url('Configuracion/configChecklistIngresoEgreso') ?>">Onboarding y Offboarding</a></li>
-    </ul>
-</li>
+    </li>
+<?php } ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
     <ul class="ml-menu">
-        <li> <a href="<?=base_url('Catalogos/departamentos')?>">Departamentos</a> </li>
-        <li> <a href="<?=base_url('Catalogos/areas')?>">Areas</a> </li>
-        <li> <a href="<?=base_url('Catalogos/puestos')?>">Puestos</a> </li>
+        <li> <a href="<?= base_url('Catalogos/departamentos') ?>">Departamentos</a> </li>
+        <li> <a href="<?= base_url('Catalogos/areas') ?>">Areas</a> </li>
+        <li> <a href="<?= base_url('Catalogos/puestos') ?>">Puestos</a> </li>
         <li> <a href="colors.html">Cooperativas</a> </li>
     </ul>
 </li>

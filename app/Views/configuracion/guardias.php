@@ -55,16 +55,16 @@
             <form id="frmGuardia" action="<?= base_url('Configuracion/addGuardia') ?>" method="post" autocomplete="off" role="form">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-8">
                             <label for="nombre"> <span style="color:red">*</span>Nombre</label>
-                            <select id="colaborador" name="colaborador" class="select2 ">
+                            <select id="colaborador" name="colaborador" class="chosen-select ">
                                 <option></option>
                                 <?php foreach ($empleados as $empleado) { ?>
                                     <option value="<?= encryptDecrypt('encrypt', $empleado['emp_EmpleadoID']) ?>"><?= $empleado['emp_Nombre'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4" style="padding-top: 1%;">
                             <label for="nombre"> <span style="color:red">*</span>Semana</label>
                             <input type="text" class="datepicker" name="txtFechas" id="txtFechas" placeholder="Selecciona la semana" />
                         </div>
@@ -82,18 +82,14 @@
 </div>
 <script>
     $(document).ready(function(e) {
-        $('.select2').select2({
-            closeOnSelect: true,
-            dropdownParent: $('#modalAddGuardia'),
-            minimumResultsForSearch: 0
-        });
-
+       
         $('#txtFechas').datepicker({
             autoclose: true,
             format: 'yyyy/mm/dd',
             forceParse: false,
             todayHighlight: !0,
             daysOfWeekDisabled: [0],
+            appendTo: ".modal-body",
         }).on("changeDate", function(e) {
             firstDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
             lastDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(6).format("YYYY-MM-DD");

@@ -63,15 +63,15 @@
                         <input id="expedienteID" name="expedienteID" hidden>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-10">
+                        <div class="col-md-6">
                             <label for="categoria">* Categoria</label>
-                            <select id="categoria" class="form-control" name="categoria">
+                            <select id="categoria" class="chosen-select" name="categoria">
                                 <option hidden value="">Seleccione</option>
                                 <option value="Externos">Externos</option>
                                 <option value="Internos">Internos</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-2">
+                        <div class="form-group col-md-3">
                             <label for="numero">* No.</label>
                             <input type="text" id="numero" class="form-control numeric" name="numero" placeholder="Numero" required>
                         </div>

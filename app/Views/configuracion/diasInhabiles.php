@@ -25,19 +25,19 @@
                         <strong>Día: <label id="fecha"></label></strong>
                     </div>
                     <div class="col-md-12">
-                        <label for="motivo"><b>* Motivo de asueto</b></label>
+                        <label for="motivo"><b>* Motivo de asueto</b></label><br>
                         <textarea class="form-control" id="dia_Motivo" name="dia_Motivo"></textarea>
                     </div>
                     <br>
-                    <div class="col-md-12">
+                    <div class="col-12">
                         <label for="motivo"><b>* Sucursal</b></label>
-                        <select id="sucursales" name="sucursales[]" class="select2 form-control select2-multiple" multiple="multiple">
+                        <select id="sucursales" name="sucursales[]" multiple="multiple" class="chosen-select" style="width: 100% !important;">
                         </select>
                     </div>
                     <br>
-                    <div class="col-md-12">
+                    <div class="col-12">
                         <label for="motivo"><b>* Tipo</b></label>
-                        <select class="select2" id="dia_MedioDia" name="dia_MedioDia">
+                        <select class="chosen-select" id="dia_MedioDia" name="dia_MedioDia" style="width: 100%;">
                             <option value="" hidden>Seleccione</option>
                             <option value="0">Día completo</option>
                             <option value="1">Mediodía</option>

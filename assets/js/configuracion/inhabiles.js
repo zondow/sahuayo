@@ -222,17 +222,6 @@ function eliminarDia() {
         });
     });
 }
-$(".select2").select2({
-    closeOnSelect: true,
-    dropdownParent: $('#modalDiaInhabil'),
-    minimumResultsForSearch: Infinity
-});
-$(".select2-multiple").select2({
-    language: "es",
-    selectOnClose: false,
-    allowClear: true,
-    placeholder: " Seleccione",
-});
 
 function selSucursales() {
     $("#sucursales").empty();
@@ -247,7 +236,7 @@ function selSucursales() {
             $row += "<option value='" + value.suc_SucursalID + "'>" + value.suc_Sucursal + "</option>";
         });
         $("#sucursales").append($row);
-        $("#sucursales").trigger('change');
+        $("#sucursales").trigger('chosen:updated'); // Esto actualiza el select con Chosen
 
     });
 }

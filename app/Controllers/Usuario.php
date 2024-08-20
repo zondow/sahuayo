@@ -706,20 +706,13 @@ class Usuario extends BaseController
 
     public function getNotificacionesPush()
     {
-        $notificaciones = $this->db->query("SELECT *
-                                        FROM notificacion
-                                      WHERE not_Estatus=1 AND not_Push=1 AND not_EmpleadoID=" . (int)session("id"))->getResultArray();
-
-        $msg = array();
-        if (count($notificaciones) > 0) { // si el numero de mensajes es mayor a 0
-
-            foreach ($notificaciones as $notificacion) {
-                array_push($msg, $notificacion);
-                $this->db->query("UPDATE notificacion SET not_Push=0 WHERE not_NotificacionID = '" . $notificacion['not_NotificacionID'] . "'"); //hace el update de mensaje leido
+        $notificaciones = $this->BaseModel->getNotificacionesPush();
+        if (count($notificaciones) > 0) {
+            foreach ($notificaciones as &$notificacion) {
+                update('notificacion', ['not_Push' => 0], ['not_NotificacionID' => $notificacion['not_NotificacionID']]);
             }
         }
-
-        $data['notificaciones'] = $msg;
+        $data['notificaciones'] = $notificaciones;
         echo json_encode($data, JSON_PRETTY_PRINT);
     }
 
@@ -1004,410 +997,36 @@ class Usuario extends BaseController
 
     public function getNotificacionesList()
     {
-        $notificaciones = $this->db->query("SELECT *
-                                        FROM notificacion
-                                      WHERE not_Estatus=1 AND not_EmpleadoID=" . (int)session("id"))->getResultArray();
+        $notificaciones = $this->BaseModel->getNotificaciones();
 
-        $msg = array();
-        $bell = "";
-
+        $html = '';
+        $notify = false;
         if (count($notificaciones) > 0) { // si el numero de mensajes es mayor a 0
-
             foreach ($notificaciones as $not) {
-                switch ($not['not_Titulo']) {
-                    case 'Convocatoria de capacitación';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-graduation-cap';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Nueva solicitud de personal';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-account-search';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'Nueva solicitud de personal por revisar';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-account-search';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'Solicitud de personal autorizada';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-account-search';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Solicitud de personal rechazada';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-account-search';
-                        $color = 'notify-icon bg-danger';
-                        break;
-                    case 'Se ha contratado el candidato seleccionado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-user-check ';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Selecciona candidatos Finalistas';
-                        $link = 'Reclutamiento/requisicionPersonal';
-                        $icono = 'mdi mdi-clipboard-account-outline';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Candidato registrado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-user-plus ';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'El solicitante ha elegido candidatos';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-clipboard-account-outline';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Candidato seleccionado';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-clipboard-account-outline';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Actualización de normativas';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-gavel';
-                        $color = 'notify-icon bg-dark';
-                        break;
-                    case 'Nuevo comunicado';
-                        $link = 'Comunicados/misComunicados';
-                        $icono = 'mdi mdi-comment';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Nuevo informe de salidas';
-                        $link = 'Incidencias/informeSalidasMisEmpleados';
-                        $icono = 'fe-log-out';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Informe de salidas AUTORIZADO';
-                        $link = 'Incidencias/reporteSalidas';
-                        $icono = 'fe-log-out';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Informe de salidas APLICADO';
-                        $link = 'Incidencias/reporteSalidas';
-                        $icono = 'fe-log-out';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Informe de salidas RECHAZADO';
-                        $link = 'Incidencias/reporteSalidas';
-                        $icono = 'fe-log-out';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Nueva solicitud de vacaciones';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi mdi-weather-sunny';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Solicitud de vacaciones AUTORIZADO';
-                        $link = 'Incidencias/misVacaciones';
-                        $icono = 'mdi mdi mdi-weather-sunny';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Solicitud de vacaciones APLICADO';
-                        $link = 'Incidencias/misVacaciones';
-                        $icono = 'mdi mdi mdi-weather-sunny';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Solicitud de vacaciones RECHAZADO';
-                        $link = 'Incidencias/misVacaciones';
-                        $icono = 'mdi mdi mdi-weather-sunny';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Solicitud de vacaciones por aplicar';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi mdi-weather-sunny';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Nueva solicitud de permiso';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Solicitud de permiso AUTORIZADO';
-                        $link = 'Incidencias/misPermisos';
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'Solicitud de permiso APLICADO';
-                        $link = 'Incidencias/misPermisos';
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Solicitud de permiso RECHAZADO';
-                        $link = 'Incidencias/misPermisos';
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $color = 'notify-icon bg-danger';
-                        break;
-                    case 'Solicitud de permiso por APLICAR';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Nueva solicitud de horas extra';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra PRE-AUTORIZADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra por autorizar';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra AUTORIZADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra RECHAZADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra RECHAZADO_RH';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra por aplicar';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de horas extra APLICADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Horas extra pagadas';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time  ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Nuevo periodo de evaluación';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-format-list-checks';
-                        $color = 'notify-icon bg-dark';
-                        break;
-                    case 'Nueva solicitud de prestamo de fondo de ahorro.';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Solicitud adelanto fondo de ahorro';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Solicitud de adelanto AUTORIZADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Solicitud de adelanto RECHAZADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Prestamo de fondo de ahorro APLICADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Solicitud adelanto fondo de ahorro';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Solicitud de prestamo de fondo de ahorro APLICADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Solicitud de prestamo de fondo de ahorro RECHAZADO';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-purple';
-                        break;
-                    case 'Dia extraordinario solicitado';
-                        $link = $not['not_URL'];
-                        $icono = 'dripicons-clock';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Solicitud de prestamo autorizado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de prestamo rechazado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de prestamo aplicado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de prestamo no aplicado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Nueva solicitud de prestamo';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de prestamo por autorizar';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Solicitud de prestamo revisado';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-comment-dollar ';
-                        $color = 'notify-icon bg-primary';
-                        break;
-                    case 'Incapacidad registrada';
-                        $link = $not['not_URL'];
-                        $icono = 'dri dripicons-medical';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Una incapacidad ha sido registrada';
-                        $link = $not['not_URL'];
-                        $icono = 'dri dripicons-medical';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'Resolucion de Incapacidad';
-                        $link = $not['not_URL'];
-                        $icono = 'dri dripicons-medical';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Se le ha generado una sancion';
-                        $link = $not['not_URL'];
-                        $icono = 'dri dripicons-warning';
-                        $color = 'notify-icon bg-warning';
-                        break;
-                    case 'Nuevo recibo de nomina';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-money-check-alt';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'Nueva solicitud de horas';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    case 'Solicitud de vacaciones-horas Aplicada';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Solicitud de vacaciones-horas Rechazada';
-                        $link = $not['not_URL'];
-                        $icono = 'fas fa-business-time';
-                        $color = 'notify-icon bg-danger';
-                        break;
-                    case 'Reporte de salidas por aplicar';
-                        $link = $not['not_URL'];
-                        $icono = 'fe-log-out';
-                        $color = 'notify-icon bg-purple';
-                        break;
+                $url = isset($not['not_Url']) ? htmlspecialchars($not['not_Url']) : '#';
+                $color = isset($not['not_Color']) ? htmlspecialchars($not['not_Color']) : 'bg-green';
+                $icono = isset($not['not_Icono']) ? htmlspecialchars($not['not_Icono']) : 'zmdi zmdi-comment-alert';
+                $descripcion = isset($not['not_Descripcion']) ? htmlspecialchars($not['not_Descripcion']) : '';
+                $fechaRegistro = $not['not_FechaRegistro'];
 
-                    default:
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $link = '#';
-                        $color = 'notify-icon bg-success';
-                        break;
-                }
-                $html = '<a href="#" class="dropdown-item notify-item checkNotificacion" data-id="' . $not['not_NotificacionID'] . '" data-link="' . $link . '">
-                            <div class="' . $color . '"><i class="' . $icono . '"></i></div>
-                            <p class="notify-details">
-                                ' . $not['not_Titulo'] . '
-                                <small class="text-muted ">' . $not['not_Descripcion'] . '</small>
-                            </p>
-                        </a>';
-                array_push($msg,  $html);
+                // Construye el HTML
+                $html = '<li> 
+                        <a href="' . $url . '">
+                            <div class="icon-circle ' . $color . '">
+                                <i class="' . $icono . '"></i>
+                            </div>
+                            <div class="menu-info">
+                                <h4>' . $descripcion . '</h4>
+                                <p><i class="zmdi zmdi-time"></i> ' . diferenciaTiempo($fechaRegistro, date('Y-m-d H:i:s')) . ' </p>
+                            </div>
+                        </a> 
+                    </li>';
             }
-
-            $bell = 'bell';
+            $notify = true;
         }
 
-        $data['total'] = count($notificaciones);
-        $data['class'] = $bell;
-        $data['notificaciones'] = $msg;
-        echo json_encode($data);
-    }
-
-    /** Notificaciones Tickets */
-    public function getNotificacionesPushTicket()
-    {
-        $notificaciones = mesa()->query("SELECT NOTI.* FROM notificacion NOTI WHERE NOTI.not_Estatus=1 AND NOTI.not_Push=1 AND NOTI.not_UsuarioTipo='SOLICITANTE' AND NOTI.not_UsuarioID=?", [usuarioID()])->getResultArray();
-        $msg = array();
-        if (count($notificaciones) > 0) { // si el numero de mensajes es mayor a 0
-            foreach ($notificaciones as $notificacion) {
-                array_push($msg, $notificacion);
-                mesa()->query("UPDATE notificacion SET not_Push=0 WHERE not_NotificacionID = '" . $notificacion['not_NotificacionID'] . "'"); //hace el update de mensaje leido
-            }
-        }
-        $data['notificaciones'] = $msg;
-        echo json_encode($data, JSON_PRETTY_PRINT);
-    }
-
-    public function getNotificacionesTicketList()
-    {
-        $notificaciones = mesa()->query("SELECT NOTI.* FROM notificacion NOTI WHERE NOTI.not_Estatus=1 AND NOTI.not_UsuarioTipo='SOLICITANTE' AND NOTI.not_UsuarioID=?", [usuarioID()])->getResultArray();
-        $msg = array();
-        $bell = "";
-
-        if (count($notificaciones) > 0) { // si el numero de mensajes es mayor a 0
-
-            foreach ($notificaciones as $not) {
-                switch ($not['not_Titulo']) {
-                    case 'Nuevo ticket';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-file-document-box-plus-outline';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Ticket resuelto';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-check-bold';
-                        $color = 'notify-icon bg-success';
-                        break;
-                    case 'Nueva respuesta';
-                        $link = $not['not_URL'];
-                        $icono = 'mdi mdi-comment-processing-outline';
-                        $color = 'notify-icon bg-info';
-                        break;
-                    default;
-                        $icono = 'mdi mdi-comment-account-outline';
-                        $link = '#';
-                        $color = 'notify-icon bg-success';
-                        break;
-                }
-                $html = '<a href="#" class="dropdown-item notify-item checkNotificacionTicket" data-id="' . $not['not_NotificacionID'] . '" data-link="' . $link . '">
-                            <div class="' . $color . '"><i class="' . $icono . '"></i></div>
-                            <p class="notify-details">
-                                ' . $not['not_Titulo'] . '
-                                <small class="text-muted ">' . $not['not_Descripcion'] . '</small>
-                            </p>
-                        </a>';
-                array_push($msg,  $html);
-            }
-
-            $bell = 'ticketIcon';
-        }
-
-        $data['total'] = count($notificaciones);
-        $data['class'] = $bell;
-        $data['notificaciones'] = $msg;
+        $data['style'] = $notify;
+        $data['notificaciones'] = $html;
         echo json_encode($data);
     }
 

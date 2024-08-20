@@ -759,7 +759,7 @@ function numMeses($numMes)
 function isJefe()
 {
     $numEmpleado = session("numero");
-    $colaboradores = db()->query("SELECT * FROM empleado WHERE emp_Jefe='" . $numEmpleado."'")->getResultArray();
+    $colaboradores = db()->query("SELECT * FROM empleado WHERE emp_Jefe='" . $numEmpleado . "'")->getResultArray();
     return (count($colaboradores) > 0) ? TRUE : FALSE;
 }
 
@@ -1010,9 +1010,9 @@ function materialesCapacitacion($capacitacionID)
 //Diego -> Get curriculum vitae
 function CVCandidato($solicitudPersonalID, $candidatoID)
 {
-    
+
     $url = FCPATH . "/assets/uploads/solicitudPersonal/" . $solicitudPersonalID . "/candidato/" . $candidatoID . "/";
-    
+
     if (!file_exists($url)) mkdir($url, 0777, true);
 
     $directory = $url;
@@ -1372,8 +1372,9 @@ function revisarPermisos($accion, $obj, $funcion = null)
     return $response;
 }
 
-function showMenu($funcion, $permisos)
+function showMenu($funcion)
 {
+    $permisos = json_decode(session('permisos'), true);
     $mostrar = false;
     if (is_array($funcion)) {
         foreach ($funcion as $f) {
@@ -1388,8 +1389,35 @@ function showMenu($funcion, $permisos)
     }
     return $mostrar;
 }
+function showSubMenu($funciones, $nombre)
+{
+    $html = '';
+    $mostrarMenu = false;
+    $permisos = json_decode(session('permisos'), true);
 
-function addMenuOption($controlador, $funcion, $permisos, $txt, $show = 0)
+    foreach ($funciones as $funcion) {
+        if (isset($permisos[$funcion[0]])) {
+            $mostrarMenu = true;
+            break;
+        }
+    }
+
+    if ($mostrarMenu) {
+        $html .= '<li><a href="javascript:void(0);" class="menu-toggle"><b>' . htmlspecialchars($nombre) . '</b></a>';
+        $html .= '<ul class="ml-menu">';
+
+        foreach ($funciones as $funcion) {
+            if (isset($permisos[$funcion[0]])) {
+                $html .= addMenuOption($funcion[0], $funcion[1], $funcion[2]);
+            }
+        }
+
+        $html .= '</ul></li>';
+    }
+
+    return $html;
+}
+/*function addMenuOption($controlador, $funcion, $permisos, $txt, $show = 0)
 {
     if (showMenu($funcion, $permisos) || $show) {
         echo '<li>';
@@ -1398,7 +1426,7 @@ function addMenuOption($controlador, $funcion, $permisos, $txt, $show = 0)
         echo '</a>';
         echo '</li>';
     }
-}
+}*/
 
 function insertLog($obj, $empleado, $accion, $tabla, $id)
 {
@@ -1545,12 +1573,11 @@ function ultimoDocumentoPolitica($idPolitica)
             $config["url"] = base_url("/assets/uploads/politicas/" . $idPolitica . "/" . $files[$i]);
         }
     }
-    if(!empty($config["url"])){
+    if (!empty($config["url"])) {
         return $config["url"];
-    }else{
+    } else {
         return null;
     }
-
 }
 
 function historialPoliticaUltima($politicaID, $Rtiempo, $Rduracion)
@@ -1599,8 +1626,9 @@ function get_nombre_dia($fecha)
     return $dias[date('w', strtotime($fecha))];
 }
 
-function proximaFechaHabil($fecha) {
-    $diaInhabil = federacion()->query("SELECT dia_Fecha FROM diainhabil WHERE dia_Fecha = '".date('Y-m-d',strtotime($fecha))."' UNION SELECT dial_Fecha FROM diainhabilley WHERE dial_Fecha = '".date('Y-m-d',strtotime($fecha))."'")->getRowArray();
+function proximaFechaHabil($fecha)
+{
+    $diaInhabil = federacion()->query("SELECT dia_Fecha FROM diainhabil WHERE dia_Fecha = '" . date('Y-m-d', strtotime($fecha)) . "' UNION SELECT dial_Fecha FROM diainhabilley WHERE dial_Fecha = '" . date('Y-m-d', strtotime($fecha)) . "'")->getRowArray();
     // Si la consulta devuelve un resultado, es decir, la fecha es inhabilitada
     if ($diaInhabil) {
         // Incrementar la fecha en un día
@@ -1621,7 +1649,8 @@ function calculoHorasExtraxDia($fecha, $dia, $salida, $regreso, $idEmpleado)
     return (int)$totalHoras;
 }
 
-function calculoHorasExtra($inicio, $fin){
+function calculoHorasExtra($inicio, $fin)
+{
     return ceil(diferenciaHoras($inicio, $fin));
 }
 
@@ -1679,47 +1708,51 @@ function nombreHorarioColaborador($idEmpleado, $fecha)
     }
 
     return $horario;
-
 }
 
-function eliminar_acentos($cadena){
+function eliminar_acentos($cadena)
+{
 
     //Reemplazamos la A y a
     $cadena = str_replace(
-    array('Á', 'À', 'Â', 'Ä', 'á', 'à', 'ä', 'â', 'ª'),
-    array('A', 'A', 'A', 'A', 'a', 'a', 'a', 'a', 'a'),
-    $cadena
+        array('Á', 'À', 'Â', 'Ä', 'á', 'à', 'ä', 'â', 'ª'),
+        array('A', 'A', 'A', 'A', 'a', 'a', 'a', 'a', 'a'),
+        $cadena
     );
 
     //Reemplazamos la E y e
     $cadena = str_replace(
-    array('É', 'È', 'Ê', 'Ë', 'é', 'è', 'ë', 'ê'),
-    array('E', 'E', 'E', 'E', 'e', 'e', 'e', 'e'),
-    $cadena );
+        array('É', 'È', 'Ê', 'Ë', 'é', 'è', 'ë', 'ê'),
+        array('E', 'E', 'E', 'E', 'e', 'e', 'e', 'e'),
+        $cadena
+    );
 
     //Reemplazamos la I y i
     $cadena = str_replace(
-    array('Í', 'Ì', 'Ï', 'Î', 'í', 'ì', 'ï', 'î'),
-    array('I', 'I', 'I', 'I', 'i', 'i', 'i', 'i'),
-    $cadena );
+        array('Í', 'Ì', 'Ï', 'Î', 'í', 'ì', 'ï', 'î'),
+        array('I', 'I', 'I', 'I', 'i', 'i', 'i', 'i'),
+        $cadena
+    );
 
     //Reemplazamos la O y o
     $cadena = str_replace(
-    array('Ó', 'Ò', 'Ö', 'Ô', 'ó', 'ò', 'ö', 'ô'),
-    array('O', 'O', 'O', 'O', 'o', 'o', 'o', 'o'),
-    $cadena );
+        array('Ó', 'Ò', 'Ö', 'Ô', 'ó', 'ò', 'ö', 'ô'),
+        array('O', 'O', 'O', 'O', 'o', 'o', 'o', 'o'),
+        $cadena
+    );
 
     //Reemplazamos la U y u
     $cadena = str_replace(
-    array('Ú', 'Ù', 'Û', 'Ü', 'ú', 'ù', 'ü', 'û'),
-    array('U', 'U', 'U', 'U', 'u', 'u', 'u', 'u'),
-    $cadena );
+        array('Ú', 'Ù', 'Û', 'Ü', 'ú', 'ù', 'ü', 'û'),
+        array('U', 'U', 'U', 'U', 'u', 'u', 'u', 'u'),
+        $cadena
+    );
 
     //Reemplazamos la N, n, C y c
     $cadena = str_replace(
-    array('Ñ', 'ñ', 'Ç', 'ç'),
-    array('N', 'n', 'C', 'c'),
-    $cadena
+        array('Ñ', 'ñ', 'Ç', 'ç'),
+        array('N', 'n', 'C', 'c'),
+        $cadena
     );
 
     return $cadena;
@@ -1728,11 +1761,12 @@ function eliminar_acentos($cadena){
 function totalFondoAhorro($idEmpleado)
 {
     $sql = "SELECT SUM(fon_Total) as 'total' , MAX(fon_Fecha) as 'fecha' FROM fondoahorro WHERE fon_EmpleadoID= ?";
-    return db()->query($sql,array($idEmpleado))->getRowArray();
+    return db()->query($sql, array($idEmpleado))->getRowArray();
 }
 
-function hojaTransferPrestamoFondo($idPrestamo){
-    $idPrestamo=encryptDecrypt('decrypt',$idPrestamo);
+function hojaTransferPrestamoFondo($idPrestamo)
+{
+    $idPrestamo = encryptDecrypt('decrypt', $idPrestamo);
     $url = dirname(WRITEPATH) . "/assets/uploads/prestamos/fondoahorro/" . $idPrestamo . "/";
 
     if (!file_exists($url)) mkdir($url, 0777, true);
@@ -1746,20 +1780,21 @@ function hojaTransferPrestamoFondo($idPrestamo){
             $config["url"] = base_url("/assets/uploads/prestamos/fondoahorro/" . $idPrestamo . "/" . $files[$i]);
         }
     }
-    if(!empty($config["url"])){
+    if (!empty($config["url"])) {
         return $config["url"];
-    }else{
+    } else {
         return null;
     }
 }
 
-function totalAdelantos($empleadoID){
-    $estatus = array('PENDIENTE','AUTORIZADO','APLICADO');
+function totalAdelantos($empleadoID)
+{
+    $estatus = array('PENDIENTE', 'AUTORIZADO', 'APLICADO');
     $estatus = join("','", $estatus);
 
     $sql = "SELECT SUM(pre_Monto) as 'total' FROM prestamofondoahorro
     WHERE pre_EmpleadoID= ? AND pre_Estado IN ('$estatus') AND pre_Estatus=1";
-    return db()->query($sql,array($empleadoID))->getRowArray();
+    return db()->query($sql, array($empleadoID))->getRowArray();
 }
 
 function postalCumpleanios($empleadoID)
@@ -1782,7 +1817,8 @@ function postalCumpleanios($empleadoID)
     return $imagen;
 }
 
- function postalAniversario($empleadoID){
+function postalAniversario($empleadoID)
+{
     $empleadoID = (int)encryptDecrypt('decrypt', $empleadoID);
 
     $url = dirname(WRITEPATH) . "/assets/images/aniversarios/" . $empleadoID . ".png";
@@ -1804,8 +1840,8 @@ function postalCumpleanios($empleadoID)
 //Diego -> Get fotos ultima galeria
 function galeriaFotos()
 {
-    $ultimaGaleria= db()->query("SELECT gal_Nombre FROM galeria WHERE gal_Estatus=1 ORDER BY gal_Fecha DESC LIMIT 1")->getRowArray();
-    $url = FCPATH . "/assets/uploads/galeria/" . $ultimaGaleria['gal_Nombre'] ;
+    $ultimaGaleria = db()->query("SELECT gal_Nombre FROM galeria WHERE gal_Estatus=1 ORDER BY gal_Fecha DESC LIMIT 1")->getRowArray();
+    $url = FCPATH . "/assets/uploads/galeria/" . $ultimaGaleria['gal_Nombre'];
 
     if (!file_exists($url)) mkdir($url, 0777, true);
 
@@ -1815,16 +1851,17 @@ function galeriaFotos()
 
     $data = array();
     $config = array();
-    $n=0;
+    $n = 0;
     for ($i = 2; $i <= $num_files; $i++) {
-        $config["url"]= base_url("/assets/uploads/galeria/".$ultimaGaleria['gal_Nombre']."/".$files[$i]);
+        $config["url"] = base_url("/assets/uploads/galeria/" . $ultimaGaleria['gal_Nombre'] . "/" . $files[$i]);
         array_push($data, $config["url"]);
     }
     return $data;
 } //materialesCapacitacion
 
 
-function DescansoColaborador($idEmpleado,$fecha){
+function DescansoColaborador($idEmpleado, $fecha)
+{
     //Si tiene horario de guardia
     $sqlg = "SELECT * FROM guardia G JOIN horario H ON H.hor_HorarioID=G.gua_HorarioID WHERE G.gua_EmpleadoID=? AND ? BETWEEN G.gua_FechaInicio AND G.gua_FechaFin";
     $horario = db()->query($sqlg, array($idEmpleado, $fecha))->getRowArray();
@@ -1835,7 +1872,7 @@ function DescansoColaborador($idEmpleado,$fecha){
     }
 
     $dia = get_nombre_dia($fecha);
-    return (int)$horario['hor_'.$dia.'Descanso'];
+    return (int)$horario['hor_' . $dia . 'Descanso'];
 }
 
 
@@ -1847,25 +1884,25 @@ function calcularDiasPermiso($fechaInicio, $fechaFin)
     $inhabiles = diasInhabilesPermiso();
     $fechaFin = $fechaFin->modify("+1 day");
     $interval = new DateInterval('P1D');
-    $daterange = new DatePeriod($fechaInicio, $interval ,$fechaFin);
+    $daterange = new DatePeriod($fechaInicio, $interval, $fechaFin);
 
     $dias = 0;
 
-    foreach($daterange as $date) {
-        if(date('l', strtotime($date->format("Y-m-d"))) !== 'Sunday'){
-            if(!in_array($date->format("Y-m-d"), $inhabiles)) {
+    foreach ($daterange as $date) {
+        if (date('l', strtotime($date->format("Y-m-d"))) !== 'Sunday') {
+            if (!in_array($date->format("Y-m-d"), $inhabiles)) {
                 $dias++;
             }
         }
     }
     return $dias;
-
 } //calcularDiasPermiso
 
 
 
 //Lia -> meses de antiguedad
-function antiguedadMeses($emp_fechaIngreso){
+function antiguedadMeses($emp_fechaIngreso)
+{
     $fi = new DateTime($emp_fechaIngreso);
     $fn = new DateTime("now");
     $diff = $fi->diff($fn);
@@ -1873,23 +1910,26 @@ function antiguedadMeses($emp_fechaIngreso){
     $meses = $diff->m;
 
     return $meses;
-}//end antiguedad
+} //end antiguedad
 
-function cumpleanos($fechaNacimiento){
+function cumpleanos($fechaNacimiento)
+{
     $from = new DateTime($fechaNacimiento);
     $to   = new DateTime('today');
     return $from->diff($to)->y;
 }
 
 
-function isMobile(){
+function isMobile()
+{
     return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
 }
 
-function domingosAnio(){
-    $anio =date('Y');
-    $startDate = new DateTime($anio.'-01-01');
-    $endDate = new DateTime($anio.'-12-31');
+function domingosAnio()
+{
+    $anio = date('Y');
+    $startDate = new DateTime($anio . '-01-01');
+    $endDate = new DateTime($anio . '-12-31');
 
     $sundays = array();
 
@@ -1905,22 +1945,23 @@ function domingosAnio(){
 
 function RemoveSpecialChar($str)
 {
-    $res = str_replace(array("#", "'", ";"," ","(",")","$","#","/","-","_"), '', $str);
+    $res = str_replace(array("#", "'", ";", " ", "(", ")", "$", "#", "/", "-", "_"), '', $str);
     return $res;
 }
 
 
-function antiguedadMesesAnios($fechaIngreso){
-    $fecha = new DateTime(date('Y/m/d',strtotime($fechaIngreso))); // Creo un objeto DateTime de la fecha ingresada
-        $fecha_hoy =  new DateTime(date('Y/m/d',time())); // Creo un objeto DateTime de la fecha de hoy
-        $antiguedad = date_diff($fecha_hoy,$fecha);
-        return " {$antiguedad->format('%Y')} años y {$antiguedad->format('%m')} meses";
-
+function antiguedadMesesAnios($fechaIngreso)
+{
+    $fecha = new DateTime(date('Y/m/d', strtotime($fechaIngreso))); // Creo un objeto DateTime de la fecha ingresada
+    $fecha_hoy =  new DateTime(date('Y/m/d', time())); // Creo un objeto DateTime de la fecha de hoy
+    $antiguedad = date_diff($fecha_hoy, $fecha);
+    return " {$antiguedad->format('%Y')} años y {$antiguedad->format('%m')} meses";
 }
 
 
-function evidenciaPagoAnticipo($adelantoID,$pago){
-    $url =  FCPATH . "/assets/uploads/prestamos/anticiposueldo/".$adelantoID."/".$pago."/";
+function evidenciaPagoAnticipo($adelantoID, $pago)
+{
+    $url =  FCPATH . "/assets/uploads/prestamos/anticiposueldo/" . $adelantoID . "/" . $pago . "/";
 
     if (!file_exists($url)) mkdir($url, 0777, true);
 
@@ -1930,62 +1971,67 @@ function evidenciaPagoAnticipo($adelantoID,$pago){
     $config = array();
     for ($i = 2; $i <= $num_files; $i++) {
         if (file_exists($url . $files[$i])) {
-            $config["url"] = base_url("/assets/uploads/prestamos/anticiposueldo/".$adelantoID."/".$pago."/". $files[$i]);
+            $config["url"] = base_url("/assets/uploads/prestamos/anticiposueldo/" . $adelantoID . "/" . $pago . "/" . $files[$i]);
         }
     }
-    if(!empty($config["url"])){
+    if (!empty($config["url"])) {
         return $config["url"];
-    }else{
+    } else {
         return null;
     }
 }
 
-function getHorasExtraByEmpleado($empleadoID){
-    $horasExtra= db()->query("SELECT SUM(rep_Horas) as 'horas' FROM reportehoraextra WHERE rep_Estado='PAGADO' AND rep_TipoPago='Tiempo por tiempo' AND rep_EmpleadoID=?",array($empleadoID))->getRowArray()['horas']??0;
+function getHorasExtraByEmpleado($empleadoID)
+{
+    $horasExtra = db()->query("SELECT SUM(rep_Horas) as 'horas' FROM reportehoraextra WHERE rep_Estado='PAGADO' AND rep_TipoPago='Tiempo por tiempo' AND rep_EmpleadoID=?", array($empleadoID))->getRowArray()['horas'] ?? 0;
     //$horasExtraVacaciones= db()->query("SELECT SUM(vach_Horas) as 'horas' FROM vacacionhoras WHERE vach_Estado=1 AND vach_Estatus='AUTORIZADO_RH' AND vach_EmpleadoID=".$empleadoID)->getRowArray()['horas']??0;
-    $horasAcumuladas=db()->query("SELECT acu_HorasExtra as 'horas' FROM acumulados WHERE acu_EmpleadoID=?",[$empleadoID])->getRowArray()['horas']??0;
-    $horasConsumidas = db()->query("SELECT SUM(per_Horas) AS 'horas' FROM permiso WHERE per_Estado IN ('PENDIENTE','AUTORIZADO_GG','AUTORIZADO_GO','AUTORIZADO_RH') AND per_Estatus=1 AND per_EmpleadoID=".$empleadoID)->getRowArray()['horas']??0;
-    return ($horasExtra+$horasAcumuladas/*+$horasExtraVacaciones*/)-$horasConsumidas;
+    $horasAcumuladas = db()->query("SELECT acu_HorasExtra as 'horas' FROM acumulados WHERE acu_EmpleadoID=?", [$empleadoID])->getRowArray()['horas'] ?? 0;
+    $horasConsumidas = db()->query("SELECT SUM(per_Horas) AS 'horas' FROM permiso WHERE per_Estado IN ('PENDIENTE','AUTORIZADO_GG','AUTORIZADO_GO','AUTORIZADO_RH') AND per_Estatus=1 AND per_EmpleadoID=" . $empleadoID)->getRowArray()['horas'] ?? 0;
+    return ($horasExtra + $horasAcumuladas/*+$horasExtraVacaciones*/) - $horasConsumidas;
 }
 
-function getTipoEmpleado($empleadoID){
-    return db()->query("SELECT emp_TipoEmp FROM empleado WHERE emp_EmpleadoID=?",[$empleadoID])->getRowArray()['emp_TipoEmp'];
+function getTipoEmpleado($empleadoID)
+{
+    return db()->query("SELECT emp_TipoEmp FROM empleado WHERE emp_EmpleadoID=?", [$empleadoID])->getRowArray()['emp_TipoEmp'];
 }
 
-function actualizarVacacion($empleado,$dias){
+function actualizarVacacion($empleado, $dias)
+{
     $builder = db()->table('vacacionempleado');
-    $builder->update(array('vace_Dias'=>$dias,'vace_FechaActualizacion'=>date('Y-m-d H:i:s')),array('vace_EmpleadoID'=>$empleado));
-    if(db()->affectedRows() > 0) return TRUE;
+    $builder->update(array('vace_Dias' => $dias, 'vace_FechaActualizacion' => date('Y-m-d H:i:s')), array('vace_EmpleadoID' => $empleado));
+    if (db()->affectedRows() > 0) return TRUE;
     else  return FALSE;
 }
 
-function diferenciaAnios($f1,$f2){
+function diferenciaAnios($f1, $f2)
+{
     $from = new DateTime($f1);
     $to   = new DateTime($f2);
     return $from->diff($to)->y;
 }
 
-function fechaPresentarse($fechaFinVacacion,$empleadoID){
+function fechaPresentarse($fechaFinVacacion, $empleadoID)
+{
     $fechaRegreso = date('Y-m-d', strtotime('+1 days', strtotime($fechaFinVacacion)));
-    if(get_nombre_dia($fechaRegreso)!='Domingo'){
-        $guardia = db()->query("SELECT * FROM guardia WHERE gua_EmpleadoID=? AND ? BETWEEN gua_FechaInicio AND gua_FechaFin",[$empleadoID,$fechaRegreso])->getRowArray();
-        if(is_null($guardia)){
-            if(get_nombre_dia($fechaRegreso)=='Sabado'){
-                $fechaRegreso= date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
-            if(get_nombre_dia($fechaRegreso)=='Domingo') $fechaRegreso= date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
+    if (get_nombre_dia($fechaRegreso) != 'Domingo') {
+        $guardia = db()->query("SELECT * FROM guardia WHERE gua_EmpleadoID=? AND ? BETWEEN gua_FechaInicio AND gua_FechaFin", [$empleadoID, $fechaRegreso])->getRowArray();
+        if (is_null($guardia)) {
+            if (get_nombre_dia($fechaRegreso) == 'Sabado') {
+                $fechaRegreso = date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
+                if (get_nombre_dia($fechaRegreso) == 'Domingo') $fechaRegreso = date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
             }
-        }else{
+        } else {
             $fechaRegreso = $fechaRegreso;
         }
-    }else{
-        $fechaRegreso= date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
+    } else {
+        $fechaRegreso = date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
     }
-    $sucursal = '["'.db()->query("SELECT emp_SucursalID FROM empleado WHERE emp_EmpleadoID=?",[$empleadoID])->getRowArray()['emp_SucursalID'].'","0"]';
+    $sucursal = '["' . db()->query("SELECT emp_SucursalID FROM empleado WHERE emp_EmpleadoID=?", [$empleadoID])->getRowArray()['emp_SucursalID'] . '","0"]';
     $diaInhabil = db()->query("SELECT dial_Fecha AS 'fecha' FROM diainhabilley WHERE dial_Fecha = ?
     UNION
-    SELECT dia_Fecha AS 'fecha' FROM diainhabil WHERE dia_Fecha = ? AND JSON_CONTAINS(dia_SucursalID,'".$sucursal."')",[$fechaRegreso,$fechaRegreso])->getResultArray();
-    if($diaInhabil){
-        $fechaRegreso= date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
+    SELECT dia_Fecha AS 'fecha' FROM diainhabil WHERE dia_Fecha = ? AND JSON_CONTAINS(dia_SucursalID,'" . $sucursal . "')", [$fechaRegreso, $fechaRegreso])->getResultArray();
+    if ($diaInhabil) {
+        $fechaRegreso = date('Y-m-d', strtotime('+1 days', strtotime($fechaRegreso)));
     }
     return $fechaRegreso;
 }
@@ -1993,7 +2039,7 @@ function fechaPresentarse($fechaFinVacacion,$empleadoID){
 //Diego -> Get fotos ultima galeria
 function portadaGaleria($galeriaNombre)
 {
-    $url = FCPATH . "/assets/uploads/galeria/" . $galeriaNombre ;
+    $url = FCPATH . "/assets/uploads/galeria/" . $galeriaNombre;
     echo $galeriaNombre;
     if (!file_exists($url)) mkdir($url, 0777, true);
     $directory = $url;
@@ -2001,7 +2047,7 @@ function portadaGaleria($galeriaNombre)
     $data = array();
     $config = array();
     for ($i = 2; $i <= 2; $i++) {
-        $config["url"]= base_url("/assets/uploads/galeria/".$galeriaNombre."/".$files[$i]);
+        $config["url"] = base_url("/assets/uploads/galeria/" . $galeriaNombre . "/" . $files[$i]);
         array_push($data, $config["url"]);
     }
     return $data;
@@ -2010,14 +2056,14 @@ function portadaGaleria($galeriaNombre)
 //Diego -> Get fotos ultima galeria
 function verGaleriaFotos($album)
 {
-    $url = FCPATH . "/assets/uploads/galeria/" . $album ;
+    $url = FCPATH . "/assets/uploads/galeria/" . $album;
 
     if (!file_exists($url)) mkdir($url, 0777, true);
     $files = preg_grep('/^([^.])/', scandir($url));
     $data = array();
     $config = array();
     foreach ($files as $file) {
-        $config["url"]= base_url("/assets/uploads/galeria/".$album."/".$file);
+        $config["url"] = base_url("/assets/uploads/galeria/" . $album . "/" . $file);
         array_push($data, $config["url"]);
     }
     return $data;
@@ -2031,7 +2077,7 @@ function getAnuncio($anuncio)
         $url = FCPATH . "/assets/uploads/anuncios/" . encryptDecrypt('encrypt', $anuncio) . "/";
         if (!file_exists($url)) mkdir($url, 0777, true);
         $files = preg_grep('/^([^.])/', scandir($url));
-        if($files){
+        if ($files) {
             sort($files);
             $reproducir = '';
             /*if ($autoplay == true) {
@@ -2052,7 +2098,7 @@ function getAnuncio($anuncio)
                             </div>';
                     break;
             }
-        }else{
+        } else {
             return null;
         }
     }
@@ -2073,5 +2119,28 @@ function archivoAnuncio($anuncioID)
 
 function nombreEmpleadoById($id)
 {
-    return db()->query("select emp_Nombre from empleado where emp_EmpleadoID =?",array($id))->getRowArray()['emp_Nombre'];
+    return db()->query("select emp_Nombre from empleado where emp_EmpleadoID =?", array($id))->getRowArray()['emp_Nombre'];
+}
+
+function addMenuOption($funcion, $controlador, $nombre)
+{
+    $permisos = json_decode(session('permisos'), true);
+    if (isset($permisos[$funcion])) {
+        if (in_array("Ver", $permisos[$funcion])) {
+            return '<li><a href="' . base_url($controlador . '/' . $funcion) . '">' . $nombre . '</a></li>';
+        }
+    }
+    return '';
+}
+
+function diferenciaTiempo($fechaInicio,$fechaFin){
+    $start_date = new DateTime(date($fechaInicio));
+    $since_start = $start_date->diff(new DateTime(date($fechaFin)));
+    $time = "";
+    $time.= (($since_start->m > 0 ? $since_start->m.' mes ' : $since_start->m == 1) ? $since_start->m.' meses ' : '');
+    $time.= (($since_start->d > 0 ? $since_start->d.' día ' : $since_start->d == 1) ? $since_start->d.' días ':'');
+    $time.= (($since_start->h > 0 ? $since_start->h.' horas ' : $since_start->h == 1) ? $since_start->h.' horas ':'');
+    $time.= (($since_start->i > 0 ? $since_start->i.' minuto ' : $since_start->i == 1) ? $since_start->i.' minutos ':'');
+    $time.= (($since_start->s > 0 ? $since_start->s.' segundos ' : $since_start->s == 1) ? $since_start->s.' segundos ':'');
+    return $time;
 }
