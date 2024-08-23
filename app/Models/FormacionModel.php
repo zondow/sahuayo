@@ -6,17 +6,8 @@ use CodeIgniter\Model;
 
 class FormacionModel extends Model
 {
-    //Diego -> traer cursis
-    function getCursos()
-    {
-        return $this->db->query("SELECT * FROM curso ORDER BY cur_Nombre ASC")->getResultArray();
-    } //getCursos
-
-    //Diego -> traer estados
-    function getDatosProveedores()
-    {
-        return $this->db->query("SELECT * FROM proveedor ORDER BY pro_Nombre ASC")->getResultArray();
-    } //getEstados
+    
+    
 
     //diego -> traer empleados
     public function getEmpleados()
@@ -24,11 +15,7 @@ class FormacionModel extends Model
         return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 ORDER BY emp_Nombre ASC")->getResultArray();
     }//getEmpleados
 
-    //Diego -> traer instructores
-    function getInstructores()
-    {
-        return $this->db->query("SELECT *,emp_Nombre as 'ins_Nombre' FROM instructor JOIN empleado ON ins_EmpleadoID=emp_EmpleadoID ")->getResultArray();
-    } //getInstructores
+   
 
     //Lia->trae las capacitaciones por empleado
     public function getCapacitacionesByEmpleadoID()
@@ -225,12 +212,5 @@ class FormacionModel extends Model
 
     }
 
-    //Diego -> traer competencias
-    function getCompetencias($catalogo=null) {
-        $where='';
-        if(empty($catalogo)){
-            $where = 'WHERE com_Estatus=1';
-        }
-        return $this->db->query("SELECT * FROM competencia ".$where." ORDER BY com_Nombre ASC")->getResultArray();
-    }//getCompetencias
+   
 }//end FormacionModel

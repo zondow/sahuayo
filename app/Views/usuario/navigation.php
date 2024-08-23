@@ -25,14 +25,17 @@ foreach ($result as $row) {
 <?php } ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
     <ul class="ml-menu">
-        <li> <a href="<?=base_url('Catalogos/departamentos')?>">Departamentos</a> </li>
-        <li> <a href="<?=base_url('Catalogos/areas')?>">Areas</a></li>
-        <li> <a href="<?=base_url('Catalogos/puestos')?>">Puestos</a> </li>
-        <li> <a href="<?=base_url('Catalogos/sucursales')?>">Sucursales</a></li>
-        <li> <a href="<?= base_url('Catalogos/departamentos') ?>">Departamentos</a> </li>
-        <li> <a href="<?= base_url('Catalogos/areas') ?>">Areas</a> </li>
-        <li> <a href="<?= base_url('Catalogos/puestos') ?>">Puestos</a> </li>
-        <li> <a href="colors.html">Cooperativas</a> </li>
+        <?php
+        echo addMenuOption('sucursales', 'Catalogos', 'Sucursales');
+        echo addMenuOption('departamentos', 'Catalogos', 'Departamentos');
+        echo addMenuOption('areas', 'Catalogos', 'Areas');
+        echo addMenuOption('puestos', 'Catalogos', 'Puestos');
+        echo addMenuOption('competencias', 'Catalogos', 'Competencias');
+        echo addMenuOption('cursos', 'Catalogos', 'Cursos');
+        echo addMenuOption('proveedores', 'Catalogos', 'Proveedores de capacitación');
+        echo addMenuOption('instructores', 'Catalogos', 'Instructores de capacitación');
+
+        ?>
     </ul>
 </li>
 <li class="header">Personal</li>

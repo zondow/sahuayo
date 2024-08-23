@@ -1,5 +1,13 @@
 $(document).ready(function(e) {
-    $(".select2").select2();
+    
+    // Plugin file para logo
+    $(".input-filestyle").filestyle('placeholder', 'Seleccione un archivo (.pdf , .png , .jpg , .jpeg)');
+
+    
+    //CKEditor
+    CKEDITOR.replace('cur_Temario');
+    CKEDITOR.config.height = 300;
+      
 
     $("#datatable").DataTable({
         language:
@@ -12,7 +20,7 @@ $(document).ready(function(e) {
                 "sLengthMenu":     "Mostrar _MENU_ registros",
                 "sZeroRecords":    "No se encontraron resultados",
                 "sEmptyTable":     "Ningún dato disponible en esta tabla.",
-                "sInfo":           "",
+                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
                 "sInfoEmpty":      "",
                 "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
                 "sInfoPostFix":    "",
@@ -31,8 +39,8 @@ $(document).ready(function(e) {
         buttons: [
             {
                 extend: 'excelHtml5',
-                title: 'Catalogo de instructores',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                title: 'Catalogo de Cursos',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
                 className: "btn l-slategray",
                 autoFilter: true,
@@ -42,8 +50,8 @@ $(document).ready(function(e) {
             },
             {
                 extend: 'pdfHtml5',
-                title: 'Catalogo de instructores',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                title: 'Catalogo de Cursos',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
                 className: "btn l-slategray",
                 orientation: 'landscape',
@@ -55,25 +63,26 @@ $(document).ready(function(e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn l-slategray",
+                className: "btn btn-light",
             }
         ],
     });
 
-    $("body").on("click", ".modalInst", function (evt) {
+    $("body").on("click", ".modalCursos", function (evt) {
         evt.preventDefault();
-        $("#formInstructor")[0].reset();
-        $("#ins_InstructorID").val(0);
-        $("#modalInstructor").modal("show");
+        $("#title").text("Nuevo Curso");
+        $("#formCursos")[0].reset();
+        $("#cur_CursoID").val(0);
+        $("#modalCurso").modal("show");
     });
 
-    $("body").on("click", ".editarInstructor", function (evt) {
+    $("body").on("click", ".editarCurso", function (evt) {
         evt.preventDefault();
-        $("#formInstructor")[0].reset();
-        $('#ins_EmpleadoID').prop('disabled', 'disabled');
-        let instructorID = $(this).data('id');
+        $("#title").text("Editar Curso");
+        $("#formCursos")[0].reset();
+        let cursoID = $(this).data('id');
         $.ajax({
-            url: BASE_URL + "Formacion/ajax_getInfoInstructor/"+instructorID ,
+            url: BASE_URL + "Catalogos/ajax_getInfoCurso/"+cursoID ,
             type: "POST",
             async:true,
             cache:false,
@@ -81,11 +90,14 @@ $(document).ready(function(e) {
         }).done(function (data){
 
             if(data.response === "success"){
-                $("#ins_InstructorID").val(data.result.ins_InstructorID);
-                $("#ins_EmpleadoID").val(data.result.ins_EmpleadoID);
-                $("#ins_EmpleadoID").select2().trigger('change');
-                $("#ins_CriterioSeleccion").val(data.result.ins_CriterioSeleccion);
-                $("#ins_CriterioSeleccion").select2().trigger('change');
+                $("#cur_CursoID").val(data.result.cur_CursoID);
+                $("#cur_Nombre").val(data.result.cur_Nombre);
+                $("#cur_Objetivo").val(data.result.cur_Objetivo);
+                $("#cur_Horas").val(data.result.cur_Horas);
+                CKEDITOR.instances['cur_Temario'].setData(data.result.cur_Temario);
+
+                $("#cur_Modalidad").val(data.result.cur_Modalidad);
+                $("#cur_Modalidad").trigger('chosen:updated');
 
             }
         }).fail(function () {
@@ -98,7 +110,8 @@ $(document).ready(function(e) {
                 allowToastClose : true,
             });
         });
-        $("#modalInstructor").modal("show");
+        $("#modalCurso").modal("show");
     });
+
 
 });

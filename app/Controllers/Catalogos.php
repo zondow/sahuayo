@@ -35,7 +35,7 @@ class Catalogos extends BaseController
         $data['departamentos'] = $this->CatalogosModel->getCatalogoDepartamentos();
 
         //pluggins
-        load_plugins(['sweetalert2','chosen'],$data);
+        load_plugins(['datatables_buttons','sweetalert2','chosen'],$data);
        
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/departamentos.js');
@@ -59,7 +59,7 @@ class Catalogos extends BaseController
         $data['areas'] = $this->CatalogosModel->getAreas();
 
         //pluggins
-        load_plugins(['sweetalert2'],$data);
+        load_plugins(['datatables_buttons','sweetalert2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/areas.js');
@@ -83,7 +83,7 @@ class Catalogos extends BaseController
         );
 
         //pluggins
-        load_plugins(['sweetalert2'],$data);
+        load_plugins(['datatables_buttons','sweetalert2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url("assets/js/catalogos/puestos.js");
@@ -146,7 +146,7 @@ class Catalogos extends BaseController
         $data['sucursales']=$this->CatalogosModel->getSucursales();
 
         //pluggins
-        load_plugins(['sweetalert2'],$data);
+        load_plugins(['datatables_buttons','sweetalert2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/sucursales.js');
@@ -156,6 +156,113 @@ class Catalogos extends BaseController
         echo view('catalogos/sucursales', $data);
         echo view('htdocs/footer', $data);
     }//end sucursales
+
+    //Lia -> Catalogo de competencias
+    function competencias()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+
+        $data['title'] = 'Competencias';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+            array("titulo" => 'Catálogo de competencias', "link" => base_url('Catalogos/competencias'), "class" => "active"),
+        );
+        
+        $data['competenciasLocales'] = $this->CatalogosModel->getCompetencias(1);
+
+        //pluggins
+        load_plugins(['datatables_buttons','chosen'],$data);
+        
+        //custom scripts
+        $data['scripts'][] = base_url('assets/js/catalogos/competencias.js');
+        $data['scripts'][] = base_url('assets/js/catalogos/modalCompetencias.js');
+
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('catalogos/competencias', $data);
+        echo view('catalogos/modalCompetencias', $data);
+        //echo view('formacion/modalVerPreguntas', $data);
+        //echo view('formacion/modalClave', $data);
+        echo view('htdocs/footer', $data);
+    } //end competencias
+
+    //DiegoV->Vista para agregar editar y dar de baja proveedores
+    public function proveedores()
+    {
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Proveedores';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+            array("titulo" => 'Catálogo de proveedores', "link" => base_url('Catalogos/proveedores'), "class" => "")
+        );
+
+        $data['proveedores'] = $this->CatalogosModel->getDatosProveedores();
+
+        //pluggins
+        load_plugins(['datatables_buttons'],$data);
+
+        //custom scripts
+        $data['scripts'][] = base_url('assets/js/catalogos/proveedores.js');
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('catalogos/proveedores');
+        echo view('htdocs/footer');
+    } //end proveedores
+
+    //DiegoV->Vista para agregar editar y dar de baja instructores
+    public function instructores()
+    {
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Instructores';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'),"class" => ""),
+            array("titulo" => 'Catálogo de Instructores', "link" => base_url('Catalogos/instructores'),"class" => "")
+        );
+
+        $data['empleados'] = $this->BaseModel->getEmpleados();
+        $data['instructores'] = $this->CatalogosModel->getInstructores();
+
+        //pluggins
+        load_plugins(['datatables_buttons' , 'chosen'],$data);
+
+        //custom scripts
+        $data['scripts'][] = base_url("assets/js/catalogos/instructores.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('catalogos/instructores');
+        echo view('htdocs/modalPdf');
+        echo view('htdocs/footer');
+    } //end instructores
+
+    //Diego->Vista para agregar editar y dar de baja cursos
+    public function cursos()
+    {
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Cursos';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'),"class" => ""),
+            array("titulo" => 'Catálogo de cursos', "link" => base_url('Catalogos/cursos'),"class" => "")
+        );
+
+        $data['cursos'] = $this->CatalogosModel->getCursos();
+
+        //pluggins
+        load_plugins(['datatables_buttons' , 'chosen','lightbox','ckeditor','filestyle','modalPdf'],$data);
+
+        //custom scripts
+        $data['scripts'][] = base_url("assets/js/catalogos/cursos.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('catalogos/cursos');
+        echo view('htdocs/modalPdf');
+        echo view('htdocs/footer');
+    } //end cursos
+
 
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
@@ -276,6 +383,162 @@ class Catalogos extends BaseController
         return redirect()->to($_SERVER['HTTP_REFERER']);
     } //end updatePerfilPuesto
 
+    //Lia->Update estatus competencia
+    function updateCompetenciaEstatus($competenciaID, $estatus)
+    {
+        $competenciaID = encryptDecrypt('decrypt', $competenciaID);
+        $estatus = encryptDecrypt('decrypt', $estatus);
+     
+        $builder = db()->table('competencia');
+        $result = $builder->update(array('com_Estatus' => (int)$estatus), array('com_CompetenciaID' => (int)$competenciaID));
+        if ($result) {
+            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el estatus correctamente!'));
+        } else {
+            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    }//end updateCompetenciaEstatus
+
+    //Diego -> agregar/actualizar proveedores
+    public function addProveedor()
+    {
+        $post = $this->request->getPost();
+        if ($post['pro_ProveedorID'] <= 0) {
+            unset($post['pro_ProveedorID']);
+            $post['pro_EmpleadoID'] = session('id');
+            $builder = $this->db->table('proveedor');
+            $builder->insert($post);
+            $result = $this->db->insertID();
+            if ($result) {
+                insertLog($this, session('id'), 'Insertar', 'proveedor', $result);
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se registro el proveedor correctamente!'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al registro intente mas tarde!'));
+            }
+        } else {
+            $builder = $this->db->table('proveedor');
+            $result = $builder->update($post, array('pro_ProveedorID' => (int)$post['pro_ProveedorID']));
+            if ($result) {
+                insertLog($this, session('id'), 'Actualizar', 'proveedor', $post['pro_ProveedorID']);
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el proveedor correctamente!'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al actualizar intente mas tarde!'));
+            }
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    }//end addProveedor
+
+    //Diego->estatus proveedor
+    function estatusProveedor($estatus, $idProveedor)
+    {
+        $idProveedor = encryptDecrypt('decrypt', $idProveedor);
+        $builder = $this->db->table('proveedor');
+        $result = $builder->update(array('pro_Estatus' => (int)$estatus), array('pro_ProveedorID' => (int)$idProveedor));
+        if ($result) {
+            insertLog($this, session('id'), 'Cambiar Estatus', 'proveedor', (int)$idProveedor);
+            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el estatus del proveedor correctamente!'));
+        } else {
+            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    } //end estatusProveedor
+
+
+    //Diego -> agregar/actualizar instructor
+    public function addInstructor()
+    {
+        $post = $this->request->getPost();
+        if ($post['ins_InstructorID'] <= 0) {
+            unset($post['ins_InstructorID']);
+            $post['ins_EmpleadoIDReg'] = session('id');
+            $builder = $this->db->table('instructor');
+            $builder->insert($post);
+            $result = $this->db->insertID();
+            if ($result) {
+                insertLog($this, session('id'), 'Insertar', 'instructor', $result);
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se registro el instructor correctamente!'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al registro intente mas tarde!'));
+            }
+        } else {
+            $builder = $this->db->table('instructor');
+            $result = $builder->update($post, array('ins_InstructorID' => (int)$post['ins_InstructorID']));
+            if ($result) {
+                insertLog($this, session('id'), 'Actualizar', 'instructor', $post['ins_InstructorID']);
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el instructor correctamente!'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al actualizar intente mas tarde!'));
+            }
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    }
+ 
+    //Diego->estatus instructor
+    function estatusInstructor($estatus, $idInstructor)
+    {
+        $idInstructor = encryptDecrypt('decrypt', $idInstructor);
+        $builder = $this->db->table('instructor');
+        $result = $builder->update(array('ins_Estatus' => (int)$estatus), array('ins_InstructorID' => (int)$idInstructor));
+        if ($result) {
+            insertLog($this, session('id'), 'Cambiar Estatus', 'instructor', (int)$idInstructor);
+            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el estatus del instructor correctamente!'));
+        } else {
+            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    } //end estatusInstructor
+
+    //Diego -> agregar/actualizar curso
+    public function addCurso()
+    {
+        $post = $this->request->getPost();
+        if ($post['cur_CursoID'] <= 0) {
+            $data = array(
+                "cur_Nombre" => $post['cur_Nombre'],
+                "cur_Objetivo" => $post['cur_Objetivo'],
+                "cur_Modalidad" => $post['cur_Modalidad'],
+                "cur_Horas" => $post['cur_Horas'],
+                "cur_Temario" => $post['cur_Temario'],
+                "cur_EmpleadoID" => session('id'),
+            );
+            $builder = $this->db->table('curso');
+            $builder->insert($data);
+            $result = $this->db->insertID();
+
+            if ($result) {
+                insertLog($this, session('id'), 'Insertar', 'curso', $result);
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se registro el curso correctamente!'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al registro intente mas tarde!'));
+            }
+        } else {
+            $builder = $this->db->table('curso');
+            $result = $builder->update($post, array('cur_CursoID' => (int)$post['cur_CursoID']));
+            if ($result) {
+                insertLog($this, session('id'), 'Actualizar', 'curso', $post['cur_CursoID']);
+                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el curso correctamente!'));
+            } else {
+                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error al actualizar intente mas tarde!'));
+            }
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    } //end addCurso
+
+    //Diego->estatus curso
+    function estatusCurso($estatus, $idCurso)
+    {
+        $idCurso = encryptDecrypt('decrypt', $idCurso);
+        $builder = $this->db->table('curso');
+        $result = $builder->update(array('cur_Estatus' => (int)$estatus), array('cur_CursoID' => (int)$idCurso));
+        if ($result) {
+            insertLog($this, session('id'), 'Cambiar Estatus', 'curso', (int)$idCurso);
+            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Se actualizó el estatus del curso correctamente!'));
+        } else {
+            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    } //end estatusCurso
+
     /*
                    _         __   __
          /\       | |  /\    \ \ / /
@@ -328,58 +591,6 @@ class Catalogos extends BaseController
         } else $data['code'] = 0;
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     } //end updateDepEstatus
-
-
-    //Lia->trae las areas
-    public function ajaxGetAreas()
-    {
-        
-        $areas = $this->CatalogosModel->getAreas();
-
-        $areasArray = array();
-
-        if (!empty($areas)) {
-            $html = 
-            '
-                <table class="table" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>Área</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>';
-
-                foreach ($areas as $area) {
-                    $style = '';
-                    $estatus = '';
-
-                    if ((int)$area['are_Estatus'] === 0) {
-                        $estatus = '<a role="button" class="btn btn-primary btn-icon  btn-icon-mini btn-round  activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
-                        $style = 'style="background-color: #e6e6e6"';
-                    } else {
-                        $estatus = '<a role="button" class="btn btn-primary btn-icon  btn-icon-mini btn-round activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
-                    }
-
-                    $html .= '<tr ' . $style . '>
-                                <td class="find_Nombre"><strong>' . strtoupper($area['are_Nombre']) . '</strong></td>
-                                <td>
-                                    <a role="button" class="btn btn-info btn-icon  btn-icon-mini btn-round  editarArea" data-id="' . $area["are_AreaID"] . '" title="Da clic para editar" href="#"><i class="zmdi zmdi-edit pt-2"></i></a> 
-                                    ' . $estatus . '
-                                </td>
-                            </tr>';
-                }
-
-            $html .= '</tbody>
-                </table>
-            ';
-        
-
-                array_push($areasArray, $html);
-            }
-        
-        echo json_encode(array("areas" => $areasArray), JSON_UNESCAPED_SLASHES);
-    }//end ajaxGetAreas
 
     //Lia - guarda el area
     public function ajaxSaveArea()
@@ -519,5 +730,64 @@ class Catalogos extends BaseController
             echo json_encode(array("response"=>"error","msg"=>'Ocurrio un error. Intentelo nuevamente'));
         }
     }//end ajax_getInfoSucursal
+
+    //Lia -> inserta o actualiza una competencia
+    function ajax_operacionesCompetencias()
+    {
+        $post = $this->request->getPost();
+
+        $data = array('response' => 'error');
+
+        $competenciaData = array(
+            'com_Nombre' => $post['com_Nombre'],
+            'com_Descripcion' => $post['com_Descripcion'],
+            'com_Tipo' => $post['com_Tipo'],
+        );
+        $builder = $this->db->table('competencia');
+        if (empty($post['competenciaID'])) {
+            //Inserta
+            $builder->insert($competenciaData);
+            $result = $this->db->insertID();
+        } else {
+            //Actualiza
+            $result = $builder->update($competenciaData, array('com_CompetenciaID' => (int)$post['competenciaID']));
+        }
+
+        if ($result) {
+            $data['response'] = 'success';
+            $data['msg'] = 'Datos guardados correctamente';
+        } else {
+            $data['msg'] = 'Ocurrio un error. Intentelo nuevamente';
+        }
+
+        echo json_encode($data);
+    } //end ajax_operacionesCompetencias
+
+    //Lia -> Obtiene la informacion de una competencia
+    function ajax_getCompetenciaInfo()
+    {
+        $competenciaID = (int)post('competenciaID');
+        $data = array('response' => 'error');
+        $sql = "SELECT * FROM competencia WHERE com_CompetenciaID=?";
+        $competenciaInfo = $this->db->query($sql, array($competenciaID))->getRowArray();
+        if (!is_null($competenciaInfo)) {
+            $data['response'] = 'success';
+            $data['info'] = $competenciaInfo;
+        }
+        echo json_encode($data);
+    } //end ajax_getCompetenciaInfo
+
+    //Diego -> traer info curso
+    public function ajax_getInfoCurso($cursoID)
+    {
+        $cursoID = encryptDecrypt('decrypt', $cursoID);
+        $result = $this->db->query("SELECT * FROM curso WHERE cur_CursoID = " . (int)$cursoID)->getRowArray();
+        if ($result) {
+            echo json_encode(array("response" => "success", "result" => $result));
+        } else {
+            echo json_encode(array("response" => "error", "msg" => 'Ocurrio un error. Intentelo nuevamente'));
+        }
+    } //end ajax_getInfoCurso
+
 
 }

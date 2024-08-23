@@ -147,3 +147,20 @@ function load_chosen(&$data){
     $data['scripts'][] = base_url('assets/plugins/chosen2/chosen.jquery.js');
     $data['scripts'][] = base_url('assets/plugins/chosen2/docsupport/init.js');
 }
+
+function load_lightbox(&$data){
+    $data['styles'][] = base_url('assets/libs/lightbox/css/lightbox.css');
+    $data['scripts'][] = base_url('assets/libs/lightbox/js/lightbox.js');
+}
+
+function load_ckeditor(&$data){
+    $data['scripts'][] = base_url('assets/plugins/ckeditor/ckeditor.js');
+}
+
+function load_filestyle(&$data){
+    $data['scripts'][] = base_url("assets/js/pages/bootstrap-filestyle.min.js");
+}
+
+function load_modalPdf(&$data){
+    $data['scripts'][] = base_url("assets/js/modalPdf.js");
+}

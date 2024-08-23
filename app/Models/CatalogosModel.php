@@ -31,22 +31,6 @@ class CatalogosModel extends Model
     } //end getInfoAreaByID
 
 
-
-
-
-
-
-
-
-
-    
-
-   
-
-   
-
-   
-
     //Lia->trae los puestos
     public function getPuestos()
     {
@@ -79,12 +63,15 @@ class CatalogosModel extends Model
         return $this->db->query($sql, array((int)encryptDecrypt('decrypt', $puestoID)))->getResultArray();
     } //getCompetenciasPuesto
 
-    //Lia trae el catalogo de competencias
-    function getCompetencias()
-    {
-        $sql = "select * from competencia where com_Estatus = 1 order by com_Nombre ASC";
-        return $this->db->query($sql)->getResultArray();
-    }
+    
+    //Diego -> traer competencias
+    function getCompetencias($catalogo=null) {
+        $where='';
+        if(empty($catalogo)){
+            $where = 'WHERE com_Estatus=1';
+        }
+        return $this->db->query("SELECT * FROM competencia ".$where." ORDER BY com_Nombre ASC")->getResultArray();
+    }//getCompetencias
 
     //Lia->Esta asignada la competencia
     function competenciaAsignada($puesto, $competencia)
@@ -171,5 +158,29 @@ class CatalogosModel extends Model
     { 
         return $this->db->query("select * from perfilpuesto where per_PuestoID=" . (int)encryptDecrypt('decrypt', $pue_PuestoID))->getRowArray();
     }
+
+    //Diego -> traer estados
+    function getDatosProveedores()
+    {
+        return $this->db->query("SELECT * FROM proveedor ORDER BY pro_Nombre ASC")->getResultArray();
+    } //getEstados
+
+    //Diego -> traer proveedores
+    public function getProveedores(){
+        return $this->db->query("SELECT * FROM proveedor WHERE pro_Estatus=1")->getResultArray();
+    }//getProveedores
+
+    //Diego -> traer instructores
+    function getInstructores()
+    {
+        return $this->db->query("SELECT *, emp_Nombre as 'ins_Nombre' FROM instructor JOIN empleado ON ins_EmpleadoID=emp_EmpleadoID ")->getResultArray();
+    } //getInstructores
+
+    //Diego -> traer cursos
+    function getCursos()
+    {
+        return $this->db->query("SELECT * FROM curso ORDER BY cur_Nombre ASC")->getResultArray();
+    } //getCursos
+
 
 }//end CatalogosModel

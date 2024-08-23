@@ -8,19 +8,47 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-4 mb-3">
-        <input id="txtSearch" type="text" class="form-control search" placeholder="Buscar...">
-    </div>
-    <div class="col-md-8 pt-2 text-right ">
-            <span class="text-muted text-small pt-1">Mostrando <b><?= isset($areas) ? count($areas) : 0 ?> </b> areas</span>
-    </div>
-</div>
+
 <div class="row clearfix" >
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
-             <div class="body table-responsive" id="divAreas">
-             </div>
+                <div class="body" >
+                    <table class="table table-hover m-0 table-centered table-actions-bar dt-responsive" id="tblAreas" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Área</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        if (!empty($areas)) {
+                            
+                
+                            foreach ($areas as $area) {
+                                $style = '';
+                                $estatus = '';
+            
+                                if ((int)$area['are_Estatus'] === 0) {
+                                    $estatus = '<a role="button" class="btn btn-primary btn-icon  btn-icon-mini btn-round  activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
+                                    $style = 'style="background-color: #e6e6e6"';
+                                } else {
+                                    $estatus = '<a role="button" class="btn btn-primary btn-icon  btn-icon-mini btn-round activarInactivar" data-id="' . $area["are_AreaID"] . '" data-estado="' . $area["are_Estatus"] . '" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
+                                }
+            
+                                echo '<tr ' . $style . '>
+                                            <td ><strong>' . strtoupper($area['are_Nombre']) . '</strong></td>
+                                            <td>
+                                                <a role="button" class="btn btn-info btn-icon  btn-icon-mini btn-round  editarArea" data-id="' . $area["are_AreaID"] . '" title="Da clic para editar" href="#"><i class="zmdi zmdi-edit pt-2"></i></a> 
+                                                ' . $estatus . '
+                                            </td>
+                                        </tr>';
+                            }
+                        } 
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     
@@ -54,26 +82,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function(e) {
-        $("#txtSearch").on("keyup", function() {
-            var input = document.getElementById("txtSearch");
-            var filter = input.value.toUpperCase();
-            var table = document.getElementById("divAreas");
-            var rows = table.getElementsByTagName("tr");
-        
-            for (var i = 0; i < rows.length; i++) {
-                var descripcionCell = rows[i].getElementsByClassName("find_Nombre")[0];
-                if (descripcionCell) {
-                    var txtValue = descripcionCell.textContent || descripcionCell.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-                }       
-            }
-        });
-    });
-</script>

@@ -13,81 +13,64 @@
             <?php if(revisarPermisos('Agregar',$this)){ ?>
             <button type="button" data-toggle="modal" data-target="#addPuesto" class="btn btn-success btn-round" ><i class="zmdi zmdi-plus"></i> Agregar</button>
             <?php } ?>
-            <?php if(revisarPermisos('Exportar',$this)){ ?>
-                <a href="<?= base_url("Excel/generarExcelPuestos") ?>" class="btn btn-warning btn-round" ><i class="zmdi zmdi-cloud-download"></i> Exportar</a>
-            <?php } ?>
         </div>
     </div>
-    <div class="row mb-3">
-        <div class="col-md-4 pt-2 text-right">
-            <input id="txtSearch" type="text" class="form-control search" placeholder="Buscar...">
-        </div>
-        <div class="col-md-8 pt-2 text-right ">
-            <span class="text-muted text-small pt-1">Mostrando <b><?= isset($puestos) ? count($puestos) : 0 ?> </b> puestos</span>
-        </div>
-    </div>
+ 
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
-                <div  class="body table-responsive" id="contenido-puestos">
-                <?php
-                if (isset($puestos)) {
-                    if (count($puestos)) {
-                        $html = '<table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Puesto</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>';
+                <div  class="body">
+                    <table class="table table-hover m-0 table-centered table-actions-bar dt-responsive" id="tblPuestos" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Puesto</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (isset($puestos)) {
+                                if (count($puestos)) {
+                                    $html = '';
+                                                
+                                    foreach ($puestos as $puesto) {
+                                        $pueNombre = trim($puesto['pue_Nombre']) ?: "Sin nombre";
+                                        $puestoID = $puesto['pue_PuestoID'];
+                                        $perfiles = db()->query("SELECT COUNT(*) AS 'total' FROM perfilpuesto WHERE per_PuestoID=" . (int)encryptDecrypt('decrypt', $puestoID))->getRowArray();
+                                        $puestoPDFbtn = ($perfiles['total'] > 0) ?  base_url("PDF/perfilPuestoPdf/" . $puesto['pue_PuestoID']) : '';
+                                        $PerfilPuesto = ($perfiles['total'] > 0) ?  'checked' : '';
+                                        $styleBtnPuesto = ($perfiles['total'] > 0) ?  '' : 'btn-simple disabledPDF';
+        
+                                        $html .= '<tr>
+                                                    <td ><strong>' . strtoupper($pueNombre) . '</strong></td>
+                                                    <td>';
+                                                        
+                                                        if (revisarPermisos('Editar', $this)) {
+                                                            $html .= '<a role="button" class="btn btn-info btn-icon  btn-icon-mini btn-round  btnCambiarNombre" data-nombre="' . $pueNombre . '" data-id="' . $puestoID . '" title="Da clic para editar el puesto" href="#"><i class="zmdi zmdi-edit pt-2"></i></a>';
+                                                        }
+                                                        if (revisarPermisos('Eliminar', $this)) {
+                                                            $html .= ' <a role="button" class="btn btn-danger btn-icon  btn-icon-mini btn-round  eliminar" data-id="' . $puestoID . '" title="Da clic para eliminar el puesto" href="#"><i class="zmdi zmdi-close pt-2"></i></a>';
+                                                        }
+                                                        
                                     
-                        foreach ($puestos as $puesto) {
-                            $pueNombre = trim($puesto['pue_Nombre']) ?: "Sin nombre";
-                            $puestoID = $puesto['pue_PuestoID'];
-                            $perfiles = db()->query("SELECT COUNT(*) AS 'total' FROM perfilpuesto WHERE per_PuestoID=" . (int)encryptDecrypt('decrypt', $puestoID))->getRowArray();
-                            $puestoPDFbtn = ($perfiles['total'] > 0) ?  base_url("PDF/perfilPuestoPdf/" . $puesto['pue_PuestoID']) : '';
-                            $PerfilPuesto = ($perfiles['total'] > 0) ?  'checked' : '';
-                            $styleBtnPuesto = ($perfiles['total'] > 0) ?  '' : 'btn-simple disabledPDF';
+                                                        if (revisarPermisos('Perfil', $this)) {
+                                                            $html .= '<a role="button" class="btn btn btn-dark  btn-icon  btn-icon-mini btn-round " href="' . base_url("Catalogos/crearPerfilPuesto/" . $puestoID) . '"><i class="zmdi zmdi-assignment-account pt-2"></i></a>';
+                                                        }
+                                                    
+                                                        if (revisarPermisos('Perfil', $this)) {
+                                                            $html .= '<a role="button" class="btn btn-warning btn-icon  btn-icon-mini btn-round  ' . $styleBtnPuesto . '" href="' . $puestoPDFbtn . '"><i class="zmdi zmdi-collection-pdf pt-2"></i></a>';
+                                                        }
+                                        $html .= '</td>
+                                                </tr>';
+                                    }
 
-                            $html .= '<tr>
-                                        <td class="find_Nombre"><strong>' . strtoupper($pueNombre) . '</strong></td>
-                                        <td>';
-                                            
-                                            if (revisarPermisos('Editar', $this)) {
-                                                $html .= '<a role="button" class="btn btn-info btn-icon  btn-icon-mini btn-round  btnCambiarNombre" data-nombre="' . $pueNombre . '" data-id="' . $puestoID . '" title="Da clic para editar el puesto" href="#"><i class="zmdi zmdi-edit pt-2"></i></a>';
-                                            }
-                                            if (revisarPermisos('Eliminar', $this)) {
-                                                $html .= ' <a role="button" class="btn btn-danger btn-icon  btn-icon-mini btn-round  eliminar" data-id="' . $puestoID . '" title="Da clic para eliminar el puesto" href="#"><i class="zmdi zmdi-close pt-2"></i></a>';
-                                            }
-                                            
-                           
-                                            if (revisarPermisos('Perfil', $this)) {
-                                                $html .= '<a role="button" class="btn btn btn-dark  btn-icon  btn-icon-mini btn-round " href="' . base_url("Catalogos/crearPerfilPuesto/" . $puestoID) . '"><i class="zmdi zmdi-assignment-account pt-2"></i></a>';
-                                            }
-                                        
-                                            if (revisarPermisos('Perfil', $this)) {
-                                                $html .= '<a role="button" class="btn btn-warning btn-icon  btn-icon-mini btn-round  ' . $styleBtnPuesto . '" href="' . $puestoPDFbtn . '"><i class="zmdi zmdi-collection-pdf pt-2"></i></a>';
-                                            }
-                            $html .= '</td>
-                                    </tr>';
-                        }
+                                    echo $html;
+                                } 
+                            } 
+                            ?>
 
-                        $html .= '</tbody>
-                                </table>';
-
-                        echo $html;
-                    } else {
-                        echo '<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                                No hay puestos disponibles
-                            </div>';
-                    }
-                } else {
-                    echo '<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                            No hay puestos disponibles
-                        </div>';
-                }
-                ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -149,25 +132,3 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function(e) {
-        $("#txtSearch").on("keyup", function() {
-            var input = document.getElementById("txtSearch");
-            var filter = input.value.toUpperCase();
-            var table = document.getElementById("contenido-puestos");
-            var rows = table.getElementsByTagName("tr");
-        
-            for (var i = 0; i < rows.length; i++) {
-                var descripcionCell = rows[i].getElementsByClassName("find_Nombre")[0];
-                if (descripcionCell) {
-                    var txtValue = descripcionCell.textContent || descripcionCell.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-                }       
-            }
-        });
-    });
-</script>

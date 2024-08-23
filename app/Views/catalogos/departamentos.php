@@ -14,20 +14,12 @@ $db = \Config\Database::connect();
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-md-4 pt-2 text-right">
-            <input id="txtSearch" type="text" class="form-control search" placeholder="Buscar...">
-        </div>
-        <div class="col-md-8 pt-2 text-right ">
-            <span class="text-muted text-small pt-1">Mostrando <b><?= isset($departamentos) ? count($departamentos) : 0 ?> </b> departamentos</span>
-        </div>
-    </div>
 
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
-                <div class="body table-responsive" id="contenido-departamentos">
-                    <table class="table">
+                <div class="body">
+                    <table class="table table-hover m-0 table-centered table-actions-bar dt-responsive" id="tblDepartamentos" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Departamento</th>
@@ -67,7 +59,7 @@ $db = \Config\Database::connect();
                                     $jefe = $departamento['dep_JefeID'] == NULL ? '<span class="badge badge-danger"> Sin asignar</span>' : nombreEmpleadoById($departamento['dep_JefeID']);
                                     ?>
                                     <tr <?= $style ?>>
-                                        <td class="find_Nombre"><strong><?= strtoupper($departamento['dep_Nombre']) ?></strong></td>
+                                        <td><strong><?= strtoupper($departamento['dep_Nombre']) ?></strong></td>
                                         <td><?= $noColaboradores['total'] ?></td>
                                         <td><?= count($puestos) ?></td>
                                         <td><?= $jefe ?></td>
@@ -149,25 +141,4 @@ $db = \Config\Database::connect();
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function(e) {
-        $("#txtSearch").on("keyup", function() {
-            var input = document.getElementById("txtSearch");
-            var filter = input.value.toUpperCase();
-            var table = document.getElementById("contenido-departamentos");
-            var rows = table.getElementsByTagName("tr");
-        
-            for (var i = 0; i < rows.length; i++) {
-                var descripcionCell = rows[i].getElementsByClassName("find_Nombre")[0];
-                if (descripcionCell) {
-                    var txtValue = descripcionCell.textContent || descripcionCell.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-                }       
-            }
-        });
-    });
-</script>
+

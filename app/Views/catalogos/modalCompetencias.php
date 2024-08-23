@@ -21,7 +21,7 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label for="com_Tipo" class="col-form-label">* Tipo</label>
-                            <select class="form-control" name="com_Tipo" id="com_Tipo">
+                            <select class="form-control chosen-select" name="com_Tipo" id="com_Tipo">
                                 <option hidden>Seleccione una opción</option>
                                 <option value="Sociales y Actitudinales">Sociales y Actitudinales</option>
                                 <option value="Tecnicas y Funcionales">Tecnicas y Funcionales</option>
@@ -31,8 +31,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                <a href="#" id="guardarCompetencia" class="btn btn-primary">Guardar</a>
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-dark btn-round" data-dismiss="modal">Cancelar</button>
+                    <a href="#" id="guardarCompetencia" class="btn btn-success btn-round">Guardar</a>
+                </div>
             </div>
         </div>
     </div>

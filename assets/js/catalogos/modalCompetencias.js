@@ -31,7 +31,7 @@ $(document).ready(function (e) {
         if(cNombre.val() != '' && cDescripcion.val().trim() != '' && cTipo.val() != '' && orden.val() != '') {
             let formData = $('#formCompetencias').serialize();
             $.ajax({
-                url: BASE_URL + "Formacion/ajax_operacionesCompetencias",
+                url: BASE_URL + "Catalogos/ajax_operacionesCompetencias",
                 type: "POST",
                 async: true,
                 cache: false,
@@ -89,7 +89,7 @@ $(document).ready(function (e) {
     function ajaxCompetenciaInfo(IDCompetencia){
 
         $.ajax({
-            url: BASE_URL + "Formacion/ajax_getCompetenciaInfo" ,
+            url: BASE_URL + "Catalogos/ajax_getCompetenciaInfo" ,
             type: "POST",
             async:true,
             cache:false,
@@ -100,6 +100,7 @@ $(document).ready(function (e) {
                 $("#com_Nombre").val(data.info['com_Nombre']);
                 $("#com_Descripcion").html(data.info['com_Descripcion']);
                 $("#com_Tipo").val(data.info['com_Tipo']);
+                $("#com_Tipo").trigger('chosen:updated');
                 $("#com_NoOrden").val(data.info['com_NoOrden']);
             }
         }).fail(function () {

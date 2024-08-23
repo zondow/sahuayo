@@ -8,19 +8,12 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-4 mb-3">
-        <input id="txtSearch" type="text" class="form-control search" placeholder="Buscar...">
-    </div>
-    <div class="col-md-8 pt-2 text-right ">
-            <span class="text-muted text-small pt-1">Mostrando <b><?= isset($sucursales) ? count($sucursales) : 0 ?> </b> sucursales</span>
-    </div>
-</div>
+
 <div class="row clearfix" >
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="card">
-            <div class="body table-responsive" id="divSucursales">
-                <table class="table " cellspacing="0" width="100%" >
+            <div class="body" >
+                <table class="table table-hover m-0 table-centered table-actions-bar dt-responsive" id="tblSucursales" cellspacing="0" width="100%" >
                     <thead>
                     <tr>
                         <th>Sucursal</th>
@@ -54,7 +47,7 @@
 
                             ?>
                             <tr <?= $style ?>>
-                                <td class="find_Nombre"><strong><?= strtoupper(htmlspecialchars($sucursal['suc_Sucursal'])) ?></strong></td>
+                                <td><strong><?= strtoupper(htmlspecialchars($sucursal['suc_Sucursal'])) ?></strong></td>
                                 <td>
                                     <?php if (revisarPermisos('Editar', $this)) { ?>
                                         <a type="button" class="btn btn-info btn-icon  btn-icon-mini btn-round editarSucursal" data-id="<?= $encryptedID ?>" style="color:#FFFFFF"><i class="zmdi zmdi-edit pt-2"></i></a>
@@ -103,25 +96,3 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function(e) {
-        $("#txtSearch").on("keyup", function() {
-            var input = document.getElementById("txtSearch");
-            var filter = input.value.toUpperCase();
-            var table = document.getElementById("divSucursales");
-            var rows = table.getElementsByTagName("tr");
-        
-            for (var i = 0; i < rows.length; i++) {
-                var descripcionCell = rows[i].getElementsByClassName("find_Nombre")[0];
-                if (descripcionCell) {
-                    var txtValue = descripcionCell.textContent || descripcionCell.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-                }       
-            }
-        });
-    });
-</script>

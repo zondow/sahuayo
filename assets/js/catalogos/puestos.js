@@ -1,5 +1,74 @@
 $(document).ready(function (e) {
-    $(".select2").select2();
+
+    var tblPuestos = $("#tblPuestos").DataTable({
+        destroy: true,
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "Todos"]],
+        fixedHeader: true,
+        scrollX: true,
+        paging: true,
+        responsive: true,
+        stateSave: false,
+        dom: '<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Catalogo de Puestos',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
+                titleAttr: "Exportar a excel",
+                className: "btn l-slategray",
+                autoFilter: true,
+                exportOptions: {
+                    columns: ':visible'
+                },
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Catalogo de Puestos',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
+                titleAttr: "Exportar a PDF",
+                className: "btn l-slategray",
+                orientation: 'landscape',
+                pageSize: 'LETTER',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+            {
+                extend: 'colvis',
+                text: 'Columnas',
+                className: "btn l-slategray",
+            }
+            
+        ],
+        language: {
+            paginate: {
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
+            },
+            search: "_INPUT_",
+            searchPlaceholder: "Buscar...",
+            lengthMenu: "Registros por página _MENU_",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "Mostrando 0 a 0 de 0 registros",
+            zeroRecords: "No hay datos para mostrar",
+            loadingRecords: "Cargando...",
+            infoFiltered: "(filtrado de _MAX_ registros)",
+            "processing": "Procesando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "<i class='zmdi zmdi-caret-right'>",
+                "sPrevious": "<i class='zmdi zmdi-caret-left'>"
+            },
+    
+        },
+        "order": [[0, "asc"]],
+        "processing": false
+    });
+
+
+
+    
     $("body").on("click",".btnCambiarNombre",function (e) {
         e.preventDefault();
         let puestoID = $(this).data("id");
@@ -7,7 +76,7 @@ $(document).ready(function (e) {
 
         $('#cminpuestoid').val(puestoID);
         $('#cminnombre').val(nombre);
-        $("#nivele").select2().trigger('change');
+        
         $('#cmPuesto').modal("show");
 
     });//btnCambiarNombre
