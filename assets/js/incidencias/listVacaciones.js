@@ -56,7 +56,7 @@ $(document).ready(function () {
             },
 
         },
-        //"order": [[ 3, "desc" ]],
+        "order": [],
         "processing":false,
     });
 
@@ -70,14 +70,12 @@ $(document).ready(function () {
             est=estatus;
             titulo="Autorizar solicitud";
             html="";
-            $("#btnAplicar").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Aplicando...');
         } else if(estatus==='RECHAZADO'){
             txt='¿Estás seguro que deseas rechazar la solicitud de vacaciones?';
             est=estatus;
             titulo="Rechazar solicitud";
             html= '<textarea id="txtObservaciones" placeholder="Escribe aquí algunas observaciones" ' +
             'class="swal2-textarea" style="display: flex;" style="resize: none;"></textarea>';
-            $("#btnRechazar").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Rechazando...');
         }
 
         let fd  = {"vacacionID":vacacionID,"estatus":est,"type":type,"observaciones": $("#txtObservaciones").val()};

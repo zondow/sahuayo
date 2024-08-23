@@ -93,6 +93,10 @@ textarea.form-control {
     background-color: #eddd34 !important;
 }
 
-.dropdown-menu {
-    width: 500px !important;
+.cardNotificacion {
+    width: 650px !important;
+}
+
+.dt-button-collection{
+    position: unset !important;
 }

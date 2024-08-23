@@ -31,8 +31,8 @@ function getConfiguracion2021(){
     return $config;
 }
 
-//Germán -> Regresa los dias inhabiles
-function diasInhabiles($obj,$sucursalID){
+//Diego -> Regresa los dias inhabiles
+function diasInhabiles($sucursalID){
 
     $all = '["0"]';
 
@@ -77,41 +77,19 @@ function validAnticipacion($fechaInicio){
 
 //Germán -> Regresa el número de días que tocan por ley
 function diasLey($emp_fechaIngreso){
-    $fecha=strtotime($emp_fechaIngreso);
-    $fechaIngresoC = date("Y-m-d", $fecha);
-    //$fecha2=strtotime('2020-12-31');
-    //$fechaComparativa = date("Y-m-d", $fecha2);
-
     $anios = antiguedad($emp_fechaIngreso);
-
     $rango = getSetting('rangos_vacaciones',db());
     $dias = 0;
-
-    //if($fechaIngresoC > $fechaComparativa  ){
-        $config = getConfiguracion();
-        if($anios<=$rango){
-            if(array_key_exists($anios,$config['diasVacaciones'])){
-                $dias = $config['diasVacaciones'][$anios];
-            }
-        }else{
-            if(array_key_exists($rango,$config['diasVacaciones'])){
-                $dias = $config['diasVacaciones'][$rango];
-            }
+    $config = getConfiguracion();
+    if($anios<=$rango){
+        if(array_key_exists($anios,$config['diasVacaciones'])){
+            $dias = $config['diasVacaciones'][$anios];
         }
-    /*}else{
-        $config = getConfiguracion2021( );
-
-        if($anios<=$rango){
-            if(array_key_exists($anios,$config['diasVacaciones'])){
-                $dias = $config['diasVacaciones'][$anios];
-            }
-        }else{
-            if(array_key_exists($rango,$config['diasVacaciones'])){
-                $dias = $config['diasVacaciones'][$rango];
-            }
+    }else{
+        if(array_key_exists($rango,$config['diasVacaciones'])){
+            $dias = $config['diasVacaciones'][$rango];
         }
-    }*/
-
+    }
     return $dias;
 }//end diasLey
 
@@ -197,9 +175,9 @@ function diasOcupados($idEmpleado, $emp_fechaIngreso){
 }// end diasOcupados
 
 //Lia -> Regresa el número de días del periodo de vacaciones
-function calculoDias($idVacaciones, $obj,$sucursalID, $vacInicio = null, $vacFin = null,$idEmpleado=null){
-    $config = getConfiguracion($obj);
-    $inhabiles = diasInhabiles($obj,$sucursalID);
+function calculoDias($idVacaciones,$sucursalID, $vacInicio = null, $vacFin = null,$idEmpleado=null){
+    $config = getConfiguracion();
+    $inhabiles = diasInhabiles($sucursalID);
 
     if($idVacaciones > 0){
         $builder = db()->table("vacacion");
@@ -261,78 +239,62 @@ function crearVacaciones($post){
     }  else return FALSE;
 }//end crearVacaciones
 
-//Lia -> Actualiza el estatus de las vacaciones al revisar jefe inmediato
-function autorizarVacaciones($idVacaciones, $estatus,$obs, $obj){
-    $builder = db()->table("vacacion");
+function autorizarVacaciones($idVacaciones, $estatus, $obs)
+{
+    $empleado = db()->query("SELECT E.emp_Correo, E.emp_Nombre, E.emp_Jefe, E.emp_EmpleadoID 
+                    FROM empleado E 
+                    JOIN vacacion V ON V.vac_EmpleadoID = E.emp_EmpleadoID 
+                    WHERE V.vac_VacacionesID = ?", [$idVacaciones])->getRowArray();
 
-    $titulo="";
-    $tipo="";
-    $datos = array();
+    $data_update = ["vac_Estatus" => $estatus];
+    $datos['nombre'] = $empleado['emp_Nombre'];
+    $jefe = null;
+    $titulo = '';
 
-    $sql = "SELECT E.emp_Correo,E.emp_Nombre,E.emp_Jefe,E.emp_EmpleadoID FROM empleado E
-                JOIN vacacion V ON V.vac_EmpleadoID=E.emp_EmpleadoID
-            WHERE  V.vac_VacacionesID=".$idVacaciones;
-    $empleado = $obj->db->query($sql)->getRowArray();
-
-    switch($estatus){
+    switch ($estatus) {
         case "AUTORIZADO":
-            $data_update=array("vac_Estatus" => $estatus, "vac_AutorizaID" => session('id'));
-            if(session('id')==19){
-                $jefe = db()->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID=19")->getRowArray();
-            }else{
-                $sql_jefe = "SELECT emp_Nombre FROM empleado WHERE emp_Numero=?";
-                $jefe = $obj->db->query($sql_jefe,array($empleado['emp_Jefe']))->getRowArray();
-            }
+            $data_update["vac_AutorizaID"] = session('id');
+            $jefe = (session('id') == 19) 
+                    ? db()->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID = 19")->getRowArray() 
+                    : db()->query("SELECT emp_Nombre FROM empleado WHERE emp_Numero = ?", [$empleado['emp_Jefe']])->getRowArray();
+            $titulo = 'Vacaciones Autorizadas';
+            $datos['titulo'] = 'Solicitud de Vacaciones';
+            $datos['cuerpo'] = 'Mediante el presente se le comunica que el colaborador  ' . $jefe['emp_Nombre'] . ', ha autorizado su solicitud de vacaciones en la plataforma PEOPLE.<br> Para mayor información, revise la solicitud de vacaciones en la plataforma.';
+            break;
 
-            $datos['NombreSolicitante'] = $empleado['emp_Nombre'];
-            $datos['NombreJefe'] = $jefe['emp_Nombre'];
-            $titulo='Vacaciones Autorizadas';
-            $tipo='VacacionAutorizada';
-        break;
         case "AUTORIZADO_RH":
-            $data_update=array("vac_Estatus" => $estatus, "vac_AplicaID" => session('id'));
-            $sql_aplico = "SELECT * FROM empleado WHERE emp_EmpleadoID=?";
-            $aplico = $obj->db->query($sql_aplico,array(session('id')))->getRowArray();
+            $data_update["vac_AplicaID"] = session('id');
+            $aplico = db()->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID = ?", [session('id')])->getRowArray();
+            $titulo = 'Vacaciones Aplicadas';
+            $datos['titulo'] = 'Solicitud de Vacaciones';
+            $datos['cuerpo'] = 'Mediante el presente se le comunica que el colaborador  ' . $aplico['emp_Nombre'] . ', ha aplicado su solicitud de vacaciones en la plataforma PEOPLE.<br> Para mayor información, revise la solicitud de vacaciones en la plataforma.';
+            break;
 
-            $datos['NombreSolicitante'] = $empleado['emp_Nombre'];
-            $datos['NombreAplico'] = $aplico['emp_Nombre'];
-            $titulo='Vacaciones Aplicadas';
-            $tipo= 'VacacionAplicada';
-        break;
         case "RECHAZADO":
-            $data_update=array("vac_Estatus" => $estatus,"vac_Justificacion"=>$obs,"vac_AutorizaID" => session('id'));
-            $sql_jefe = "SELECT emp_Nombre FROM empleado WHERE emp_Numero=?";
-            $jefe = $obj->db->query($sql_jefe,array($empleado['emp_Jefe']))->getRowArray();
-
-            $datos['NombreSolicitante'] = $empleado['emp_Nombre'];
-            $datos['NombreJefe'] = $jefe['emp_Nombre'];
-            $titulo='Vacaciones Rechazadas';
-            $tipo= 'VacacionRechazada';
-
-            rechazarVacaciones($empleado['emp_EmpleadoID'],$idVacaciones,$obj);
-        break;
         case "RECHAZADO_RH":
-            $data_update=array("vac_Estatus" => $estatus,"vac_Justificacion"=>$obs, "vac_AplicaID" => session('id'));
-            $sql_aplico = "SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID=?";
-            $aplico = $obj->db->query($sql_aplico,array(session('id')))->getRowArray();
-
-            $datos['NombreSolicitante'] = $empleado['emp_Nombre'];
-            $datos['NombreAplico'] = $aplico['emp_Nombre'];
-            $titulo='Vacaciones Rechazadas';
-            $tipo= 'VacacionRechazada';
-
-            rechazarVacaciones($empleado['emp_EmpleadoID'],$idVacaciones,$obj);
-        break;
+            $data_update["vac_Justificacion"] = $obs;
+            if ($estatus === "RECHAZADO") {
+                $data_update["vac_AutorizaID"] = session('id');
+                $jefe = db()->query("SELECT emp_Nombre FROM empleado WHERE emp_Numero = ?", [$empleado['emp_Jefe']])->getRowArray();
+            } else {
+                $data_update["vac_AplicaID"] = session('id');
+                $aplico = db()->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID = ?", [session('id')])->getRowArray();
+            }
+            rechazarVacaciones($empleado['emp_EmpleadoID'], $idVacaciones);
+            $titulo = 'Vacaciones Rechazadas';
+            $datos['titulo'] = 'Solicitud de Vacaciones';
+            $datos['cuerpo'] = 'Mediante el presente se le comunica que su solicitud de vacaciones ha sido rechazada en la plataforma PEOPLE.<br> Para mayor información, revise la solicitud de vacaciones en la plataforma.';
+            break;
     }
 
-    $builder->update($data_update, array("vac_VacacionesID" => $idVacaciones));
-    if($obj->db->affectedRows() > 0) {
-        //Enviar correo
-        sendMail($empleado['emp_Correo'],$titulo, $datos,$tipo);
+    $res = update('vacacion', $data_update, ["vac_VacacionesID" => $idVacaciones]);
+    if ($res) {
+        sendMail($empleado['emp_Correo'], $titulo, $datos);
         return true;
-    }else return false;
+    }
 
-}//end autorizarVacaciones
+    return false;
+}
 
 
 //Germán -> Actualiza el estatus de las vacaciones al revisar jefe inmediato
@@ -401,16 +363,14 @@ function autorizarVacaciones_old($idVacaciones, $estatus,$obs, $obj){
     }
 }//end autorizarVacaciones
 
-//Germán -> Actualiza los dias restantes de las vacaciones si una solicitud es RECHAZADA
-function rechazarVacaciones($idEmpleado, $idVacacion, $obj){
+//Diego -> Actualiza los dias restantes de las vacaciones si una solicitud es RECHAZADA
+function rechazarVacaciones($idEmpleado, $idVacacion){
     //Generales de la vacacion a borrar
-    $builder=db()->table("vacacion");
-    $vacacionB = $builder->getWhere( array("vac_VacacionesID" => $idVacacion))->getRowArray();
-    //Vacaciones de empleado
-    $builder2 = db()->table('vacacionempleado');
-    $vacacionEmpleado = $builder2->getWhere(array("vace_EmpleadoID"=>$idEmpleado))->getRowArray();
+    $vacacionB = db()->table("vacacion")->getWhere( array("vac_VacacionesID" => $idVacacion))->getRowArray();
+    //Vacaciones de empleado actuales
+    $vacacionEmpleado = db()->table('vacacionempleado')->getWhere(array("vace_EmpleadoID"=>$idEmpleado))->getRowArray();
     //Se regresan los dias de vacaciones al empleado
-    $builder2->update(array('vace_Dias'=>($vacacionEmpleado['vace_Dias']+$vacacionB['vac_Disfrutar']),'vace_FechaActualizacion'=>date('Y-m-d H:i:s')), array('vace_EmpleadoID' => $idEmpleado));
+    update('vacacionempleado',array('vace_Dias'=>($vacacionEmpleado['vace_Dias']+$vacacionB['vac_Disfrutar']),'vace_FechaActualizacion'=>date('Y-m-d H:i:s')), array('vace_EmpleadoID' => $idEmpleado));
 
 }//end rechazarVacaciones
 

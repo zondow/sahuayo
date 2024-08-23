@@ -51,7 +51,6 @@ function load_select(&$data)
     $data['styles'][] = base_url('assets/plugins/bootstrap-select/css/bootstrap-select.css');
     $data['scripts'][] = base_url('assets/plugins/bootstrap-select/js/i18n/defaults-es_ES.js');
     $data['scripts'][] = base_url('assets/plugins/bootstrap-select/js/bootstrap-select.js');
-    
 }
 
 function load_datables4(&$data)
@@ -74,6 +73,7 @@ function load_datatables_buttons(&$data)
 {
     $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
     $data['styles'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/css/buttons.bootstrap4.css');
+    $data['styles'][] = base_url('assets/css/tables-custom.css');
     $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
     $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
     $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/dataTables.buttons.js');
@@ -132,17 +132,20 @@ function load_footable(&$data)
     $data['scripts'][] = base_url("assets/libs/footable/footable.all.min.js");
 }
 
-function load_tomselect(&$data){
+function load_tomselect(&$data)
+{
     $data['styles'][] = "https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css";
     $data['scripts'][] = "https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js";
 }
 
-function load_toastr(&$data){
+function load_toastr(&$data)
+{
     $data['scripts'][] = base_url('assets/libs/jquery-toast/jquery.toast.min.js');
     $data['scripts'][] = base_url('assets/js/pages/toastr.init.js');
 }
 
-function load_chosen(&$data){
+function load_chosen(&$data)
+{
     $data['styles'][] = base_url('assets/plugins/chosen2/chosen.css');
     $data['scripts'][] = base_url('assets/plugins/chosen2/chosen.jquery.js');
     $data['scripts'][] = base_url('assets/plugins/chosen2/docsupport/init.js');
@@ -163,4 +166,14 @@ function load_filestyle(&$data){
 
 function load_modalPdf(&$data){
     $data['scripts'][] = base_url("assets/js/modalPdf.js");
+}
+
+function load_daterangepicker(&$data)
+{
+    $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
+    $data['styles'][] = base_url('assets/libs/bootstrap-daterangepicker/daterangepicker.css');
+    $data['styles'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.css');
+    $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
+    $data['scripts'][] = base_url('assets/libs/bootstrap-daterangepicker/daterangepicker.js');
+    $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
 }

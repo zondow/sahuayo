@@ -57,7 +57,7 @@ $(document).ready(function () {
             },
 
         },
-        "order": [[ 1, "desc" ]],
+        "order": [],
         "processing":false
     });
 

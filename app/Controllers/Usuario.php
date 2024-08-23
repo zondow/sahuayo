@@ -21,6 +21,10 @@ class Usuario extends BaseController
          \/   |_____|_____/   |_/_/    \_\_____/
     */
 
+    public function correo(){
+        echo view('htdocs/correo');
+    }
+
     public function index()
     {
         //Validar sessión
@@ -672,8 +676,7 @@ class Usuario extends BaseController
     //Diego->cambia el estatus a la notificacion
     public function ajax_notificacionVista()
     {
-        $builder = $this->db->table('notificacion');
-        $builder->update(array('not_Estatus' => 0), array('not_NotificacionID' => post('id')));
+        update('notificacion',array('not_Estatus' => 0), array('not_NotificacionID' => post('id')));
         echo json_encode(array('response' => 'success', 'link' => post('link')));
     }
 
@@ -1003,15 +1006,16 @@ class Usuario extends BaseController
         $notify = false;
         if (count($notificaciones) > 0) { // si el numero de mensajes es mayor a 0
             foreach ($notificaciones as $not) {
-                $url = isset($not['not_Url']) ? htmlspecialchars($not['not_Url']) : '#';
-                $color = isset($not['not_Color']) ? htmlspecialchars($not['not_Color']) : 'bg-green';
-                $icono = isset($not['not_Icono']) ? htmlspecialchars($not['not_Icono']) : 'zmdi zmdi-comment-alert';
-                $descripcion = isset($not['not_Descripcion']) ? htmlspecialchars($not['not_Descripcion']) : '';
+
+                $url = isset($not['not_URL']) ? $not['not_URL'] : '#';
+                $color = isset($not['not_Color']) ? $not['not_Color'] : 'bg-green';
+                $icono = isset($not['not_Icono']) ? $not['not_Icono'] : 'zmdi zmdi-comment-alert';
+                $descripcion = isset($not['not_Descripcion']) ? $not['not_Descripcion'] : '';
                 $fechaRegistro = $not['not_FechaRegistro'];
 
                 // Construye el HTML
-                $html = '<li> 
-                        <a href="' . $url . '">
+                $html .= '<li> 
+                        <a href="' . $url . '" class="checkNotificacion" data-id="' . $not['not_NotificacionID'] . '" data-link="' . $url . '">
                             <div class="icon-circle ' . $color . '">
                                 <i class="' . $icono . '"></i>
                             </div>
@@ -1028,14 +1032,6 @@ class Usuario extends BaseController
         $data['style'] = $notify;
         $data['notificaciones'] = $html;
         echo json_encode($data);
-    }
-
-    //Diego->cambia el estatus a la notificacion
-    public function ajax_notificacionVistaTicket()
-    {
-        $builder = mesa()->table('notificacion');
-        $builder->update(array('not_Estatus' => 0), array('not_NotificacionID' => post('id')));
-        echo json_encode(array('response' => 'success', 'link' => post('link')));
     }
 
     public function ajax_limpiarNotifaciones()

@@ -1984,10 +1984,9 @@ function evidenciaPagoAnticipo($adelantoID, $pago)
 function getHorasExtraByEmpleado($empleadoID)
 {
     $horasExtra = db()->query("SELECT SUM(rep_Horas) as 'horas' FROM reportehoraextra WHERE rep_Estado='PAGADO' AND rep_TipoPago='Tiempo por tiempo' AND rep_EmpleadoID=?", array($empleadoID))->getRowArray()['horas'] ?? 0;
-    //$horasExtraVacaciones= db()->query("SELECT SUM(vach_Horas) as 'horas' FROM vacacionhoras WHERE vach_Estado=1 AND vach_Estatus='AUTORIZADO_RH' AND vach_EmpleadoID=".$empleadoID)->getRowArray()['horas']??0;
     $horasAcumuladas = db()->query("SELECT acu_HorasExtra as 'horas' FROM acumulados WHERE acu_EmpleadoID=?", [$empleadoID])->getRowArray()['horas'] ?? 0;
     $horasConsumidas = db()->query("SELECT SUM(per_Horas) AS 'horas' FROM permiso WHERE per_Estado IN ('PENDIENTE','AUTORIZADO_GG','AUTORIZADO_GO','AUTORIZADO_RH') AND per_Estatus=1 AND per_EmpleadoID=" . $empleadoID)->getRowArray()['horas'] ?? 0;
-    return ($horasExtra + $horasAcumuladas/*+$horasExtraVacaciones*/) - $horasConsumidas;
+    return ($horasExtra + $horasAcumuladas) - $horasConsumidas;
 }
 
 function getTipoEmpleado($empleadoID)
@@ -2143,4 +2142,8 @@ function diferenciaTiempo($fechaInicio,$fechaFin){
     $time.= (($since_start->i > 0 ? $since_start->i.' minuto ' : $since_start->i == 1) ? $since_start->i.' minutos ':'');
     $time.= (($since_start->s > 0 ? $since_start->s.' segundos ' : $since_start->s == 1) ? $since_start->s.' segundos ':'');
     return $time;
+}
+
+function updatePermisos(){
+    return db()->query("SELECT rol_Permisos FROM empleado LEFT JOIN rol ON rol_RolID=emp_Rol WHERE emp_EmpleadoID = ?",[session('id')])->getRowArray()['rol_Permisos'];
 }

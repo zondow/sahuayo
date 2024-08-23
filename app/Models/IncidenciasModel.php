@@ -6,6 +6,118 @@ use CodeIgniter\Model;
 
 class IncidenciasModel extends Model
 {
+
+    //Lia -> Obtiene la info del empleado
+    public function getInfoEmpleado($idEmpleado)
+    {
+        return $this->db->query("SELECT EMP.*, PUE.pue_Nombre, DEP.dep_Nombre FROM empleado EMP
+        LEFT JOIN puesto PUE ON EMP.emp_PuestoID = PUE.pue_PuestoID
+        LEFT  JOIN departamento DEP ON EMP.emp_DepartamentoID = DEP.dep_DepartamentoID
+        WHERE EMP.emp_EmpleadoID = ?", array($idEmpleado))->getRowArray();
+    } //end getIngoEmpleado
+
+    public function getRegistrosByEmpleadoID($empleadoID = null)
+    {
+        return $this->db->query("SELECT * FROM vacacion WHERE vac_EmpleadoID= ? AND vac_Estado=1", array($empleadoID ?? session('id')))->getResultArray();
+    }
+
+    public function getVacacion($idVacacion)
+    {
+        return $this->db->query("SELECT * FROM vacacion WHERE vac_VacacionID=?", array($idVacacion))->getRowArray();
+    }
+
+    //Lia -> Obtiene el listado de vacaciones para autorizar
+    public function getVacacionesEmpleadosJefe($numJefe)
+    {
+        $extraCondition = (session('id') == 19) ? ' OR (EMP.emp_EmpleadoID=7 AND VAC.vac_Estado=1)' : '';
+
+        $sql = "SELECT VAC.*, EMP.emp_Nombre, S.suc_Sucursal, EMP.emp_Jefe
+                FROM vacacion VAC
+                LEFT JOIN empleado EMP ON EMP.emp_EmpleadoID = VAC.vac_EmpleadoID
+                LEFT JOIN sucursal S ON EMP.emp_SucursalID = S.suc_SucursalID
+                WHERE (EMP.emp_Jefe = ? AND VAC.vac_Estado = 1) $extraCondition";
+
+        return $this->db->query($sql, [$numJefe])->getResultArray();
+    }
+
+    public function getEmpleadoByVacacionID($idVacaciones)
+    {
+        return $this->db->query("SELECT E.emp_EmpleadoID, E.emp_Nombre 
+        FROM empleado E 
+        JOIN vacacion V ON V.vac_EmpleadoID=E.emp_EmpleadoID 
+        WHERE  V.vac_VacacionesID=?", array($idVacaciones))->getRowArray();
+    }
+
+    //Lia -> Obtiene el listado de vacaciones para autorizar
+    function getListVacaciones($estatus)
+    {
+        $estatus = join("','", $estatus);
+
+        $query = "SELECT VAC.*, EMP.emp_Nombre,S.suc_Sucursal,EMP.emp_SucursalID FROM vacacion VAC
+                    JOIN empleado EMP ON VAC.vac_EmpleadoID = EMP.emp_EmpleadoID
+                    JOIN sucursal S ON S.suc_SucursalID =EMP.emp_SucursalID
+                  WHERE vac_Estado=1 AND VAC.vac_Estatus IN ('$estatus') AND  VAC.vac_EmpleadoID IN
+                    (SELECT EMP.emp_EmpleadoID FROM empleado EMP )
+                    order by field(VAC.vac_Estatus,'AUTORIZADO', 'AUTORIZADO_RH', 'DECLINADO', 'RECHAZADO') asc
+                  ";
+        $consulta = $this->db->query($query);
+
+        return ($consulta) ? $consulta->getResultArray() : null;
+    } //end getListVacaciones
+
+    function getVacacionesHorasByEmpleadoID($empleadoID)
+    {
+        return db()->table("vacacionhoras")->getWhere(array("vach_EmpleadoID" => session('id'), "vach_Estado" => 1))->getResultArray();
+    }
+
+    //Diego -> Obtiene el listado de solicitud de horas vacaciones para autorizar
+    function getListVacacionesHoras()
+    {
+        $query = "SELECT VAC.*, EMP.emp_Nombre,S.suc_Sucursal,EMP.emp_SucursalID FROM vacacionhoras VAC
+                    JOIN empleado EMP ON VAC.vach_EmpleadoID = EMP.emp_EmpleadoID
+                    JOIN sucursal S ON S.suc_SucursalID =EMP.emp_SucursalID
+                  WHERE vach_Estado=1 AND VAC.vach_EmpleadoID IN
+                    (SELECT EMP.emp_EmpleadoID FROM empleado EMP )
+                    order by field(VAC.vach_Estatus,'PENDIENTE','AUTORIZADO_RH','RECHAZADO_RH') asc
+                  ";
+        $consulta = $this->db->query($query);
+
+        return ($consulta) ? $consulta->getResultArray() : null;
+    } //end getListVacaciones
+
+    function getEmpleadoByVacacionHorasID($idVacaciones)
+    {
+        return db()->query("SELECT * FROM empleado JOIN vacacionhoras ON vach_EmpleadoID=emp_EmpleadoID WHERE vach_VacacionHorasID=?", array($idVacaciones))->getRowArray();
+    }
+
+    function getAcumuladosByEmpleado($empleadoID)
+    {
+        return $this->db->query("SELECT * FROM acumulados WHERE acu_EmpleadoID=?", array($empleadoID))->getRowArray();
+    }
+
+    function getDiasVacacionByEmpleadoID($empleadoID)
+    {
+        return db()->query("SELECT vace_Dias FROM vacacionempleado WHERE vace_EmpleadoID=?", array($empleadoID))->getRowArray()['vace_Dias'] ?? 0;
+    }
+
+    public function getCatalogoPermisos()
+    {
+        return $this->db->query("SELECT * FROM catalogopermiso WHERE cat_Estatus = 1")->getResultArray();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //Diego->Dias incapacidades por empleado
     public function getIncapacidadesByEmpleado()
     {
@@ -50,84 +162,19 @@ class IncidenciasModel extends Model
 
         $sql = "SELECT A.*, E.emp_Nombre,E.emp_Numero,E.emp_Jefe FROM actaadministrativa A JOIN empleado E ON E.emp_EmpleadoID=A.act_EmpleadoID WHERE emp_Jefe=" . session('numero') . " ORDER BY A.act_FechaRealizo ASC";
         return $this->db->query($sql)->getResultArray();
-    }//end getActasAdministrativasMisColaboradores
+    } //end getActasAdministrativasMisColaboradores
 
     public function getIncapacidadesMisColaboradores()
     {
         $sql = "SELECT I.*, E.emp_Nombre,E.emp_Numero,E.emp_Jefe FROM incapacidad I JOIN empleado E ON E.emp_EmpleadoID=I.inc_EmpleadoID WHERE emp_Jefe=" . session('numero');
         return $this->db->query($sql)->getResultArray();
-    }//end getActasIncapacidadesMisColaboradores
+    } //end getActasIncapacidadesMisColaboradores
 
-    //Lia -> Obtiene la info del empleado
-    public function getInfoEmpleado($idEmpleado)
-    {
-        return $this->db->query("SELECT EMP.*, PUE.pue_Nombre, DEP.dep_Nombre FROM empleado EMP
-            LEFT JOIN puesto PUE ON EMP.emp_PuestoID = PUE.pue_PuestoID
-            LEFT  JOIN departamento DEP ON EMP.emp_DepartamentoID = DEP.dep_DepartamentoID
-            WHERE EMP.emp_EmpleadoID = ?", array((int)encryptDecrypt('decrypt', $idEmpleado)))->getRowArray();
-    } //end getIngoEmpleado
 
-    //Lia -> Obtiene el listado de vacaciones para autorizar
-    function getVacacionesEmpleadosJefe($numJefe)
-    {
-        $where ='';
-        if(session('id')==19){
-            $where = ' OR (EMP.emp_EmpleadoID=7 AND VAC.vac_Estado=1 )';
-        }
-        $sql = " SELECT VAC.*,EMP.emp_Nombre,S.suc_Sucursal,EMP.emp_Jefe FROM vacacion VAC
-                    LEFT JOIN empleado EMP ON EMP.emp_EmpleadoID=VAC.vac_EmpleadoID
-                    LEFT JOIN sucursal S on EMP.emp_SucursalID = S.suc_SucursalID
-                    WHERE (EMP.emp_Jefe = '".$numJefe."' AND VAC.vac_Estado=1) $where";
-        return $this->db->query($sql)->getResultArray();
 
-    } //end getListVacaciones
 
-    //Lia -> Obtiene el listado de vacaciones para autorizar
-    function getListVacaciones($estatus)
-    {
-        $estatus = join("','", $estatus);
 
-        $query = "SELECT VAC.*, EMP.emp_Nombre,S.suc_Sucursal,EMP.emp_SucursalID FROM vacacion VAC
-                    JOIN empleado EMP ON VAC.vac_EmpleadoID = EMP.emp_EmpleadoID
-                    JOIN sucursal S ON S.suc_SucursalID =EMP.emp_SucursalID
-                  WHERE vac_Estado=1 AND VAC.vac_Estatus IN ('$estatus') AND  VAC.vac_EmpleadoID IN
-                    (SELECT EMP.emp_EmpleadoID FROM empleado EMP )
-                    order by field(VAC.vac_Estatus,'AUTORIZADO', 'AUTORIZADO_RH', 'DECLINADO', 'RECHAZADO') asc
-                  ";
-        $consulta = $this->db->query($query);
 
-        return ($consulta) ? $consulta->getResultArray() : null;
-    } //end getListVacaciones
-
-    //Diego -> Obtiene el listado de solicitud de horas vacaciones para autorizar
-    function getListVacacionesHoras()
-    {
-        $query = "SELECT VAC.*, EMP.emp_Nombre,S.suc_Sucursal,EMP.emp_SucursalID FROM vacacionhoras VAC
-                    JOIN empleado EMP ON VAC.vach_EmpleadoID = EMP.emp_EmpleadoID
-                    JOIN sucursal S ON S.suc_SucursalID =EMP.emp_SucursalID
-                  WHERE vach_Estado=1 AND VAC.vach_EmpleadoID IN
-                    (SELECT EMP.emp_EmpleadoID FROM empleado EMP )
-                    order by field(VAC.vach_Estatus,'PENDIENTE','AUTORIZADO_RH','RECHAZADO_RH') asc
-                  ";
-        $consulta = $this->db->query($query);
-
-        return ($consulta) ? $consulta->getResultArray() : null;
-    } //end getListVacaciones
-
-    //Diego-> obtener total de horas extra
-    public function getHorasExtra(){
-        $horasExtra= $this->db->query("SELECT SUM(rep_Horas) as 'horas' FROM reportehoraextra WHERE rep_Estado='PAGADO' AND rep_TipoPago='Tiempo por tiempo' AND rep_EmpleadoID=".session('id'))->getRowArray()['horas']??0;
-        $horasExtraVacaciones= $this->db->query("SELECT SUM(vach_Horas) as 'horas' FROM vacacionhoras WHERE vach_Estado=1 AND vach_Estatus='AUTORIZADO_RH' AND vach_EmpleadoID=".session('id'))->getRowArray()['horas']??0;
-        $horasAcumuladas=$this->db->query("SELECT acu_HorasExtra as 'horas' FROM acumulados WHERE acu_EmpleadoID=".session('id'))->getRowArray()['horas']??0;
-        $horasConsumidas = $this->db->query("SELECT SUM(per_Horas) as 'horas' FROM permiso WHERE per_TipoID=7 AND per_Estatus=1 AND per_EmpleadoID=" . session('id') . " AND per_Estado IN ('PENDIENTE','PRE-AUTORIZADO', 'AUTORIZADO', 'AUTORIZADO_RH')")->getRowArray()['horas']??0;
-        return ($horasExtra+$horasAcumuladas+$horasExtraVacaciones)-$horasConsumidas;
-    }//end getHorasExtra
-
-    //HUGO->Get lista de tipos de permisos
-    public function getCatalogoPermisos()
-    {
-        return $this->db->query("select * from catalogopermiso where cat_Estatus = 1")->getResultArray();
-    } //getCatalogoPermisos
 
     //HUGO -> Obtiene todos los permisos de un empleado
     public function getPermisosByEmpleado($empleadoID)
@@ -151,25 +198,24 @@ class IncidenciasModel extends Model
         $sql = "select sum(per_DiasSolicitados) as 'dias' from permiso
                 where per_TipoID = ? and per_Estatus = 1 and YEAR(per_Fecha) = ?
                 and per_Estado in('PENDIENTE','AUTORIZADO','AUTORIZADO_RH') AND per_EmpleadoID = ?";
-        $dias = $this->db->query($sql, array((int)$tipoID, (int)date('Y'),session('id')))->getRowArray();
+        $dias = $this->db->query($sql, array((int)$tipoID, (int)date('Y'), session('id')))->getRowArray();
         return $dias['dias'];
     } //getDiasTomadosByTipoPermiso
 
     //HUGO -> Obtiene todos los permisos pendientes de los subordinados
     public function getPermisosPendientesMisSubordinados($numero)
     {
-        $where ='';
-        if(session('id')==19){
-            $where =" OR (E.emp_EmpleadoID=7 AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE'))";
+        $where = '';
+        if (session('id') == 19) {
+            $where = " OR (E.emp_EmpleadoID=7 AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE'))";
         }
-        $sql=" SELECT P.*, CP.cat_Nombre AS 'tipoPermiso', E.emp_Nombre,S.suc_Sucursal,P.per_TipoID as 'tipoPID',E.emp_Jefe
+        $sql = " SELECT P.*, CP.cat_Nombre AS 'tipoPermiso', E.emp_Nombre,S.suc_Sucursal,P.per_TipoID as 'tipoPID',E.emp_Jefe
         FROM permiso P
         LEFT JOIN catalogopermiso CP ON CP.cat_CatalogoPermisoID = P.per_TipoID
         LEFT JOIN empleado E ON E.emp_EmpleadoID = P.per_EmpleadoID
         LEFT JOIN sucursal S on E.emp_SucursalID = S.suc_SucursalID
-        WHERE (E.emp_Jefe = '".$numero."' AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE')) $where";
+        WHERE (E.emp_Jefe = '" . $numero . "' AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE')) $where";
         return $this->db->query($sql)->getResultArray();
-
     } //getPermisosPendientesMisSubordinados
 
     //HUGO -> Obtiene todos los permisos de los empleados de una empresa que fueron autorizados por el jefe
@@ -189,7 +235,7 @@ class IncidenciasModel extends Model
     {
         $sql = "SELECT * FROM reportehoraextra WHERE rep_EmpleadoID AND rep_Estatus=1 AND rep_EmpleadoID=" . session('id');
         return $this->db->query($sql)->getResultArray();
-    }//end getHorasExtraByEmpleado
+    } //end getHorasExtraByEmpleado
 
     //Guarda los reportes de reportes de horas extra
     public function ajaxAddReporteHorasExtras()
@@ -245,7 +291,7 @@ class IncidenciasModel extends Model
         $data['code'] = $this->db->insertID() ? 1 : 0;
 
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//end ajaxAddReporteHorasExtras
+    } //end ajaxAddReporteHorasExtras
 
     public function getHorasMisEmpleadosJefe($numJefe)
     {
@@ -257,7 +303,7 @@ class IncidenciasModel extends Model
             if (!is_null($numJefe)) {
                 $where = " WHERE EMP.emp_Jefe = '$numJefe'";
             }
-            if(session('id')==19){
+            if (session('id') == 19) {
                 $where2 = ' OR (REP.rep_EmpleadoID=7)';
             }
 
@@ -277,11 +323,11 @@ class IncidenciasModel extends Model
         }
 
         return ($consulta) ? $consulta->getResultArray() : null;
-    }//end getHorasMisEmpleadosJefe
+    } //end getHorasMisEmpleadosJefe
 
     public function getReportesHorasExtras()
     {
-        $estatus = array('AUTORIZADO', 'RECHAZADO_RH', 'APLICADO','PAGADO','DECLINADO');
+        $estatus = array('AUTORIZADO', 'RECHAZADO_RH', 'APLICADO', 'PAGADO', 'DECLINADO');
         $estatus = join("','", $estatus);
 
         $query = "SELECT REP.*, EMP.emp_Nombre,SUC.suc_Sucursal FROM reportehoraextra REP
@@ -291,19 +337,19 @@ class IncidenciasModel extends Model
         $consulta = $this->db->query($query);
 
         return ($consulta) ? $consulta->getResultArray() : null;
-    }//end getReportesHorasExtras
+    } //end getReportesHorasExtras
 
     //Lia->salidas del colaborador
     public function getSalidassByEmpleado($idEmpleado)
     {
-        return $this->db->query("SELECT * FROM reportesalida WHERE rep_EmpleadoID=? AND rep_Estatus=1",[$idEmpleado])->getResultArray();
-    }//end getSalidassByEmpleado
+        return $this->db->query("SELECT * FROM reportesalida WHERE rep_EmpleadoID=? AND rep_Estatus=1", [$idEmpleado])->getResultArray();
+    } //end getSalidassByEmpleado
 
     //Lia-> trae las cooperativas
     public function getSucursal()
     {
         return $this->db->query("SELECT * FROM sucursal WHERE suc_Estatus=1")->getResultArray();
-    }//end getSucursal
+    } //end getSucursal
 
     //Diego -> obtener salidas de mis empleados
     public function getSalidasMisEmpleados($numJefe)
@@ -322,7 +368,7 @@ class IncidenciasModel extends Model
         $consulta = $this->db->query($query);
 
         return ($consulta) ? $consulta->getResultArray() : null;
-    }//end getSalidasMisEmpleados
+    } //end getSalidasMisEmpleados
 
     //Diego->obtener informe salidas rh
     public function getInformesSalidas()
@@ -332,5 +378,5 @@ class IncidenciasModel extends Model
                   WHERE  REP.rep_Estado IN ('AUTORIZADO', 'RECHAZADO_RH', 'APLICADO') AND REP.rep_Estatus=1";
         $consulta = $this->db->query($query)->getResultArray();
         return $consulta;
-    }//end getInformesSalidas
+    } //end getInformesSalidas
 }

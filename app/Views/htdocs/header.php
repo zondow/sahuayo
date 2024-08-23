@@ -4,8 +4,11 @@ if (!isset($title)) $title = 'Inicio';
 // Notificaciones
 $notificaciones = APPPATH . 'Views/htdocs/notificaciones.php';
 $mensajes = APPPATH . 'views/htdocs/mensajes.php';
+$permisos = updatePermisos();
+session()->set('permisos', $permisos);
 $permisos = session('permisos');
 $navigation = APPPATH . "Views/usuario/navigation.php";
+
 ?>
 <!doctype html>
 <html class="no-js " lang="en">

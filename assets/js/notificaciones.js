@@ -44,6 +44,7 @@
         let id = $(this).data('id');
         let link = $(this).data('link');
         let fd = { id: id, link: link };
+        debugger
         $.ajax({
             url: BASE_URL + "Usuario/ajax_notificacionVista",
             type: "POST",
@@ -51,7 +52,7 @@
             dataType: "json"
         }).done(function (data) {
             if (data.response === "success") {
-                $(location).attr('href', BASE_URL + data.link);
+                $(location).attr('href', BASE_URL + link);
             }
         }).fail(function () { });
     });

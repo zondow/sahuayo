@@ -270,6 +270,23 @@ class Configuracion extends BaseController
         return redirect()->to($_SERVER['HTTP_REFERER']);
     } //saveRol
 
+    //Lia -> Guarda los permisos de un rol
+    public function savePermisosRol()
+    {
+        $post = $this->request->getPost();
+        $rolID = (int)encryptDecrypt('decrypt', $post['rol_RolID']);
+        unset($post['rol_RolID']);
+        $permisos = json_encode($post);
+        $res = update('rol',array('rol_Permisos' => $permisos), array('rol_RolID' => $rolID));
+        if ($res) {
+            insertLog($this, session('id'), 'Actualizar', 'rol', $rolID);
+            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Datos actualizados correctamente!'));
+        } else {
+            $this->session->setFlashdata(array('response' => 'danger', 'txttoastr' => 'Los datos no cambiarón. Intente nuevamente.'));
+        }
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    } //savePermisosRol
+
     //Lia -> Guarda la configuracion de las prestaciones actuales
     public function guardarPrestacionesActuales()
     {

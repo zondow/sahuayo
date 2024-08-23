@@ -16,10 +16,10 @@ foreach ($result as $row) {
             echo addMenuOption('prestaciones', 'Configuracion', 'Prestaciones');
             echo addMenuOption('configuracionPermisos', 'Configuracion', 'Permisos');
             echo addMenuOption('configuracionExpediente', 'Configuracion', 'Expedientes');
-            echo showSubMenu(array(['horarios','Configuracion','Crear Horarios'],['guardias','Configuracion','Guardias']),'Horarios');
-            echo addMenuOption('configChecklistIngresoEgreso','Configuracion','Onboarding y Offboarding');
+            echo showSubMenu(array(['horarios', 'Configuracion', 'Crear Horarios'], ['guardias', 'Configuracion', 'Guardias']), 'Horarios');
+            echo addMenuOption('configChecklistIngresoEgreso', 'Configuracion', 'Onboarding y Offboarding');
             ?>
-            
+
         </ul>
     </li>
 <?php } ?>
@@ -53,16 +53,19 @@ foreach ($result as $row) {
 <li class="header">Incidencias</li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-flight-takeoff"></i><span>Vacaciones</span> </a>
     <ul class="ml-menu">
-        <li> <a href="ec-dashboard.html">Dashboard</a></li>
-        <li> <a href="ec-product.html">Product</a></li>
-        <li> <a href="ec-product-List.html">Product List</a></li>
-        <li> <a href="ec-product-detail.html">Product detail</a></li>
+        <li><a href="<?= base_url('Incidencias/misVacaciones') ?>">Mis Vacaciones</a></li>
+        <?php if (isJefe($this)) : ?><li><a href="<?= base_url("Incidencias/vacacionesMisEmpleados") ?>">Autorizar vacaciones</a></li><?php endif;
+        echo addMenuOption('listVacaciones', 'Incidencias', 'Aplicar vacaciones');?>
+        <li><a href="<?= base_url("Incidencias/cambioVacacionesHoras") ?>">Cambiar Vacaciones por horas</a></li>
+        <?php echo addMenuOption('aplicarCambioHorasVac', 'Incidencias', 'Aplicar Cambio de Vacaciones a Horas') ?>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-assignment-check"></i><span>Permisos</span> </a>
     <ul class="ml-menu">
-        <li><a href="widgets-app.html">Apps Widgets</a></li>
-        <li><a href="widgets-data.html">Data Widgets</a></li>
+        <li><a href="<?= base_url("Incidencias/misPermisos") ?>">Mis permisos</a></li>
+        <?php if (isJefe($this)) : ?><li><a href="<?= base_url("Incidencias/permisosMisEmpleados") ?>">Autorizar permisos</a></li> <?php endif;
+        echo addMenuOption('aplicarPermisos','Incidencias', 'Aplicar permisos');
+        ?>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-pin-assistant"></i><span>Asistencia</span> </a>
