@@ -105,6 +105,88 @@ class IncidenciasModel extends Model
         return $this->db->query("SELECT * FROM catalogopermiso WHERE cat_Estatus = 1")->getResultArray();
     }
 
+    public function getPermisosByEmpleado($empleadoID)
+    {
+        $sql = "SELECT P.*, CP.cat_Nombre as 'tipoPermiso'
+                FROM permiso P
+                LEFT JOIN catalogopermiso CP ON CP.cat_CatalogoPermisoID = P.per_TipoID
+                WHERE P.per_EmpleadoID = ? AND P.per_Estatus = 1 ORDER BY P.per_PermisoID ASC";
+        return $this->db->query($sql, $empleadoID)->getResultArray();
+    } //getPermisosByEmpleado
+
+    public function getCatalogoPermisosById($id)
+    {
+        return $this->db->query("SELECT * FROM catalogopermiso WHERE cat_CatalogoPermisoID = ?", array($id))->getRowArray();
+    } //getCatalogoPermisosById
+
+    public function getDiasTomadosByTipoPermiso($tipoID)
+    {
+        $sql = "SELECT sum(per_DiasSolicitados) as 'dias' FROM permiso
+                WHERE per_TipoID = ? AND per_Estatus = 1 AND YEAR(per_Fecha) = ?
+                AND per_Estado IN('PENDIENTE','AUTORIZADO','AUTORIZADO_RH') AND per_EmpleadoID = ?";
+        return $this->db->query($sql, array((int)$tipoID, (int)date('Y'), session('id')))->getRowArray()['dias'];
+    } //getDiasTomadosByTipoPermiso
+
+    public function getHorasTomadasByPermisoLactancia($fechaInicio,$fechaFin){
+        $query = "SELECT sum(per_Horas) as horas FROM permiso 
+        WHERE per_TipoID = 9 AND per_Estatus = 1 AND per_Estado IN('PENDIENTE','AUTORIZADO','AUTORIZADO_RH') AND per_EmpleadoID = ? AND 
+        ((per_FechaInicio BETWEEN ? AND ?) OR (per_FechaFin BETWEEN ? AND ?) OR (? BETWEEN per_FechaInicio AND per_FechaFin) OR (? BETWEEN per_FechaInicio AND per_FechaFin))";
+        return $this->db->query($query, array(session('id'),$fechaInicio,$fechaFin,$fechaInicio,$fechaFin,$fechaInicio,$fechaFin))->getRowArray()['horas'];
+    }
+
+    //Diego -> Obtiene todos los permisos pendientes de los subordinados
+    public function getPermisosPendientesMisSubordinados($numero)
+    {
+        $where = '';
+        if (session('id') == 19) {
+            $where = " OR (E.emp_EmpleadoID=7 AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE'))";
+        }
+        $sql = " SELECT P.*, CP.cat_Nombre AS 'tipoPermiso', E.emp_Nombre,S.suc_Sucursal,P.per_TipoID as 'tipoPID',E.emp_Jefe
+        FROM permiso P
+        LEFT JOIN catalogopermiso CP ON CP.cat_CatalogoPermisoID = P.per_TipoID
+        LEFT JOIN empleado E ON E.emp_EmpleadoID = P.per_EmpleadoID
+        LEFT JOIN sucursal S on E.emp_SucursalID = S.suc_SucursalID
+        WHERE (E.emp_Jefe = '" . $numero . "' AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE')) $where";
+        return $this->db->query($sql)->getResultArray();
+    } //getPermisosPendientesMisSubordinados
+
+    public function getInfoByPermiso($permisoID){
+        return db()->query("SELECT P.*,E.emp_EmpleadoID,E.emp_Correo,E.emp_Nombre,E.emp_Jefe,E.emp_EmpleadoID FROM permiso P JOIN empleado E ON E.emp_EmpleadoID=P.per_EmpleadoID WHERE P.per_PermisoID=?", array($permisoID))->getRowArray();
+    }
+
+    //Diego -> Obtiene todos los permisos de los empleados de una empresa que fueron autorizados por el jefe
+    public function getPermisosAutorizados()
+    {
+        $sql = "SELECT P.*, CP.cat_Nombre AS 'tipoPermiso', E.emp_Nombre,S.suc_Sucursal,P.per_TipoID as 'tipoPID'
+                FROM permiso P
+                LEFT JOIN catalogopermiso CP ON CP.cat_CatalogoPermisoID = P.per_TipoID
+                LEFT JOIN empleado E ON E.emp_EmpleadoID = P.per_EmpleadoID
+                LEFT JOIN sucursal S on E.emp_SucursalID = S.suc_SucursalID
+                WHERE P.per_Estatus = 1 AND P.per_Estado IN ('AUTORIZADO_JEFE','AUTORIZADO_RH','RECHAZADO_RH','DECLINADO')
+                order by field(P.per_Estado,'AUTORIZADO_JEFE','AUTORIZADO_RH','RECHAZADO_RH') asc";
+        return $this->db->query($sql)->getResultArray();
+    } //getPermisosAutorizados
+
+    public function getHorasExtraByEmpleado($empleadoID)
+    {
+        return $this->db->query("SELECT * FROM reportehoraextra WHERE rep_Estatus=1 AND rep_EmpleadoID=?",[$empleadoID])->getResultArray();
+    } //end getHorasExtraByEmpleado
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -171,71 +253,6 @@ class IncidenciasModel extends Model
     } //end getActasIncapacidadesMisColaboradores
 
 
-
-
-
-
-
-    //HUGO -> Obtiene todos los permisos de un empleado
-    public function getPermisosByEmpleado($empleadoID)
-    {
-        $sql = "select P.*, CP.cat_Nombre as 'tipoPermiso'
-                from permiso P
-                left join catalogopermiso CP on CP.cat_CatalogoPermisoID = P.per_TipoID
-                where P.per_EmpleadoID = ? and P.per_Estatus = 1 order by P.per_PermisoID desc";
-        return $this->db->query($sql, $empleadoID)->getResultArray();
-    } //getPermisosByEmpleado
-
-    //HUGO->Get tipo de permiso por id
-    public function getCatalogoPermisosById($id)
-    {
-        return $this->db->query("select * from catalogopermiso where cat_CatalogoPermisoID = ?", array($id))->getRowArray();
-    } //getCatalogoPermisosById
-
-    //HUGO->Get dias tomados por tipo de permiso
-    public function getDiasTomadosByTipoPermiso($tipoID)
-    {
-        $sql = "select sum(per_DiasSolicitados) as 'dias' from permiso
-                where per_TipoID = ? and per_Estatus = 1 and YEAR(per_Fecha) = ?
-                and per_Estado in('PENDIENTE','AUTORIZADO','AUTORIZADO_RH') AND per_EmpleadoID = ?";
-        $dias = $this->db->query($sql, array((int)$tipoID, (int)date('Y'), session('id')))->getRowArray();
-        return $dias['dias'];
-    } //getDiasTomadosByTipoPermiso
-
-    //HUGO -> Obtiene todos los permisos pendientes de los subordinados
-    public function getPermisosPendientesMisSubordinados($numero)
-    {
-        $where = '';
-        if (session('id') == 19) {
-            $where = " OR (E.emp_EmpleadoID=7 AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE'))";
-        }
-        $sql = " SELECT P.*, CP.cat_Nombre AS 'tipoPermiso', E.emp_Nombre,S.suc_Sucursal,P.per_TipoID as 'tipoPID',E.emp_Jefe
-        FROM permiso P
-        LEFT JOIN catalogopermiso CP ON CP.cat_CatalogoPermisoID = P.per_TipoID
-        LEFT JOIN empleado E ON E.emp_EmpleadoID = P.per_EmpleadoID
-        LEFT JOIN sucursal S on E.emp_SucursalID = S.suc_SucursalID
-        WHERE (E.emp_Jefe = '" . $numero . "' AND P.per_Estatus = 1 AND P.per_Estado IN ('PENDIENTE')) $where";
-        return $this->db->query($sql)->getResultArray();
-    } //getPermisosPendientesMisSubordinados
-
-    //HUGO -> Obtiene todos los permisos de los empleados de una empresa que fueron autorizados por el jefe
-    public function getPermisosAutorizados()
-    {
-        $sql = "SELECT P.*, CP.cat_Nombre AS 'tipoPermiso', E.emp_Nombre,S.suc_Sucursal,P.per_TipoID as 'tipoPID'
-                FROM permiso P
-                LEFT JOIN catalogopermiso CP ON CP.cat_CatalogoPermisoID = P.per_TipoID
-                LEFT JOIN empleado E ON E.emp_EmpleadoID = P.per_EmpleadoID
-                LEFT JOIN sucursal S on E.emp_SucursalID = S.suc_SucursalID
-                WHERE P.per_Estatus = 1 AND P.per_Estado IN ('AUTORIZADO_JEFE','AUTORIZADO_RH','RECHAZADO_RH','DECLINADO')
-                order by field(P.per_Estado,'AUTORIZADO_JEFE','AUTORIZADO_RH','RECHAZADO_RH') asc";
-        return $this->db->query($sql)->getResultArray();
-    } //getPermisosAutorizados
-
-    public function getHorasExtraByEmpleado()
-    {
-        $sql = "SELECT * FROM reportehoraextra WHERE rep_EmpleadoID AND rep_Estatus=1 AND rep_EmpleadoID=" . session('id');
-        return $this->db->query($sql)->getResultArray();
-    } //end getHorasExtraByEmpleado
 
     //Guarda los reportes de reportes de horas extra
     public function ajaxAddReporteHorasExtras()

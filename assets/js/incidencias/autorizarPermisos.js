@@ -15,7 +15,7 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "per_PermisoID",render: function(data,type,row){return accionesPermisosAutorizar(data,type,row)}},
+            { "data": "num"},
             { "data": "per_Fecha"},
             { "data": "emp_Nombre"},
             { "data": "tipoPermiso"},
@@ -23,7 +23,8 @@ $(document).ready(function (e) {
             { "data": "per_FechaFin"},
             { "data": "per_DiasSolicitados"},
             { "data": "per_Motivos"},
-            { "data": "per_Estado",render: function (data,type,row) {return estatusPermisoAutorizar(data)}}
+            { "data": "per_Estado",render: function (data,type,row) {return estatusPermisoAutorizar(data)}},
+            { "data": "per_PermisoID",render: function(data,type,row){return accionesPermisosAutorizar(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -153,17 +154,17 @@ $(document).ready(function (e) {
     function accionesPermisosAutorizar(data,type,row){
         var urlImprimir = BASE_URL+'PDF/imprimirPermiso/'+data;
 
-        var btnImprimir = ' <a href="' + urlImprimir +'"'+
-            'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Solicitud de permiso" title="Formato de solicitud">'+
-            '<i class="dripicons-print" ></i></a>';
+        var btnImprimir = ' <button href="' + urlImprimir +'"'+
+            'class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down show-pdf" data-title="Solicitud de permiso" title="Formato de solicitud">'+
+            '<i class="zmdi zmdi-local-printshop" ></i></button>';
 
         var autorizaciones = '';
         if(row.per_Estado == 'PENDIENTE') {
-            autorizaciones = '<a href="#" data-permiso="'+data+'" data-tipo="'+row.per_TipoID+'" data-estado="'+row.per_Estado+'" class="btn btn-success btn-block btnAutorizarPermiso"  title="Autorizar" >' +
-                '<i class="fa fa-check"></i></a>';
+            autorizaciones = '<button href="#" data-permiso="'+data+'" data-tipo="'+row.per_TipoID+'" data-estado="'+row.per_Estado+'" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down btnAutorizarPermiso"  title="Autorizar" >' +
+                '<i class="zmdi zmdi-check"></i></button>';
 
-            autorizaciones += '<a href="#" data-permiso="'+data+'" class="btn btn-danger btn-block btnRechazarPermiso" title="Rechazar">' +
-                '<i class="fa fa-times" ></i></a>';
+            autorizaciones += '<button href="#" data-permiso="'+data+'" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down btnRechazarPermiso" title="Rechazar">' +
+                '<i class="zmdi zmdi-close" ></i></button>';
         }//if
         return btnImprimir + autorizaciones;
     }//accionesPermisosAutorizar
@@ -172,7 +173,7 @@ $(document).ready(function (e) {
 
         var html = '';
         switch (estatus){
-            case 'PENDIENTE':html = '<span class="badge badge-dark p-1">PENDIENTE</span>';break;
+            case 'PENDIENTE':html = '<span class="badge badge-info p-1">PENDIENTE</span>';break;
             case 'AUTORIZADO_JEFE':html = '<span class="badge badge-success p-1">AUTORIZADO JEFE</span>'; break;
             case 'AUTORIZADO_RH':html = '<span class="badge badge-info p-1">APLICADO</span>'; break;
             case 'RECHAZADO_JEFE':html = '<span class="badge badge-danger p-1">RECHAZADO JEFE</span>'; break;
@@ -184,7 +185,6 @@ $(document).ready(function (e) {
     }//estatusPermisoAutorizar
 
     function ajax_autorizarPermiso(permisoID,obs){
-        $(".btnAutorizarPermiso").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Autorizando...');
         $.ajax({
             url: BASE_URL+'Incidencias/ajax_autorizarPermiso',
             cache: false,
@@ -212,7 +212,6 @@ $(document).ready(function (e) {
     }//ajax_autorizarPermiso
 
     function ajax_autorizarPermisoAusencia(permisoID,obs,tipo){
-        $(".btnAutorizarPermiso").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Autorizando...');
         if (tipo !== ""){
             $.ajax({
                 url: BASE_URL+'Incidencias/ajax_autorizarPermiso',
@@ -244,8 +243,6 @@ $(document).ready(function (e) {
     }
 
     function ajax_rechazarPermiso(permisoID,obs){
-        $(".btnRechazarPermiso").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Rechazando...');
-
         $.ajax({
             url: BASE_URL+'Incidencias/ajax_rechazarPermiso',
             cache: false,

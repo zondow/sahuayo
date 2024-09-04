@@ -60,5 +60,40 @@ class BaseModel extends Model
     
         return ($queries[array_keys($queries)[0]] +  $queries[array_keys($queries)[1]]) - $queries[array_keys($queries)[2]];
     }
+
+    public function getHorasAdministrativas($empleadoID){
+        $horasAdm = $this->db->query("SELECT acu_DiasAdministrativos FROM acumulados WHERE acu_EmpleadoID=?",[$empleadoID])->getRowArray()['acu_DiasAdministrativos'];
+        $horasAdmConsumidas = $this->db->query("SELECT SUM(per_Horas) as horas FROM permiso WHERE per_EmpleadoID = ? AND per_TipoID = 8 AND per_Estatus=1 AND per_Estado NOT IN('RECHAZADO_JEFE','RECHAZADO_RH','DECLINADO') AND ? BETWEEN YEAR(per_FechaInicio) AND YEAR(per_FechaFin)",[$empleadoID,date('Y')])->getRowArray()['horas'];
+        return ($horasAdm - $horasAdmConsumidas);
+    }
+
+    public function getEmpleadoByID($empleadoID){
+        $empleado = $this->db->query("SELECT * FROM empleado WHERE emp_EmpleadoID=?", [$empleadoID])->getRowArray();
+    
+        // Eliminar las claves emp_Password y pass si existen en el array
+        if (isset($empleado['emp_Password'])) {
+            unset($empleado['emp_Password']);
+        }
+        if (isset($empleado['pass'])) {
+            unset($empleado['pass']);
+        }
+    
+        return $empleado;
+    }    
+
+    public function getEmpleadoByNumero($empleadoNumero){
+        $empleado = $this->db->query("SELECT * FROM empleado WHERE emp_Numero=?", [$empleadoNumero])->getRowArray();
+    
+        // Eliminar las claves emp_Password y pass si existen en el array
+        if (isset($empleado['emp_Password'])) {
+            unset($empleado['emp_Password']);
+        }
+        if (isset($empleado['pass'])) {
+            unset($empleado['pass']);
+        }
+    
+        return $empleado;
+    }
+    
     
 }

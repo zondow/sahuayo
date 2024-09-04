@@ -174,32 +174,9 @@ class Incidencias extends BaseController
         $data['empleado'] = $this->IncidenciasModel->getInfoEmpleado(session('id'));
         $data['catalogoPermisos'] = $this->IncidenciasModel->getCatalogoPermisos();
         $data['horasExtra'] = $this->BaseModel->getHorasExtra(session('id'));
+        $data['horasAdministrativas'] = $this->BaseModel->getHorasAdministrativas(session('id'));
 
-        //Custom Styles
-        $data['styles'][] = base_url('assets/libs/custombox/custombox.min.css');
-        $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
-        $data['styles'][] = base_url("assets/libs/select2/select2.min.css");
-        $data['styles'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.css');
-        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
-        $data['styles'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/css/buttons.bootstrap4.css');
-        $data['styles'][] = base_url('assets/css/tables-custom.css');
-        $data['styles'][] = base_url("assets/plugins/sweetalert2/dist/sweetalert2.css");
-
-        //Custom Scripts
-        $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.js');
-        $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
-        $data['scripts'][] = base_url("assets/libs/select2/select2.min.js");
-        $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/dataTables.buttons.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.bootstrap4.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/JSZip-2.5.0/jszip.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/pdfmake.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/vfs_fonts.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.html5.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.colVis.js');
-        $data['scripts'][] = base_url("assets/plugins/sweetalert2/dist/sweetalert2.min.js");
+        load_plugins(['datatables_buttons', 'sweetalert2', 'chosen', 'daterangepicker',], $data);
 
         $data['scripts'][] = base_url("assets/js/incidencias/permisos.js");
         $data['scripts'][] = base_url("assets/js/modalPdf.js");
@@ -210,6 +187,147 @@ class Incidencias extends BaseController
         echo view('htdocs/modalPdf', $data);
         echo view('htdocs/footer', $data);
     } //misPermisos
+
+
+    //Diego-> Lista de solicitues de permisos de sus empleados
+    public function permisosMisEmpleados()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Autorizar permisos';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Autorizar permisos', "link" => base_url('Permiso/permisosMisEmpleados'), "class" => "active");
+
+        load_plugins(['chosen', 'daterangepicker', 'datatables_buttons', 'sweetalert2'], $data);
+
+        //Custom Styles
+        //Custom Scripts
+        $data['scripts'][] = base_url("assets/js/modalPdf.js");
+
+        $data['scripts'][] = base_url("assets/js/incidencias/autorizarPermisos.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('incidencias/autorizarPermisos', $data);
+        echo view('htdocs/modalPdf', $data);
+        echo view('incidencias/modalesPermiso', $data);
+        echo view('htdocs/footer', $data);
+    } //end permisosMisEmpleados
+
+    //Diego-> Generar Permisos
+    public function aplicarPermisos()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Aplicar permisos';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Aplicar permisos', "link" => base_url('Permiso/aplicarPermisos'), "class" => "active");
+
+        load_plugins(['chosen', 'datatables_buttons', 'sweetalert2'], $data);
+
+        //Custom Styles
+        //Custom Scripts
+        $data['scripts'][] = base_url("assets/js/modalPdf.js");
+        $data['scripts'][] = base_url("assets/js/aplicarPermisos.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('incidencias/aplicarPermisos', $data);
+        echo view('htdocs/modalPdf', $data);
+        echo view('htdocs/footer', $data);
+    } //aplicarPermisos
+
+    //Lia->reporte de asistencias
+    public function reporteAsistencia()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Reporte de asistencia';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Reporte de asistencia', "link" => base_url('Incidencias/reporteAsistencia'), "class" => "active");
+
+        load_plugins(['daterangepicker', 'jstree'], $data);
+
+        //Custom Scripts
+        $data['scripts'][] = base_url("assets/js/incidencias/reporteAsistencia.js");
+
+        //Vistas
+        echo view('htdocs/header.php', $data);
+        echo view('incidencias/formReporteAsistencia', $data);
+        echo view('htdocs/footer.php', $data);
+    }
+
+
+    //Diego ->El empleado registra sus horas extra
+    public function controlHorasExtra()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Control de horas extra';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Control de horas extra', "link" => base_url('Incidencias/controlHorasExtra'), "class" => "active");
+
+        $data['empleado'] = $this->BaseModel->getEmpleadoByID(session('id'));
+
+        load_plugins(['moment', 'moment_locales', 'chosen', 'daterangepicker', 'datatables_buttons', 'sweetalert2', 'bootstrapdatetimepicker'], $data);
+
+        //Custom Styles
+        //Custom Scripts
+        $data['scripts'][] = base_url("assets/js/incidencias/controlHorasExtra.js");
+        $data['scripts'][] = base_url("assets/js/modalPdf.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('incidencias/formCHorasExtra', $data);
+        echo view('htdocs/modalPdf', $data);
+        echo view('htdocs/footer', $data);
+    } //end controlHorasExtra
+
+    //Lia->informe de horas extra de los empleados a cargo
+    public function horasExtraMisEmpleados()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Revisar reporte de horas extra';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Revisar reporte de horas extra', "link" => base_url('Incidencias/horasExtraMisEmpleados'), "class" => "active");
+
+        load_plugins(['datatables_buttons', 'sweetalert2'], $data);
+
+        //Custom Scripts
+        //Custom Scripts
+        $data['scripts'][] = base_url("assets/js/modalPdf.js");
+        $data['scripts'][] = base_url("assets/js/incidencias/reporteHorasMisEmpleados.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('incidencias/reporteHorasMisEmpleados', $data);
+        echo view('htdocs/modalPdf');
+        echo view('htdocs/footer', $data);
+    } //end horasExtraMisEmpleados
+
+    //Lia->informe de horas extra a aplicar
+    public function aplicarReporteHoras()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Aplicar reporte de horas extra';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Aplicar reporte de horas extra', "link" => base_url('Incidencias/aplicarReporteHoras'), "class" => "active");
+
+        load_plugins(['datatables_buttons', 'sweetalert2'], $data);
+
+        //Custom Scripts
+        //Custom Scripts
+        $data['scripts'][] = base_url("assets/js/modalPdf.js");
+        $data['scripts'][] = base_url("assets/js/incidencias/aplicarReporteHoras.js");
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('incidencias/aplicarReporteHoras', $data);
+        echo view('htdocs/modalPdf');
+        echo view('htdocs/footer', $data);
+    } //end aplicarReporteHoras
 
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
@@ -473,22 +591,22 @@ class Incidencias extends BaseController
 
         if ($estatus == 'AUTORIZADO_RH') {
             $txt = "Aplicada";
-            $res = update('vacacionhoras', ['vach_Estatus' => $estatus,'vach_AutorizaID' => session('id')], ["vach_VacacionHorasID" => $idVacaciones]);
+            $res = update('vacacionhoras', ['vach_Estatus' => $estatus, 'vach_AutorizaID' => session('id')], ["vach_VacacionHorasID" => $idVacaciones]);
 
             if ($res) {
                 $existe = $this->IncidenciasModel->getAcumuladosByEmpleado($empleado['emp_EmpleadoID']);
                 $nuevasHoras = $existe ? $existe['acu_HorasExtra'] + $empleado['vach_Horas'] : $empleado['vach_Horas'];
-                $acumuladosData = ['acu_EmpleadoID' => $empleado['emp_EmpleadoID'], 'acu_HorasExtra' => $nuevasHoras ];
+                $acumuladosData = ['acu_EmpleadoID' => $empleado['emp_EmpleadoID'], 'acu_HorasExtra' => $nuevasHoras];
                 $existe ? update('acumulados', ['acu_HorasExtra' => $nuevasHoras], ["acu_AcumuladosID" => $existe['acu_AcumuladosID']]) : insert('acumulados', $acumuladosData);
                 $data['code'] = 1;
             }
         } else {
             $txt = "Rechazada";
-            $res = update('vacacionhoras', ['vach_Estatus' => $estatus,'vach_Observaciones' => $obs ], ["vach_VacacionHorasID" => $idVacaciones]);
+            $res = update('vacacionhoras', ['vach_Estatus' => $estatus, 'vach_Observaciones' => $obs], ["vach_VacacionHorasID" => $idVacaciones]);
 
             if ($res) {
                 $vacacionActual = $this->IncidenciasModel->getDiasVacacionByEmpleadoID($empleado['emp_EmpleadoID']);
-                update('vacacionempleado', ['vace_Dias' => $vacacionActual + $empleado['vach_Dias'],'vace_FechaActualizacion' => date('Y-m-d H:i:s') ], ["vace_EmpleadoID" => $empleado['emp_EmpleadoID']]);
+                update('vacacionempleado', ['vace_Dias' => $vacacionActual + $empleado['vach_Dias'], 'vace_FechaActualizacion' => date('Y-m-d H:i:s')], ["vace_EmpleadoID" => $empleado['emp_EmpleadoID']]);
                 $data['code'] = 1;
             }
         }
@@ -514,4 +632,392 @@ class Incidencias extends BaseController
     }
     //end ajax_cambiarEstatusVacaciones
 
+    //Diego->Ver lista de permisos del empleado
+    public function ajax_getPermisosByEmpleadoID()
+    {
+        $permisos = $this->IncidenciasModel->getPermisosByEmpleado((int)session("id"));
+
+        $num = 1;
+        foreach ($permisos as &$permiso) {
+            $permiso['num'] = $num++;
+            $permiso['per_PermisoID'] = encryptDecrypt('encrypt', $permiso['per_PermisoID']);
+            $permiso['per_FechaInicio'] = shortDate($permiso['per_FechaInicio'], ' de ');
+            $permiso['per_FechaFin'] = shortDate($permiso['per_FechaFin'], ' de ');
+            $permiso['tipoPermiso'] = $permiso['tipoPermiso'];
+            if ($permiso['per_Horas'] > 0 || $permiso['per_Horas'] != null) {
+                $permiso['per_Motivos'] = '(De ' . shortTime($permiso['per_HoraInicio']) . ' a ' . shortTime($permiso['per_HoraFin']) . ') ' . $permiso['per_Motivos'];
+            }
+        }
+
+        $data['data'] = $permisos;
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_getPermisosByEmpleadoID
+
+    public function ajax_fechaColaborador($tipo, $fechaC)
+    {
+        //aniversario de boda
+        $anioPermiso = explode('-', $fechaC);
+        if ((int)$tipo === 1) {
+            $fecha = $this->db->query("SELECT DATE_SUB(CONCAT_WS('-','" . $anioPermiso[0] . "' ,MONTH(emp_FechaMatrimonio),DAY(emp_FechaMatrimonio)), INTERVAL 15 DAY) as 'fechaInicio', DATE_ADD(CONCAT_WS('-','" . $anioPermiso[0] . "' ,MONTH(emp_FechaMatrimonio),DAY(emp_FechaMatrimonio)), INTERVAL 15 DAY) as 'fechaLimite',MONTH(emp_FechaMatrimonio) as 'mes' FROM empleado WHERE emp_EmpleadoID=" . session('id'))->getRowArray();
+        } else {
+            //cumpleaños
+            $fecha = $this->db->query("SELECT DATE_SUB(CONCAT_WS('-','" . $anioPermiso[0] . "' ,MONTH(emp_FechaNacimiento),DAY(emp_FechaNacimiento)), INTERVAL 15 DAY) as 'fechaInicio',DATE_ADD(CONCAT_WS('-','" . $anioPermiso[0] . "' ,MONTH(emp_FechaNacimiento),DAY(emp_FechaNacimiento)), INTERVAL 15 DAY) as 'fechaLimite',MONTH(emp_FechaNacimiento) as 'mes' FROM empleado WHERE emp_EmpleadoID=" . session(('id')))->getRowArray();
+        }
+        if ($fecha['mes'] == 12 && $anioPermiso[1] == 1) {
+            $fecha['fechaInicio'] = date('Y-m-d', strtotime($fecha['fechaInicio'] . ' -1 year'));
+            $fecha['fechaLimite'] = date('Y-m-d', strtotime($fecha['fechaLimite'] . ' -1 year'));
+        }
+        if ($fecha) {
+            if (($fechaC >= date('Y-m-d', strtotime($fecha['fechaInicio']))) && ($fechaC <= date('Y-m-d', strtotime($fecha['fechaLimite'])))) echo json_encode(array("code" => "1"));
+            else echo json_encode(array("code" => "2"));
+        } else echo json_encode(array("code" => "0"));
+    }
+
+    //Lia->Crear permiso
+    public function ajax_crearPermiso()
+    {
+        $data['code'] = 0;
+        $tipoID = (int)post('txtTipoPermiso');
+        $tipoPermiso = $this->IncidenciasModel->getCatalogoPermisosById($tipoID);
+        $diasPermitidos = (int)$tipoPermiso['cat_Dias'];
+        $diasSolicitados = calcularDiasPermiso(post('txtFechaInicio'), post('txtFechaFin'));
+        if ($diasPermitidos > 0) {
+            $diasTomados = $this->IncidenciasModel->getDiasTomadosByTipoPermiso($tipoID);
+            $diasRestantes = $diasTomados < $diasPermitidos ? $diasPermitidos - $diasTomados : 0;
+            if ($tipoPermiso == 2) $diasRestantes = 3;
+            if ($diasSolicitados > $diasPermitidos) {
+                $data['code'] = 2;
+                $data['msg'] = "Solo se permite solicitar $diasPermitidos días";
+            } elseif ($diasSolicitados > $diasRestantes) {
+                $data['code'] = 2;
+                $data['msg'] = "Tienes $diasRestantes días restantes";
+            }
+        }
+        if ($tipoID == 9) {
+            $horasTomadas = $this->IncidenciasModel->getHorasTomadasByPermisoLactancia(post('txtFechaInicio'), post('txtFechaFin'));
+            if ($horasTomadas >= 1) {
+                $data['code'] = 2;
+                $data['msg'] = "Solo se permite solicitar 1 hora en total al día durante el periodo de lactancia";
+            }
+        }
+        $empleado = $this->BaseModel->getEmpleadoByID(session('id'));
+        if ($data['code'] != 2) {
+            $jefe = session('id') == 7 ? $this->BaseModel->getEmpleadoByID(19) : $this->BaseModel->getEmpleadoByNumero($empleado['emp_Jefe']);
+
+            //Arreglo de permiso
+            $permiso = array(
+                'per_Fecha' => date('Y-m-d'),
+                'per_FechaInicio' => post('txtFechaInicio'),
+                'per_FechaFin' => post('txtFechaFin'),
+                'per_HoraCreado' => date('H:i:s'),
+                'per_Motivos' => post('txtMotivos'),
+                'per_EmpleadoID' => (int)session('id'),
+                'per_Estado' => 'PENDIENTE',
+                'per_TipoID' => $tipoID,
+                'per_DiasSolicitados' => $diasSolicitados,
+            );
+            //Si es tiempo x tiempo agrega las horas al arreglo
+            if (in_array($tipoID, [7, 8])) {
+                $ts1 = strtotime(str_replace('/', '-', post('txtFechaInicio') . ' ' . post('txtHoraI')));
+                $ts2 = strtotime(str_replace('/', '-', post('txtFechaFin') . ' ' . post('txtHoraF')));
+                $diff = abs($ts1 - $ts2) / 3600;
+                $permiso['per_Horas'] = $diff;
+                $permiso['per_HoraInicio'] = post('txtHoraI');
+                $permiso['per_HoraFin'] = post('txtHoraF');
+            } elseif (in_array($tipoID, [9])) {
+                $ts1 = strtotime(str_replace('/', '-', post('txtFechaInicio') . ' ' . post('txtHoraI')));
+                $ts2 = strtotime(str_replace('/', '-', post('txtFechaFin') . ' ' . post('txtHoraI')));
+                $diff = abs($ts1 - $ts2) / 3600;
+                $permiso['per_Horas'] = $diff;
+                $permiso['per_HoraInicio'] = post('txtHoraI');
+                $permiso['per_HoraFin'] = post('txtHoraF');
+            }
+            //guarda el arreglo
+            $response = insert('permiso', $permiso);
+
+            if ($response) {
+                $datos = array(
+                    'titulo' => 'Solicitud de Permiso',
+                    'nombre' =>  $jefe['emp_Nombre'],
+                    'cuerpo' => 'Mediante el presente se le comunica que el colaborador a su cargo ' . $empleado['emp_Nombre'] . ', ha registrado una nueva solicitud de permiso en PEOPLE.<br>Para mayor información, revise la solicitud de permiso en la plataforma.',
+                );
+                //Enviar correo y notificacion
+                sendMail($jefe['emp_Correo'], 'Nueva solicitud de permiso', $datos, 'PermisoS');
+                $notificacion = array(
+                    "not_EmpleadoID" => $jefe['emp_EmpleadoID'],
+                    "not_Titulo" => 'Nueva solicitud de permiso',
+                    "not_Descripcion" => 'El colaborador ' . $empleado['emp_Nombre'] . ' ha solicitado permiso.',
+                    "not_EmpleadoIDCreo" => (int)session("id"),
+                    "not_FechaRegistro" => date('Y-m-d H:i:s'),
+                    "not_URL" => 'Incidencias/permisosMisEmpleados',
+                    "not_Color" => 'bg-blue',
+                    "not_Icono" => 'zmdi zmdi-calendar',
+                );
+                $response = insert('notificacion', $notificacion);
+                $data['code'] = 1;
+            }
+        }
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_crearPermiso
+
+
+    //Diego->ELiminar permiso
+    public function ajax_deletePermiso()
+    {
+        $permisoID = (int)encryptDecrypt('decrypt', post("permisoID"));
+        $response = update('permiso', array("per_Estatus" => 0), array("per_PermisoID" => $permisoID));
+        $data['code'] = $response ? 1 : 0;
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_deletePermiso
+
+    //Diego->Lista de permisos para autorizar por jefe inmediato
+    public function ajax_getPermisosAutorizar()
+    {
+        $permisos = $this->IncidenciasModel->getPermisosPendientesMisSubordinados(session('numero'));
+        $num = 1;
+        foreach ($permisos as &$permiso) {
+            $permiso['num'] = $num++;
+            $permiso['per_PermisoID'] = encryptDecrypt('encrypt', $permiso['per_PermisoID']);
+            if ($permiso['per_Horas'] > 0 || $permiso['per_Horas'] != null) {
+                $permiso['per_Motivos'] = '(De ' . shortTime($permiso['per_HoraInicio']) . ' a ' . shortTime($permiso['per_HoraFin']) . ') ' . $permiso['per_Motivos'];
+            }
+            $permiso['per_FechaInicio'] = shortDate($permiso['per_FechaInicio'], ' de ');
+            $permiso['per_FechaFin'] = shortDate($permiso['per_FechaFin'], ' de ');
+            $permiso['autoriza'] = session('puesto');
+            $permiso['numero'] = session('numero');
+        }
+        $data['data'] = $permisos;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_getPermisosAutorizar
+
+    public function ajax_rechazarPermiso()
+    {
+        $permisoID = (int)encryptDecrypt('decrypt', post("permisoID"));
+        $this->db->transStart();
+
+        $permiso = $this->IncidenciasModel->getInfoByPermiso($permisoID);
+        $data = ['per_Justificacion' => post('obs')];
+
+        $estados = [
+            'PENDIENTE' => ['per_JefeID' => session('id'), 'per_Estado' => 'RECHAZADO_JEFE'],
+            'AUTORIZADO_JEFE' => ['per_ChID' => session('id'), 'per_Estado' => 'RECHAZADO_RH']
+        ];
+
+        $data = isset($estados[$permiso['per_Estado']])
+            ? array_merge($data, $estados[$permiso['per_Estado']])
+            : $data;
+
+        update('permiso', $data, ['per_PermisoID' => $permisoID]);
+
+        $datos = [
+            'titulo' => 'Solicitud de Permiso',
+            'nombre' => $permiso['emp_Nombre'],
+            'cuerpo' => 'Mediante el presente se le comunica que su solicitud de permiso ha sido rechazada en la plataforma PEOPLE.<br>Para mayor información, revise la solicitud de permiso en la plataforma.'
+        ];
+
+        sendMail($permiso['emp_Correo'], 'Permiso Rechazado', $datos, 'PermisoRechazado');
+
+        insert('notificacion', [
+            "not_EmpleadoID" => $permiso['emp_EmpleadoID'],
+            "not_Titulo" => 'Solicitud de permiso RECHAZADO',
+            "not_Descripcion" => 'La solicitud de permiso ha sido revisada.',
+            "not_EmpleadoIDCreo" => (int)session("id"),
+            "not_FechaRegistro" => date('Y-m-d H:i:s'),
+            "not_URL" => 'Incidencias/misPermisos',
+            "not_Color" => 'bg-red',
+            "not_Icono" => 'zmdi zmdi-calendar'
+        ]);
+
+        $data['code'] = $this->db->transStatus() === false ? 0 : 1;
+        $this->db->transComplete();
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
+
+    //Diego->Jefe inmediato autoriza permiso
+    public function ajax_autorizarPermiso()
+    {
+        $permisoID = (int)encryptDecrypt('decrypt', post("permisoID"));
+        $permiso = $this->IncidenciasModel->getInfoByPermiso($permisoID);
+        $data['code'] = 0;
+
+        $data = [
+            'per_TipoPermiso' => post('tipo') ?? '',
+            'per_Justificacion' => post('obs') ?? ''
+        ];
+
+        if ($permiso['per_Estado'] == 'PENDIENTE') {
+            $data['per_JefeID'] = session('id');
+            $data['per_Estado'] = 'AUTORIZADO_JEFE';
+        }
+
+        $response = update('permiso', $data, ['per_PermisoID' => $permisoID]);
+
+        if ($response && $permiso['per_Estado'] == 'PENDIENTE') {
+            $notificado = $this->BaseModel->getRH();
+            $datos_correo = [
+                'titulo' => 'Solicitud de permiso por aplicar',
+                'cuerpo' => 'El colaborador ' . $permiso['emp_Nombre'] . ' ha solicitado permiso.',
+            ];
+
+            foreach ($notificado as $not) {
+                insert('notificacion', [
+                    "not_EmpleadoID" => $not['emp_EmpleadoID'],
+                    "not_Titulo" => 'Solicitud de permiso por APLICAR',
+                    "not_Descripcion" => 'El colaborador ' . $permiso['emp_Nombre'] . ' ha solicitado permiso.',
+                    "not_EmpleadoIDCreo" => (int)session("id"),
+                    "not_FechaRegistro" => date('Y-m-d H:i:s'),
+                    "not_URL" => 'Incidencias/aplicarPermisos',
+                    "not_Color" => 'bg-amber',
+                    "not_Icono" => 'zmdi zmdi-calendar'
+                ]);
+
+                $datos_correo['nombre'] = $not['emp_Nombre'];
+                sendMail($not['emp_Correo'], 'Solicitud de permiso por aplicar', $datos_correo, 'PermisoRH');
+            }
+            $data['code'] = 1;
+        }
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
+    //ajax_autorizarPermiso
+
+    //Diego -> Aplicar permiso
+    public function ajax_getPermisosAplicar()
+    {
+        $permisos = $this->IncidenciasModel->getPermisosAutorizados();
+        $num = 1;
+        foreach ($permisos as &$permiso) {
+            $permiso['num'] = $num++;
+            $permiso['per_FechaInicio'] = shortDate($permiso['per_FechaInicio'], ' de ');
+            $permiso['per_FechaFin'] = shortDate($permiso['per_FechaFin'], ' de ');
+            $permiso['per_Fecha'] = shortDate($permiso['per_Fecha'], ' de ');
+            $permiso['per_PermisoID'] = encryptDecrypt('encrypt', $permiso['per_PermisoID']);
+            if ($permiso['per_HoraCreado'] !== '00:00:00') {
+                $permiso['per_Fecha'] = $permiso['per_Fecha'] . ' ' . shortTime($permiso['per_HoraCreado']);
+            }
+            if ($permiso['per_Horas'] > 0 || $permiso['per_Horas'] != null) {
+                $permiso['per_TipoPermiso'] = '(De ' . shortTime($permiso['per_HoraInicio']) . ' a ' . shortTime($permiso['per_HoraFin']) . ')';
+            }
+        }
+        $data['data'] = $permisos;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //end ajax_getPermisosAplicar
+
+    //Diego->Aplicar permisos
+    public function ajax_aplicarPermiso()
+    {
+        $permisoID = (int)encryptDecrypt('decrypt', post('permisoID'));
+
+        $this->db->transStart();
+
+        $data = [
+            'per_ChID' => session('id'),
+            "per_Estado" => "AUTORIZADO_RH"
+        ];
+        update('permiso', $data, ["per_PermisoID" => $permisoID]);
+
+        $datosEmpleado = $this->IncidenciasModel->getInfoByPermiso($permisoID);
+
+        $datos = [
+            'titulo' => 'Solicitud de Permiso',
+            'nombre' => $datosEmpleado['emp_Nombre'],
+            'cuerpo' => 'Mediante el presente se le comunica a usted que su solicitud de permiso ha sido APLICADO por el área de RECURSOS HUMANOS del día ' . longDate($datosEmpleado['per_FechaInicio'], " de ") . '  al ' . longDate($datosEmpleado['per_FechaFin'], " de ") . '.'
+        ];
+        if (sendMail($datosEmpleado['emp_Correo'], 'Permiso aplicado', $datos, 'Permiso')) {
+            insert('notificacion', [
+                "not_EmpleadoID" => $datosEmpleado['emp_EmpleadoID'],
+                "not_Titulo" => 'Solicitud de permiso APLICADO',
+                "not_Descripcion" => 'La solicitud de permiso ha sido revisada.',
+                "not_EmpleadoIDCreo" => (int)session("id"),
+                "not_FechaRegistro" => date('Y-m-d H:i:s'),
+                "not_URL" => 'Incidencias/misPermisos',
+                "not_Color" => 'bg-success',
+                "not_Icono" => 'zmdi zmdi-calendar'
+            ]);
+        }
+
+        $data['code'] = $this->db->transComplete() ? 1 : 0;
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
+    //ajax_aplicarPermiso
+
+    //Declinar permiso
+    public function ajax_declinarPermiso()
+    {
+        $permisoID = (int)encryptDecrypt('decrypt', post('permisoID'));
+
+        $data = [
+            'per_ChID' => session('id'),
+            'per_Estado' => 'DECLINADO',
+            'per_Justificacion' => post('obs')
+        ];
+
+        $data['code'] = update('permiso', $data, ['per_PermisoID' => $permisoID]) ? 1 : 0;
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //ajax_noAplicarPermiso
+
+    public function ajax_GetReportesAsistencia()
+    {
+        $url = FCPATH . "/assets/uploads/reporteAsistencia/";
+        if (!file_exists($url)) mkdir($url, 0777, true);
+
+        $tree = array_map(function ($anio) use ($url) {
+            $meses = preg_grep('/^([^.])/', scandir($url . $anio));
+
+            $children = array_map(function ($mes) use ($anio) {
+                return [
+                    "id" => $anio . $mes,
+                    "text" => numMeses($mes),
+                    "icon" => "mdi mdi-zip-box ",
+                    "state" => ["opened" => false, "disabled" => false],
+                    "a_attr" => ["href" => base_url("/assets/uploads/reporteAsistencia/$anio/$mes/reporteAsistencia.xlsx")],
+                    "li_attr" => ["tipo" => "periodo"],
+                ];
+            }, $meses);
+
+            return [
+                "text" => $anio,
+                "state" => ["opened" => true, "disabled" => false, "selected" => false],
+                "children" => $children,
+                "li_attr" => ["tipo" => "year"]
+            ];
+        }, preg_grep('/^([^.])/', scandir($url)));
+
+        echo json_encode($tree);
+    }
+
+    public function ajax_getMisHorasExtra()
+    {
+        $horas = $this->IncidenciasModel->getHorasExtraByEmpleado(session("id"));
+        array_walk($horas, function (&$hora, $index) {
+            $hora['rep_ReporteHoraExtraID'] = encryptDecrypt('encrypt', $hora['rep_ReporteHoraExtraID']);
+            $hora['count'] = $index + 1;
+            $hora['rep_Fecha'] = shortDate($hora['rep_Fecha'], ' de ');
+        });
+        echo json_encode(['data' => $horas], JSON_UNESCAPED_SLASHES);
+    }
+
+    public function ajaxAddReporteHorasExtras()
+    {
+        $post = $this->request->getPost();
+        $empleadoID = (int)session('id');
+
+        $reporte = [
+            'rep_FechaRegistro' => date('Y-m-d'),
+            'rep_EmpleadoID' => $empleadoID,
+            'rep_Fecha' => $post['fecha'],
+            'rep_HoraInicio' => $post['horaInicio'],
+            'rep_HoraFin' => $post['horaFin'],
+            'rep_Horas' => (int)calculoHorasExtra($post['horaInicio'], $post['horaFin']),
+            'rep_Motivos' => $post['motivos'],
+        ];
+
+        echo json_encode(['code' => insert('reportehoraextra', $reporte) ? 1 : 0], JSON_UNESCAPED_SLASHES);
+    }
 }//end controller

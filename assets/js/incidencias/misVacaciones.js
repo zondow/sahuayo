@@ -4,8 +4,8 @@ $(document).ready(function () {
         format: "HH:mm",
         showMeridian: false,
         icons: {
-            up: 'fas fa-angle-up',
-            down: 'fas fa-angle-down',
+            up: 'zmdi zmdi-caret-up',
+            down: 'zmdi zmdi-caret-down',
         }
     });
 

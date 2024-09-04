@@ -18,13 +18,13 @@
             "serverSide": true
         },
         columns: [
-            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
             { "data": "count"},
             { "data": "rep_Fecha"},
             { "data": "rep_Horas"},
             { "data": "rep_Motivos"},
             { "data": "rep_TipoPago",render: function(data,type,row){return tipoPago(data,type,row)}},
-            { "data": "rep_Estado",render: function (data,type,row) {return estatus(data)}}
+            { "data": "rep_Estado",render: function (data,type,row) {return estatus(data)}},
+            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -85,7 +85,7 @@
             },
 
         },
-        "order": [[ 1, "asc" ]],
+        "order": [[ 0, "desc" ]],
         "processing":false
     });
 
@@ -93,19 +93,19 @@
 
         var urlImprimir = BASE_URL+'PDF/imprimirReporteHorasExtra/'+row.rep_ReporteHoraExtraID;
 
-        var btnImprimir = ' <a href="' + urlImprimir +'"'+
-            'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Reporte horas" title="Formato reporte">'+
-            '<i class="dripicons-print"></i></a>';
+        var btnImprimir = ' <button href="' + urlImprimir +'"'+
+            'class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down show-pdf" data-title="Reporte horas" title="Formato reporte">'+
+            '<i class="zmdi zmdi-local-printshop"></i></button>';
 
         var btnEliminar = '';
         var btnEnviar = '';
         if(row.rep_Estado == 'CREADO') {
-            btnEliminar = '<a href="#" class="btn btn-danger btn-block waves-light waves-effect btnEliminarInforme" ' +
+            btnEliminar = '<button href="#" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down btnEliminarInforme" ' +
                 'data-id="'+row.rep_ReporteHoraExtraID+'" title="Eliminar">' +
-                '<i class="dripicons-trash"></i></a>';
-            btnEnviar = '<a href="#" class="btn btn-primary btn-block waves-light waves-effect btnEnviarInforme" ' +
+                '<i class="zmdi zmdi-delete"></i></button>';
+            btnEnviar = '<button href="#" class="btn btn-primary btn-icon btn-icon-mini btn-round hidden-sm-down btnEnviarInforme" ' +
             'data-id="'+row.rep_ReporteHoraExtraID+'" title="Enviar">' +
-            '<i class="mdi mdi-send"></i></a>';
+            '<i class="zmdi zmdi-mail-send"></i></button>';
         }//if
 
         return btnImprimir + btnEliminar + btnEnviar;
@@ -115,8 +115,8 @@
         var html = data;
         switch (data){
             case 'Nomina':html = '<span class="badge badge-success p-1">Via nomina</span>';break;
-            case 'Tiempo por tiempo':html = '<span class="badge badge-secondary p-1">Tiempo por tiempo</span>';break;
-            case null: html='<span class="badge badge-dark p-1">Pendiente</span>';
+            case 'Tiempo por tiempo':html = '<span class="badge badge-info p-1">Tiempo por tiempo</span>';break;
+            case null: html='<span class="badge badge-warning p-1">Pendiente</span>';
         }//switch
 
         return html;
@@ -127,12 +127,12 @@
         var html = data;
         switch (data){
             case 'CREADO':html = '<span class="badge badge-purple p-1">CREADO</span>';break;
-            case 'PENDIENTE':html = '<span class="badge badge-dark p-1">PENDIENTE</span>';break;
+            case 'PENDIENTE':html = '<span class="badge badge-info p-1">PENDIENTE</span>';break;
             case 'AUTORIZADO':html = '<span class="badge badge-warning p-1">AUTORIZADO</span>';break;
             case 'APLICADO':html = '<span class="badge badge-success p-1">APLICADO</span>';break;
             case 'RECHAZADO':html = '<span class="badge badge-danger p-1">RECHAZADO</span>';break;
             case 'RECHAZADO_RH':html = '<span class="badge badge-danger p-1">RECHAZADO</span>';break;
-            case 'PAGADO':html = '<span class="badge badge-info p-1">PAGADO</span>';break;
+            case 'PAGADO':html = '<span class="badge badge-success p-1">PAGADO</span>';break;
             case 'DECLINADO':html = '<span class="badge badge-light-danger p-1">DECLINADO</span>';break;
         }//switch
 

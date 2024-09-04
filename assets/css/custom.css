@@ -52,10 +52,10 @@ textarea.form-control {
 }
 
 .datepicker {
-    padding: 0px 6px !important;
+    /*padding: 0px 6px !important;*/
     visibility: visible !important;
     opacity: 1 !important;
-    border-radius: 6px !important;
+    /*border-radius: 6px !important;*/
     transform: unset !important;
     -webkit-transform: unset !important;
     max-width: 100% !important;
@@ -86,10 +86,12 @@ textarea.form-control {
 .chosen-container-single .chosen-single div {
     top: 3px;
 }
+
 .notify .heartbit {
     border-color: #eddd34 !important;
 }
-.notify .point{
+
+.notify .point {
     background-color: #eddd34 !important;
 }
 
@@ -97,6 +99,34 @@ textarea.form-control {
     width: 650px !important;
 }
 
-.dt-button-collection{
+.dt-button-collection {
     position: unset !important;
+}
+
+/*input::placeholder {
+    color: #464646 !important;
+    opacity: 1;
+}
+textarea::placeholder {
+    color: #2c2c2c !important;
+    opacity: 1; 
+}*/
+
+.card {
+    border-radius: 10px !important;
+}
+
+.bootstrap-timepicker-widget.dropdown-menu.open{
+    right: unset !important;
+}
+
+.bootstrap-timepicker-widget table td input {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    color: #000;
+}
+
+.separator {
+background-color: #fff !important;
 }

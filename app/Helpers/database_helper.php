@@ -21,3 +21,7 @@ function delete($table, $where = null){
     else $builder->delete();
     return db()->affectedRows();
 }
+
+function insert_batch($table,$data){
+    return db()->table($table)->insertBatch($data);
+}
