@@ -42,7 +42,7 @@ $(document).ready(function(e) {
                 title: 'Catalogo de competencias',
                 text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -53,7 +53,7 @@ $(document).ready(function(e) {
                 title: 'Catalogo de competencias',
                 text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -63,7 +63,7 @@ $(document).ready(function(e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
             }
         ],
     });

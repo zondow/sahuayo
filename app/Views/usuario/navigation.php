@@ -41,13 +41,12 @@ foreach ($result as $row) {
 <li class="header">Personal</li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-accounts"></i><span>Colaboradores</span> </a>
     <ul class="ml-menu">
-        <li><a href="basic-form-elements.html">Basic Form Elements</a> </li>
-        <li><a href="advanced-form-elements.html">Advanced Form Elements</a> </li>
-        <li><a href="form-examples.html">Form Examples</a> </li>
-        <li><a href="form-validation.html">Form Validation</a> </li>
-        <li><a href="form-wizard.html">Form Wizard</a> </li>
-        <li><a href="form-editors.html">Editors</a> </li>
-        <li><a href="form-upload.html">File Upload</a></li>
+    <?php
+        echo addMenuOption('empleados', 'Personal', 'Plantilla');
+        echo addMenuOption('organigrama', 'Personal', 'Organigrama');
+        echo addMenuOption('recibosNomina', 'Personal', 'Recibos de nómina');
+        echo showSubMenu(array(['reporteQuinquenio', 'Personal', 'Quinquenios']), 'Reportes');
+        ?>
     </ul>
 </li>
 <li class="header">Incidencias</li>

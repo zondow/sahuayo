@@ -28,7 +28,6 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<?php endforeach;
 	} ?>
 
-
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/bootstrap/css/bootstrap.min.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css") ?>" />
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/morrisjs/morris.min.css") ?>" />
@@ -37,6 +36,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/css/custom.css") ?>" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/main.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/css/color_skins.css") ?>">
+	
 
 	<!-- LOAD JQUERY FIRST 
 	<script src="<?=base_url("assets/js/jquery-3.3.1.min.js")?>"></script>-->

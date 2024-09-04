@@ -41,7 +41,7 @@ $(document).ready(function(e) {
                 title: 'Catalogo de instructores',
                 text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -52,7 +52,7 @@ $(document).ready(function(e) {
                 title: 'Catalogo de instructores',
                 text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -62,7 +62,7 @@ $(document).ready(function(e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
             }
         ],
     });
@@ -80,7 +80,7 @@ $(document).ready(function(e) {
         $('#ins_EmpleadoID').prop('disabled', 'disabled');
         let instructorID = $(this).data('id');
         $.ajax({
-            url: BASE_URL + "Formacion/ajax_getInfoInstructor/"+instructorID ,
+            url: BASE_URL + "Catalogos/ajax_getInfoInstructor/"+instructorID ,
             type: "POST",
             async:true,
             cache:false,
@@ -90,9 +90,9 @@ $(document).ready(function(e) {
             if(data.response === "success"){
                 $("#ins_InstructorID").val(data.result.ins_InstructorID);
                 $("#ins_EmpleadoID").val(data.result.ins_EmpleadoID);
-                $("#ins_EmpleadoID").trigger('chosen:updated');
+                $("#ins_EmpleadoID").trigger('change');
                 $("#ins_CriterioSeleccion").val(data.result.ins_CriterioSeleccion);
-                $("#ins_CriterioSeleccion").trigger('chosen:updated');
+                $("#ins_CriterioSeleccion").trigger('change');
 
             }
         }).fail(function () {

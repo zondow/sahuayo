@@ -177,3 +177,11 @@ function load_daterangepicker(&$data)
     $data['scripts'][] = base_url('assets/libs/bootstrap-daterangepicker/daterangepicker.js');
     $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
 }
+
+function load_spinkit(&$data){
+    $data['styles'][] = base_url('assets/libs/spinkit/spinkit.css');
+}
+
+function load_modalConfirmation(&$data){
+    $data['scripts'][] = base_url('assets/js/modalConfirmation.js');
+}

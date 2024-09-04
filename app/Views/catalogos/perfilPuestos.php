@@ -35,8 +35,8 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                 <div class="row ">
                     <div class=" col-md-6">
                         <label for="selectDepartamento" class="col-form-label">*Departamento</label>
-                        <select id="selectDepartamento" name="selectDepartamento" class="chosen-select"  required>
-                            <option value="" hidden>Seleccione</option>
+                        <select id="selectDepartamento" name="selectDepartamento" class="select2 form-control"  required>
+                            
                             <?php
                             foreach ($departamentos as $departamento) {
                                 $sel = "";
@@ -50,7 +50,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                     </div>
                     <div class="col-md-12">
                         <label for="selectReporta" class="col-form-label">Puesto al que reporta</label>
-                        <select id="selectReporta" name="selectReporta[]" class="chosen-select"  multiple data-placeholder="Seleccione">
+                        <select id="selectReporta" name="selectReporta[]" class="select2 form-control"  multiple data-placeholder="Seleccione">
                             <?php
                             $se = "";
                             if (isset($puestosR)) {
@@ -75,7 +75,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                     </div>
                     <div class="col-md-12">
                         <label for="selectCoordina" class="col-form-label">Puesto al que coordina</label>
-                        <select id="selectCoordina" name="selectCoordina[]" class="chosen-select"  multiple data-placeholder="Seleccione">
+                        <select id="selectCoordina" name="selectCoordina[]" class="select2 form-control"  multiple data-placeholder="Seleccione">
                             <?php
 
                             $se = "";
@@ -103,7 +103,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                 <div class="row">
                     <div class="col-md-6">
                         <label for="selectContrato" class="col-form-label">*Contrato</label>
-                        <select name="selectContrato" id="selectContrato" class="chosen-select" data-placeholder="Seleccione Contrato" required>
+                        <select name="selectContrato" id="selectContrato" class="select2 form-control" data-placeholder="Seleccione Contrato" required>
                             <option value="" hidden>Seleccione</option>
                             <option <?php if ($tipoContrato == 'MEDIO') echo 'selected' ?> value="MEDIO">Medio</option>
                             <option <?php if ($tipoContrato == 'COMPLETO') echo 'selected' ?> value="COMPLETO">Completo</option>
@@ -111,7 +111,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                     </div>
                     <div class="col-md-6">
                         <label for="selectGenero" class="col-form-label ">*Género</label>
-                        <select name="selectGenero" id="selectGenero" class="chosen-select" data-placeholder="Seleccione Genero" required>
+                        <select name="selectGenero" id="selectGenero" class="select2 form-control" data-placeholder="Seleccione Genero" required>
                             <option value="" hidden>Seleccione</option>
                             <option <?php if ($genero === 'FEMENINO') echo 'selected' ?> value="FEMENINO">Femenino</option>
                             <option <?php if ($genero === 'MASCULINO') echo 'selected' ?> value="MASCULINO">Masculino</option>
@@ -122,7 +122,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                 <div class="row">
                     <div class=" col-md-6">
                         <label for="selectEC" class="col-form-label">*Estado civil</label>
-                        <select id="selectEC" name="selectEC" class="chosen-select" data-placeholder="Seleccione Estado civil" required>
+                        <select id="selectEC" name="selectEC" class="select2 form-control" data-placeholder="Seleccione Estado civil" required>
                             <option value="" hidden>Seleccione</option>
                             <option <?php if ($estadoCivil == 'SOLTERO') echo 'selected' ?> value="SOLTERO">Soltero</option>
                             <option <?php if ($estadoCivil == 'CASADO') echo 'selected' ?> value="CASADO">Casado</option>
@@ -131,7 +131,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                     </div>
                     <div class="col-md-6">
                         <label for="selectHorario" class="col-form-label">*Horario</label>
-                        <select name="selectHorario" id="selectHorario" class="chosen-select" data-placeholder="Seleccione Horario" required>
+                        <select name="selectHorario" id="selectHorario" class="select2 form-control" data-placeholder="Seleccione Horario" required>
                             <option value="" hidden>Seleccione</option>
                             <option <?php if ($horario == 'DIURNO') echo 'selected' ?> value="DIURNO">Diurno</option>
                             <option <?php if ($horario == 'NOCTURNO') echo 'selected' ?> value="NOCTURNO">Nocturno</option>
@@ -217,7 +217,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                                                 <textarea class="form-control" name="Funciones[]" placeholder="Escribir función" required><?= $puestosF['F' . $i] ?></textarea>
                                             </div>
                                             <div class="form-group col-md-1">
-                                                <button class=" btn btn-danger btn-icon  btn-icon-mini btn-round  btnEliminar " data-id="<?= $contador ?>"><i class="zmdi zmdi-minus"></i></button>
+                                                <button class=" btn btn-danger btn-icon  btn-icon-mini btn-round btn-sm btnEliminar " data-id="<?= $contador ?>"><i class="zmdi zmdi-minus"></i></button>
                                             </div>
                                         </div>
                         <?php       }
@@ -245,7 +245,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                     <div class="form-group col-md-6">
                         <div class="form-group">
                             <label>*Competencias</label>
-                            <select id="selectCompetencias" class="chosen-select form-control" data-placeholder="Seleccionar competencia" style="width: 100%">
+                            <select id="selectCompetencias" class="select2 form-control" data-placeholder="Seleccionar competencia" style="width: 100%">
                                 <?php
                                 if (isset($competencias)) {
                                     if (count($competencias)) {
@@ -266,7 +266,7 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
                     <div class="form-group col-md-5">
                         <div class="form-group">
                             <label>*Nivel</label>
-                            <select id="selectNivel" class="chosen-select form-control" data-placeholder="Seleccionar nivel" style="width: 100%">
+                            <select id="selectNivel" class="select2 form-control" data-placeholder="Seleccionar nivel" style="width: 100%">
                                 <option value=""></option>
                                 <option value="1">Bajo</option>
                                 <option value="2">Minimo</option>
@@ -329,6 +329,14 @@ $styleBtnPuesto = ($perfilpuesto != null) ?  '' : 'btn-simple disabledPDF';
     </div>
 </div>
 </form>
-
+<script>
+$(document).ready(function (e) {
+    $('.select2').select2({
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+});
+</script>
       
                       

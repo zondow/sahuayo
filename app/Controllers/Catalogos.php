@@ -35,7 +35,7 @@ class Catalogos extends BaseController
         $data['departamentos'] = $this->CatalogosModel->getCatalogoDepartamentos();
 
         //pluggins
-        load_plugins(['datatables_buttons','sweetalert2','chosen'],$data);
+        load_plugins(['datatables_buttons','sweetalert2','select2'],$data);
        
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/departamentos.js');
@@ -124,7 +124,7 @@ class Catalogos extends BaseController
         }
 
         //pluggins
-        load_plugins(['footable','chosen'],$data);
+        load_plugins(['footable','select2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/perfilPuesto.js');
@@ -172,7 +172,7 @@ class Catalogos extends BaseController
         $data['competenciasLocales'] = $this->CatalogosModel->getCompetencias(1);
 
         //pluggins
-        load_plugins(['datatables_buttons','chosen'],$data);
+        load_plugins(['datatables_buttons','select2'],$data);
         
         //custom scripts
         $data['scripts'][] = base_url('assets/js/catalogos/competencias.js');
@@ -226,7 +226,7 @@ class Catalogos extends BaseController
         $data['instructores'] = $this->CatalogosModel->getInstructores();
 
         //pluggins
-        load_plugins(['datatables_buttons' , 'chosen'],$data);
+        load_plugins(['datatables_buttons' , 'select2'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url("assets/js/catalogos/instructores.js");
@@ -251,7 +251,7 @@ class Catalogos extends BaseController
         $data['cursos'] = $this->CatalogosModel->getCursos();
 
         //pluggins
-        load_plugins(['datatables_buttons' , 'chosen','lightbox','ckeditor','filestyle','modalPdf'],$data);
+        load_plugins(['datatables_buttons' ,'select2','lightbox','ckeditor','filestyle','modalPdf'],$data);
 
         //custom scripts
         $data['scripts'][] = base_url("assets/js/catalogos/cursos.js");
@@ -788,6 +788,17 @@ class Catalogos extends BaseController
             echo json_encode(array("response" => "error", "msg" => 'Ocurrio un error. Intentelo nuevamente'));
         }
     } //end ajax_getInfoCurso
+
+    //Diego -> traer info instructor
+    public function ajax_getInfoInstructor($instructorID)
+    {
+        $result = $this->db->query("SELECT * FROM instructor WHERE ins_InstructorID = " . (int)$instructorID)->getRowArray();
+        if ($result) {
+            echo json_encode(array("response" => "success", "result" => $result));
+        } else {
+            echo json_encode(array("response" => "error", "msg" => 'Ocurrio un error. Intentelo nuevamente'));
+        }
+    }
 
 
 }

@@ -80,7 +80,7 @@
                                 * Nombre:
                             </label>
                             <input name="ins_InstructorID" id="ins_InstructorID" hidden>
-                            <select name="ins_EmpleadoID" id="ins_EmpleadoID" class="chosen-select" required style="width: 100% !important;">
+                            <select name="ins_EmpleadoID" id="ins_EmpleadoID" class="form-control select2" required style="width: 100% !important;">
                                 <option value="" hidden>Seleccione</option>
                                 <?php foreach ($empleados as $empleado){?>
                                     <option value="<?=$empleado['emp_EmpleadoID']?>"><?=$empleado['emp_Nombre']?></option>
@@ -92,7 +92,7 @@
                                 * Criterio de selección:
                             </label>
                             <br>
-                            <select name="ins_CriterioSeleccion" id="ins_CriterioSeleccion" class="chosen-select" required style="width: 100% !important;">
+                            <select name="ins_CriterioSeleccion" id="ins_CriterioSeleccion" class="form-control select2" required style="width: 100% !important;">
                                 <option value="" hidden>Seleccione</option>
                                 <option value="Experto en el tema">Experto en el tema</option>
                                 <option value="Experiencia">Experiencia</option>
@@ -113,4 +113,13 @@
     </div>
 </div>
 
-
+<script>
+$(document).ready(function (e) {
+    $('.select2').select2({
+        dropdownParent: $('#modalInstructor .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+});
+</script>

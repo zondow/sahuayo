@@ -29,19 +29,51 @@ class PersonalModel extends Model
     //Lia -> trae los colaboradores de la empresa
     public function getColaboradores()
     {
-        $sql = "SELECT E.emp_EmpleadoID, E.emp_Nombre, E.emp_Numero, P.pue_Nombre, D.dep_Nombre, A.are_Nombre,
-                  E.emp_Correo, E.emp_Rfc, E.emp_Curp, E.emp_FechaIngreso, E.emp_Celular,E.emp_Estado,E.emp_Jefe,S.suc_Sucursal
-                FROM empleado E
-                LEFT JOIN puesto P ON P.pue_PuestoID =   E.emp_PuestoID
-                LEFT JOIN departamento D ON D.dep_DepartamentoID = E.emp_DepartamentoID
-                LEFT JOIN area A ON A.are_AreaID = E.emp_AreaID
-                LEFT JOIN sucursal S ON  S.suc_SucursalID = E.emp_SucursalID
-                WHERE E.emp_Estatus = 1
-                ORDER BY length(E.emp_Numero),E.emp_Numero  ASC ";
+        $sql = "
+        SELECT 
+        E.emp_EmpleadoID,
+        E.emp_Numero,
+        E.emp_Nombre,
+        JEFE.emp_Nombre as 'jefe',
+        E.emp_Correo,
+        P.pue_Nombre,
+        D.dep_Nombre,
+        S.suc_Sucursal,
+        E.emp_Direccion,
+        E.emp_Curp,
+        E.emp_Rfc,
+        E.emp_Nss,
+        E.emp_EstadoCivil,
+        E.emp_FechaIngreso,
+        E.emp_FechaNacimiento,
+        E.emp_Telefono,
+        E.emp_Celular,
+        E.emp_Sexo,
+        E.emp_SalarioMensual,
+        E.emp_SalarioMensualIntegrado,
+        E.emp_CodigoPostal,
+        E.emp_Municipio,
+        E.emp_EntidadFederativa,
+        E.emp_Pais,
+        E.emp_EstatusContratacion,
+        E.emp_TipoPrestaciones,
+        IF(E.emp_Rol>0,R.rol_Nombre,'Colaborador') As emp_Rol,
+        IF(E.emp_HorarioID>0,H.hor_Nombre,'Sin horario asignado') AS emp_Horario,
+        E.emp_NumeroEmergencia,
+        E.emp_NombreEmergencia,
+        E.emp_Parentesco
+        FROM empleado E
+            LEFT JOIN puesto P ON P.pue_PuestoID =   E.emp_PuestoID
+            LEFT JOIN departamento D ON D.dep_DepartamentoID = E.emp_DepartamentoID
+            LEFT JOIN empleado JEFE ON JEFE.emp_Numero=E.emp_Jefe
+            LEFT JOIN sucursal S ON S.suc_SucursalID=E.emp_SucursalID
+            LEFT JOIN rol R ON R.rol_RolID=E.emp_Rol
+            LEFT JOIN horario H ON H.hor_HorarioID=E.emp_HorarioID
+        WHERE E.emp_Estatus = 1";
         $colaboradores = $this->db->query($sql)->getResultArray();
         $data = array();
         foreach ($colaboradores as $colaborador) {
-            $colaborador['emp_Foto'] = $colaborador['emp_EmpleadoID'];
+            $colaborador['emp_Foto'] = fotoPerfil(encryptDecrypt('encrypt',$colaborador['emp_EmpleadoID']));
             $colaborador['emp_EmpleadoID'] = encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID']);
             array_push($data, $colaborador);
         }
