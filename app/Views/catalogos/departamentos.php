@@ -116,7 +116,7 @@ $db = \Config\Database::connect();
                     </div>
                     <div class="form-group">
                         <label for="selectJefeID">* Jefe del departamento </label>
-                        <select id="selectJefeID" name="dep_JefeID" class="chosen-select"  required>
+                        <select id="selectJefeID" name="dep_JefeID" class="select2 form-control"  required>
                             <option hidden value=""></option>
                             <?php
                             if (!empty($empleados)) {
@@ -141,4 +141,13 @@ $db = \Config\Database::connect();
         </div>
     </div>
 </div>
-
+<script>
+$(document).ready(function (e) {
+    $('.select2').select2({
+        dropdownParent: $('#addDepartamento .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+});
+</script>

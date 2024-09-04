@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 defined('FCPATH') or exit('No direct script access allowed');
 
+use App\Models\PersonalModel;
+
 class Personal extends BaseController
 {
 
@@ -18,34 +20,110 @@ class Personal extends BaseController
          \/   |_____|_____/   |_/_/    \_\_____/
     */
 
-    
+    //Diego -> Vista Expediente
+    public  function expediente($empleadoID, $usuario = NULL)
+    {
+        $empleadoID = encryptDecrypt('decrypt', $empleadoID);
+
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+
+        if (isset($usuario)) {
+            $data['title'] = 'Expediente';
+            $data['breadcrumb'] = array(
+                array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+                array("titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados'), "class" => ""),
+                array("titulo" => 'Expediente', "link" => base_url('Personal/expediente/' . $empleadoID), "class" => ""),
+            );
+        } else {
+            $data['title'] = 'Expediente';
+            $data['breadcrumb'] = array(
+                array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+                array("titulo" => 'Mi perfil', "link" => base_url('Usuario/miPerfil'), "class" => ""),
+                array("titulo" => 'Expediente', "link" => base_url('Personal/expediente/' . $empleadoID), "class" => ""),
+            );
+        }
+
+        //Styles
+        $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
+        $data['styles'][] = base_url('assets/libs/custombox/custombox.min.css');
+        $data['styles'][] = base_url('assets/libs/dropzone/dropzone.min.css');
+        $data['styles'][] = base_url('assets/libs/lightbox/css/lightbox.css');
+
+        //Scripts
+        $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
+        $data['scripts'][] = base_url('assets/libs/lightbox/js/lightbox.js');
+        $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.js');
+        $data['scripts'][] = base_url('assets/libs/dropzone/dropzone.min.js');
+        $data['scripts'][] = base_url('assets/js/modalPdf.js');
+        $data['scripts'][] = base_url('assets/js/personal/expediente.js');
+
+        //Expediente
+        $model = new PersonalModel();
+        $data['empleadoID'] = $empleadoID;
+        $data['expedientes'] = $model->getDatosExpediente();
+        $data['empleado'] = $this->db->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID=" . $empleadoID)->getRowArray()['emp_Nombre'];
+        $data['usuario'] = $usuario;
+        $data['C1'] = $model->getDocumentosC1(); //'Externos'
+        $data['C2'] = $model->getDocumentosC2(); //'Internos'
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('htdocs/modalPdf');
+        echo view('personal/expediente', $data);
+        echo view('htdocs/footer', $data);
+    } //end expediente
+
     //Lia-> catalogo de colaboradores
     public function empleados()
     {
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
 
-        $data['title'] = 'Plantilla';
+        $data['title'] = 'Empleados';
         $data['breadcrumb'] = array(
             array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
-            array("titulo" => 'Plantilla', "link" => base_url('Personal/empleados'), "class" => "active"),
+            array("titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados'), "class" => "active"),
         );
 
-        $data['colaboradores'] = $this->PersonalModel->getColaboradores();
-        $data['puestos'] = $this->PersonalModel->getPuestos();
-        $data['areas'] = $this->PersonalModel->getAreas();
-        $data['departamentos'] = $this->PersonalModel->getDepartamentos();
-        $data['horarios'] = $this->PersonalModel->getHorarios();
-        $data['roles'] = $this->PersonalModel->getRoles();
-        $data['colaboradoresbaja'] = $this->PersonalModel->getBajas();
-        $data['estados'] = $this->PersonalModel->getEstados();
-        $data['sucursales'] =$this->PersonalModel->getSucursales();
+        $model = new PersonalModel();
+        $data['colaboradores'] = $model->getColaboradores();
+        $data['puestos'] = $model->getPuestos();
+        $data['areas'] = $model->getAreas();
+        $data['departamentos'] = $model->getDepartamentos();
+        $data['horarios'] = $model->getHorarios();
+        $data['roles'] = $model->getRoles();
+        $data['colaboradoresbaja'] = $model->getBajas();
+        $data['estados'] = $model->getEstados();
+        $data['sucursales'] = $model->getSucursales();
 
-        //Load plugins
-        load_plugins(['datepicker','select2','datatables_buttons','sweetalert2','modalConfirmation','modalPdf'],$data);
+        //Styles
+        $data['styles'][] = base_url('assets/libs/spinkit/spinkit.css');
+        $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
+        $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
+        $data['styles'][] = base_url('assets/libs/custombox/custombox.min.css');
+        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
+        $data['styles'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/css/buttons.bootstrap4.css');
+        $data['styles'][] = base_url('assets/css/tables-custom.css');
+        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
 
-        //Custom script
-        $data['scripts'][] = base_url('assets/js/personal/empleadosActivos.js');
+        //Scripts
+        $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
+        $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
+        $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/dataTables.buttons.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.bootstrap4.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/JSZip-2.5.0/jszip.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/pdfmake.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/vfs_fonts.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.html5.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.colVis.js');
+        $data['scripts'][] = 'https://cdn.datatables.net/fixedcolumns/3.2.6/js/dataTables.fixedColumns.min.js';
+        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
+        $data['scripts'][] = base_url('assets/js/modalConfirmation.js');
+        $data['scripts'][] = base_url('assets/js/modalPdf.js');
         $data['scripts'][] = base_url('assets/js/personal/modalColaborador.js');
         $data['scripts'][] = base_url('assets/js/personal/modalDatosAcceso.js');
 
@@ -56,40 +134,9 @@ class Personal extends BaseController
         echo view('personal/modalDatosAcceso', $data);
         echo view('personal/modalFotoColaborador', $data);
         echo view('htdocs/modalPdf', $data);
-        //echo view('htdocs/modalConfirmation', $data);
+        echo view('htdocs/modalConfirmation', $data);
         echo view('htdocs/footer', $data);
     } //end empleados
-
-
-    //Lia -> Lista de colaboradores dados de baja
-    public function bajaEmpleados()
-    {
-        //Validar sessión
-        validarSesion(self::LOGIN_TYPE);
-
-        $data['title'] = 'Baja de personal';
-        $data['breadcrumb'] = array(
-            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
-            array("titulo" => 'Baja de personal', "link" => base_url('Personal/bajaEmpleados'), "class" => "active"),
-        );
-
-        
-        $data['colaboradores'] = $this->PersonalModel->getBajas();
-        $data['colaboradoresbaja'] = $this->PersonalModel->getBajas();
-
-        //load plugins
-        load_plugins(['datepicker','select2','datatables_buttons','sweetalert2','modalConfirmation','modalPdf'],$data);
-
-        //Custom script
-        $data['scripts'][] = base_url('assets/js/personal/empleadosBaja.js');
-
-        //Cargar vistas
-        echo view('htdocs/header', $data);
-        echo view('personal/empleadosBaja', $data);
-        echo view('personal/modalFechaSalida', $data);
-        echo view("htdocs/modalPdf", $data);
-        echo view('htdocs/footer', $data);
-    } //bajaEmpleados
 
     //Lia-> catalogo de colaboradores
     public function onboarding($empleadoID)
@@ -149,61 +196,54 @@ class Personal extends BaseController
         echo view('htdocs/footer', $data);
     }
 
-
-    //Diego -> Vista Expediente
-    public  function expediente($empleadoID, $usuario = NULL)
+    //Lia -> Lista de colaboradores dados de baja
+    public function bajaEmpleados()
     {
-        $empleadoID = encryptDecrypt('decrypt', $empleadoID);
-
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
 
-        if (isset($usuario)) {
-            $data['title'] = 'Expediente';
-            $data['breadcrumb'] = array(
-                array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
-                array("titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados'), "class" => ""),
-                array("titulo" => 'Expediente', "link" => base_url('Personal/expediente/' . $empleadoID), "class" => ""),
-            );
-        } else {
-            $data['title'] = 'Expediente';
-            $data['breadcrumb'] = array(
-                array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
-                array("titulo" => 'Mi perfil', "link" => base_url('Usuario/miPerfil'), "class" => ""),
-                array("titulo" => 'Expediente', "link" => base_url('Personal/expediente/' . $empleadoID), "class" => ""),
-            );
-        }
+        $data['title'] = 'Baja de personal';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+            array("titulo" => 'Baja de personal', "link" => base_url('Personal/bajaEmpleados'), "class" => "active"),
+        );
+
+        $model = new PersonalModel();
+        $data['colaboradores'] = $model->getBajas();
+        $data['colaboradoresbaja'] = $model->getBajas();
 
         //Styles
         $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
         $data['styles'][] = base_url('assets/libs/custombox/custombox.min.css');
-        $data['styles'][] = base_url('assets/libs/dropzone/dropzone.min.css');
-        $data['styles'][] = base_url('assets/libs/lightbox/css/lightbox.css');
+        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
+        $data['styles'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/css/buttons.bootstrap4.css');
+        $data['styles'][] = base_url('assets/css/tables-custom.css');
+        $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
 
         //Scripts
+        $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
         $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
-        $data['scripts'][] = base_url('assets/libs/lightbox/js/lightbox.js');
         $data['scripts'][] = base_url('assets/libs/custombox/custombox.min.js');
-        $data['scripts'][] = base_url('assets/libs/dropzone/dropzone.min.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/dataTables.buttons.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.bootstrap4.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/JSZip-2.5.0/jszip.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/pdfmake.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/vfs_fonts.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.html5.js');
+        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.colVis.js');
+        $data['scripts'][] = 'https://cdn.datatables.net/fixedcolumns/3.2.6/js/dataTables.fixedColumns.min.js';
         $data['scripts'][] = base_url('assets/js/modalPdf.js');
-        $data['scripts'][] = base_url('assets/js/personal/expediente.js');
-
-        //Expediente
-        $model = new PersonalModel();
-        $data['empleadoID'] = $empleadoID;
-        $data['expedientes'] = $model->getDatosExpediente();
-        $data['empleado'] = $this->db->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID=" . $empleadoID)->getRowArray()['emp_Nombre'];
-        $data['usuario'] = $usuario;
-        $data['C1'] = $model->getDocumentosC1(); //'Externos'
-        $data['C2'] = $model->getDocumentosC2(); //'Internos'
+        $data['scripts'][] = base_url('assets/js/personal/empleadosBaja.js');
 
         //Cargar vistas
         echo view('htdocs/header', $data);
-        echo view('htdocs/modalPdf');
-        echo view('personal/expediente', $data);
+        echo view('personal/empleadosBaja', $data);
+        echo view('personal/modalFechaSalida', $data);
+        echo view("htdocs/modalPdf", $data);
         echo view('htdocs/footer', $data);
-    } //end expediente
-
+    } //bajaEmpleados
 
     //Diego-> organigrama
     public function organigrama()
@@ -580,94 +620,6 @@ class Personal extends BaseController
      /_/    \_\____/_/    \_\/_/ \_\
     */
 
-
-    //Lia->llena la tabla de empleados
-    public function ajax_getEmpleadosActivos()
-    {
-        $colaboradores = $this->PersonalModel->getColaboradores();
-        $data['data'] = $colaboradores;
-        echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    } //end ajax_getEmpleadosActivos
-
-    //Lia trae los empleados dados de baja
-    public function ajax_getEmpleadosBaja()
-    {
-        $colaboradores = $this->PersonalModel->getBajas();
-        $data['data'] = $colaboradores;
-        echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//end ajax_getEmpleadosBaja
-
-    //Lia- agrega o edita la info de un colaborador
-    function ajax_saveColaborador()
-    {
-        $post = $this->request->getPost();
-
-        if ($post['emp_EmpleadoID'] !== 0) {
-            $empleadoID = (int)encryptDecrypt('decrypt', $post['emp_EmpleadoID']);
-        } else {
-            $empleadoID = 0;
-        }
-        unset($post['emp_EmpleadoID']);
-        $post['emp_AreaID'] = encryptDecrypt('decrypt', $post['emp_AreaID']);
-        $post['emp_DepartamentoID'] = encryptDecrypt('decrypt', $post['emp_DepartamentoID']);
-        $post['emp_PuestoID'] = encryptDecrypt('decrypt', $post['emp_PuestoID']);
-        $post['emp_HorarioID'] = encryptDecrypt('decrypt', $post['emp_HorarioID']);
-        $post['emp_Rol'] = encryptDecrypt('decrypt', $post['emp_Rol']);
-        $post['emp_SucursalID'] = encryptDecrypt('decrypt',$post['emp_SucursalID']);
-        $numero = $post['emp_Numero'];
-
-        if ($empleadoID > 0) {
-            $builder = db()->table('empleado');
-            $builder->update($post, array('emp_EmpleadoID' => $empleadoID));
-
-            if ($this->db->affectedRows() > 0) {
-                insertLog($this, session('id'), 'Actualizar', 'empleado', $empleadoID);
-                $data['code'] = 2;
-                $data['msg'] = '¡Los datos del colaborador se actualizaron correctamente!';
-            } else {
-                $data['code'] = 3;
-                $data['msg'] = 'Los datos no cambiaron. Intente nuevamente.';
-            }
-        } else {
-            $sql = "select COUNT(emp_Numero) as contador from empleado where emp_Numero='" . $numero . "'";
-            $resultado = $this->db->query($sql)->getRowArray();
-            $contador = $resultado['contador'];
-
-            if ($contador == 0) {
-                $builder = db()->table('empleado');
-                $builder->insert($post);
-                if ($this->db->insertID() > 0) {
-                    insertLog($this, session('id'), 'Insertar', 'empleado', $this->db->insertID());
-                    $data['code'] = 1;
-                    $data['msg'] = '¡El colaborador se agrego correctamente!';
-                } else {
-                    $data['code'] = 0;
-                    $data['msg'] = 'Ha ocurrido un error al tratar de guardar. Intente nuevamente.';
-                }
-            } else {
-                $data['code'] = 4;
-                $data['msg'] = 'Ese número de empleado ya existe. Por favor escriba uno valido.';
-            }
-        }
-
-        echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//End ajax_saveColaborador
-
-    //->Lia obtener informacion del colaborador
-    function ajax_getInfoColaborador($colaboradorID)
-    {
-        $colaborador = $this->PersonalModel->getInfoColaboradorByID($colaboradorID);
-        unset($colaborador['emp_EmpleadoID']);
-        $colaborador['emp_EmpleadoID'] = $colaboradorID;
-        if ($colaborador) {
-            $data['response'] = 'success';
-            $data['result'] = $colaborador;
-        } else {
-            $data['msg'] = 'Ocurrio un error. Intentelo nuevamente';
-        }
-        echo json_encode($data);
-    }
-
     //Diego -> guardar archivo del expediente
     public function ajax_GuardarExpediente($nombreFile, $empleadoID)
     {
@@ -688,6 +640,15 @@ class Personal extends BaseController
             echo json_encode(array("response" => "success", "ext" => $extFile, "dir" => $dir, "base" => $base));
         }
     } //end ajax_GuardarExpediente
+
+    //Lia->llena la tabla de empleados
+    public function ajax_getEmpleadosActivos()
+    {
+        $model = new PersonalModel();
+        $colaboradores = $model->getColaboradores();
+        $data['data'] = $colaboradores;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //end ajax_getEmpleadosActivos
 
     //Diego-> ajax consultar empleados organigrama
     public function ajax_regresarEmpleados()
@@ -862,7 +823,14 @@ class Personal extends BaseController
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }//end ajax_getReporteQuinquenio
 
-   
+    //Lia trae los empleados dados de baja
+    public function ajax_getEmpleadosBaja()
+    {
+        $model = new PersonalModel();
+        $colaboradores = $model->getBajas();
+        $data['data'] = $colaboradores;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }//end ajax_getEmpleadosBaja
 
     public function ajaxCambiarEstadoEmpleado()
     {
@@ -881,11 +849,11 @@ class Personal extends BaseController
     public function ajax_getCiudadByEstado()
     {
         $post = $this->request->getPost();
-        $ciudad_seleccionada = (int)$post['ciudad'];
-        $result = $this->db->query("SELECT * FROM ciudad WHERE ciu_idEstado = " . (int)$post['estado'] . " ORDER BY ciu_nombre ASC")->getResultArray();
+        $estadoID = $this->db->query("SELECT * FROM estado WHERE est_nombre = '" . $post['estado'] . "'")->getRowArray();
+        $result = $this->db->query("SELECT * FROM ciudad WHERE ciu_idEstado = " . (int)$estadoID['id_estado'] . " ORDER BY ciu_nombre ASC")->getResultArray();
         $data = array();
         foreach($result as $r){
-            $r['selected'] = ($r['id_ciudad'] == $ciudad_seleccionada) ? true : false;
+            $r['ciu_NombreValue']=strtoupper(eliminar_acentos($r['ciu_nombre']));
             array_push($data,$r);
         }
         if ($data) {
@@ -919,9 +887,78 @@ class Personal extends BaseController
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }//End ajax_saveFechaBaja
 
-    
+    //Lia- agrega o edita la info de un colaborador
+    function ajax_saveColaborador()
+    {
+        $post = $this->request->getPost();
 
-    
+        if ($post['emp_EmpleadoID'] !== 0) {
+            $empleadoID = (int)encryptDecrypt('decrypt', $post['emp_EmpleadoID']);
+        } else {
+            $empleadoID = 0;
+        }
+        unset($post['emp_EmpleadoID']);
+        $post['emp_AreaID'] = encryptDecrypt('decrypt', $post['emp_AreaID']);
+        $post['emp_DepartamentoID'] = encryptDecrypt('decrypt', $post['emp_DepartamentoID']);
+        $post['emp_PuestoID'] = encryptDecrypt('decrypt', $post['emp_PuestoID']);
+        $post['emp_HorarioID'] = encryptDecrypt('decrypt', $post['emp_HorarioID']);
+        $post['emp_Rol'] = encryptDecrypt('decrypt', $post['emp_Rol']);
+        $post['emp_SucursalID'] = encryptDecrypt('decrypt',$post['emp_SucursalID']);
+        $numero = $post['emp_Numero'];
+
+        if ($empleadoID > 0) {
+            $builder = db()->table('empleado');
+            $builder->update($post, array('emp_EmpleadoID' => $empleadoID));
+
+            if ($this->db->affectedRows() > 0) {
+                insertLog($this, session('id'), 'Actualizar', 'empleado', $empleadoID);
+                $data['code'] = 2;
+                $data['msg'] = '¡Los datos del colaborador se actualizaron correctamente!';
+            } else {
+                $data['code'] = 3;
+                $data['msg'] = 'Los datos no cambiaron. Intente nuevamente.';
+            }
+        } else {
+            $sql = "select COUNT(emp_Numero) as contador from empleado where emp_Numero='" . $numero . "'";
+            $resultado = $this->db->query($sql)->getRowArray();
+            $contador = $resultado['contador'];
+
+            if ($contador == 0) {
+                $builder = db()->table('empleado');
+                $builder->insert($post);
+                if ($this->db->insertID() > 0) {
+                    insertLog($this, session('id'), 'Insertar', 'empleado', $this->db->insertID());
+                    $data['code'] = 1;
+                    $data['msg'] = '¡El colaborador se agrego correctamente!';
+                } else {
+                    $data['code'] = 0;
+                    $data['msg'] = 'Ha ocurrido un error al tratar de guardar. Intente nuevamente.';
+                }
+            } else {
+                $data['code'] = 4;
+                $data['msg'] = 'Ese número de empleado ya existe. Por favor escriba uno valido.';
+            }
+        }
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }//End ajax_saveColaborador
+
+    //->Lia obtener informacion del colaborador
+    function ajax_getInfoColaborador($colaboradorID)
+    {
+        $model = new PersonalModel();
+        $colaborador = $model->getInfoColaboradorByID($colaboradorID);
+
+        unset($colaborador['emp_EmpleadoID']);
+        $colaborador['emp_EmpleadoID'] = $colaboradorID;
+        if ($colaborador) {
+            $data['response'] = 'success';
+            $data['result'] = $colaborador;
+        } else {
+            $data['msg'] = 'Ocurrio un error. Intentelo nuevamente';
+        }
+        echo json_encode($data);
+    }
 
     //Lia->guarda y envia los datos de acceso
     public function ajax_generarDatosAcceso()

@@ -187,3 +187,11 @@ function load_bootstrapdatetimepicker(&$data){
     $data['styles'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css');
     $data['scripts'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js');
 }
+
+function load_spinkit(&$data){
+    $data['styles'][] = base_url('assets/libs/spinkit/spinkit.css');
+}
+
+function load_modalConfirmation(&$data){
+    $data['scripts'][] = base_url('assets/js/modalConfirmation.js');
+}

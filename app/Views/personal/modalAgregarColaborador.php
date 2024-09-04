@@ -9,25 +9,25 @@
             <form id="formColaborador" method="post" autocomplete="off">
                     <input id="emp_EmpleadoID" name="emp_EmpleadoID" value="0" hidden>
                     <div class="modal-body">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
+                        <ul class="nav nav-tabs row">
+                            <li class="nav-item col-md-3">
                                 <a href="#personales" data-toggle="tab" aria-expanded="false" class="nav-link active">
-                                    <i class="far fa-address-card "></i><span class="d-none d-sm-inline-block ml-2">Personales</span>
+                                    <i class="far fa-address-card "></i><span class="d-none d-sm-inline-block ml-2"> PERSONALES</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item col-md-3">
                                 <a href="#estudios" data-toggle="tab" aria-expanded="true" class="nav-link ">
-                                    <i class="fas fa-book-reader"></i> <span class="d-none d-sm-inline-block ml-2">Estudios</span>
+                                    <i class="fas fa-book-reader"></i> <span class="d-none d-sm-inline-block ml-2"> ESCOLARES</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item col-md-3">
                                 <a href="#institucionales" data-toggle="tab" aria-expanded="false" class="nav-link">
-                                    <i class="fas fa-building"></i> <span class="d-none d-sm-inline-block ml-2">Institucionales</span>
+                                    <i class="fas fa-building"></i> <span class="d-none d-sm-inline-block ml-2"> INSTITUCIONALES</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item col-md-3">
                                 <a href="#emergencias" data-toggle="tab" aria-expanded="false" class="nav-link">
-                                    <i class=" 	fa fa-plus-square"></i> <span class="d-none d-sm-inline-block ml-2">Emergencias</span>
+                                    <i class=" 	fa fa-plus-square"></i> <span class="d-none d-sm-inline-block ml-2"> EMERGENCIA</span>
                                 </a>
                             </li>
                         </ul>
@@ -39,31 +39,26 @@
                                             <label class="col-form-label">* Nombre</label>
                                             <input type="text" class="form-control" id="emp_Nombre" name="emp_Nombre" placeholder="Escriba el nombre completo" >
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-6">
                                             <label class="col-form-label">* Dirección</label>
-                                            <input type="text" class="form-control" id="emp_Direccion" name="emp_Direccion" required placeholder="Calle y Numero">
+                                            <input type="text" class="form-control" id="emp_Direccion" name="emp_Direccion" required placeholder="Calle,Numero y Colonia">
                                         </div>
-                                        <!--
-                                        <div class="form-group col-md-3">
-                                            <label class="col-form-label mb-2"></label>
-                                            <input type="text" class="form-control" id="emp_Colonia" name="emp_Colonia" required placeholder="Colonia">
-                                        </div>-->
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label"> Código postal </label>
                                             <input type="text" class="form-control" id="emp_CodigoPostal" name="emp_CodigoPostal" placeholder="Escriba el código postal">
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label"> Estado</label>
-                                            <select name="emp_EntidadFederativa" id="emp_EntidadFederativa" class="form-control select2"  style="width: 100% !important;">
+                                            <select name="emp_EstadoID" id="emp_EstadoID" class="form-control select2"  style="width: 100% !important;">
                                                 <option value="" hidden>Seleccione</option>
                                                 <?php foreach ($estados as $estado){ ?>
-                                                <option value="<?=strtoupper($estado['est_nombre'])?>"><?=$estado['est_nombre']?></option>
+                                                <option value="<?=$estado['id_estado']?>"><?=strtoupper($estado['est_nombre'])?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label"> Ciudad</label>
-                                            <select name="emp_Municipio" id="emp_Municipio"  class="form-control select2"  style="width: 100% !important;">
+                                            <select name="emp_CiudadID" id="emp_CiudadID"  class="form-control select2"  style="width: 100% !important;">
                                                 <option value="" hidden>Seleccione</option>
                                             </select>
                                         </div>
@@ -120,7 +115,7 @@
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label"> Tipo sanguineo</label>
-                                            <select class="form-control "  id="emp_TipoSangre" name="emp_TipoSangre" >
+                                            <select class="form-control select2"  id="emp_TipoSangre" name="emp_TipoSangre" >
                                                 <option hidden>Seleccione</option>
                                                 <option value="A+">A positivo (A +)</option>
                                                 <option value="A-">A negativo (A-)</option>
@@ -134,7 +129,7 @@
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label"> Hijos</label>
-                                            <select class="form-control "  id="emp_Hijos" name="emp_Hijos" >
+                                            <select class="form-control select2"  id="emp_Hijos" name="emp_Hijos" >
                                                 <option hidden>Seleccione</option>
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
@@ -181,7 +176,7 @@
                                             <?php if($titulo>0){ ?>
                                             <div class="form-group col-md-<?=$col?>">
                                                 <label class="col-form-label">  Título </label>
-                                                <select id="emp_Titulo" name="emp_Titulo" class="form-control" data-placeholder="Seleccionar" style="width: 100%" >
+                                                <select id="emp_Titulo" name="emp_Titulo" class="form-control select2" data-placeholder="Seleccionar" style="width: 100%" >
                                                     <option hidden>Seleccione</option>
                                                     <option value="SI"> SI</option>
                                                     <option value="NO"> NO</option>
@@ -208,22 +203,6 @@
                                             <label class="col-form-label">* Número interno</label>
                                             <input type="text" class="form-control onlyNumbers"  id="emp_Numero" name="emp_Numero" required placeholder="Escriba el número">
                                         </div>
-                                        <!--
-                                        <div class="form-group col-md-4">
-                                            <label class="col-form-label">* ID del Checador</label>
-                                            <input type="text" class="form-control "  id="emp_ChecadorID" name="emp_ChecadorID" required placeholder="Escriba el número">
-                                        </div>
-                                        
-                                        <div class="form-group col-md-4">
-                                            <label class="col-form-label">* Número de nómina</label>
-                                            <input type="text" class="form-control "  id="emp_NumeroNomina" name="emp_NumeroNomina" required placeholder="Escriba el número">
-                                        </div>
-                                        
-                                        <div class="form-group col-md-4">
-                                            <label class="col-form-label">* Numero de socio</label>
-                                            <input type="text" class="form-control "  id="emp_NumSocio" name="emp_NumSocio" required placeholder="Escriba el número">
-                                        </div>
-                                            -->
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label">* Fecha de ingreso</label>
                                             <input type="text" class="form-control datepicker" id="emp_FechaIngreso" name="emp_FechaIngreso" required placeholder="Seleccione fecha de ingreso">
@@ -366,12 +345,6 @@
                                             <label class="col-form-label">* Salario diario </label>
                                             <input type="number" step="any" class="form-control" id="emp_SalarioDiario" name="emp_SalarioDiario" placeholder="Escriba la cantidad ">
                                         </div>
-
-                                        <!--<div class="form-group col-md-4">
-                                            <label class="col-form-label">* SBC(IMSS) </label>
-                                            <input type="number" step="any" class="form-control" id="emp_SBC" name="emp_SBC" placeholder="Escriba la cantidad" >
-                                        </div>
-                                            -->
                                         <div class="form-group col-md-4">
                                             <label class="col-form-label">* Salario diario integrado </label>
                                             <input type="number" step="any" class="form-control" id="emp_SalarioDiarioIntegrado" name="emp_SalarioDiarioIntegrado" placeholder="Escriba la cantidad" >
@@ -422,57 +395,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                        <button  type="button"  class="btn btn-success bntGuardarEmpleado" >Guardar</button>
+                    <div class="modal-footer ">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-dark btn-round" data-dismiss="modal">Cancelar</button>
+                            <button  type="button"  class="btn btn-success btn-round bntGuardarEmpleado" >Guardar</button>
+                        </div>
                     </div>
                 </form>
         </div>
     </div>
 </div>
-
 <script>
-    $(document).ready(function (e) {
-        $('.select2').select2({
-            //theme:'bootstrap'
-        });
-        $("body").on("change","#emp_EntidadFederativa",function (e){
-            e.preventDefault();
-            let estado = $("#emp_EntidadFederativa").val();
-            $.ajax({
-                url: BASE_URL + "Personal/ajax_getCiudadByEstado/" ,
-                type: "POST",
-                async:true,
-                cache:false,
-                dataType: "json",
-                data: {estado:estado}
-            }).done(function (data){
-                if(data.response === "success"){
-                    count=1;
-                    $.each(data.result, function (key, value) {
-                        if(count===1){
-                            $row="<option value='"+value.ciu_NombreValue+"'>"+value.ciu_nombre+"</option>";
-                        }else{
-                            $row+="<option value='"+value.ciu_NombreValue+"'>"+value.ciu_nombre+"</option>";
-                        }
-                        count++;
-                    });
-                    $('#emp_Municipio').html('').select2({});
-                    $("#emp_Municipio").append($row);
-
-                }
-            }).fail(function () {
-                $.toast({
-                    text: "Ocurrido un error, por favor intente nuevamente.",
-                    icon: "error",
-                    loader: true,
-                    loaderBg: '#c6c372',
-                    position: 'top-right',
-                    allowToastClose : true,
-                });
-            });
-
-
-        });
+$(document).ready(function (e) {
+    $('.select2').select2({
+        dropdownParent: $('#modalColaborador .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
     });
+});
 </script>

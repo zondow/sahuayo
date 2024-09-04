@@ -21,8 +21,7 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label for="com_Tipo" class="col-form-label">* Tipo</label>
-                            <select class="form-control chosen-select" name="com_Tipo" id="com_Tipo">
-                                <option hidden>Seleccione una opción</option>
+                            <select class="form-control select2" name="com_Tipo" id="com_Tipo">
                                 <option value="Sociales y Actitudinales">Sociales y Actitudinales</option>
                                 <option value="Tecnicas y Funcionales">Tecnicas y Funcionales</option>
                             </select>
@@ -39,3 +38,13 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function (e) {
+    $('.select2').select2({
+        dropdownParent: $('#modalCompetencias .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+});
+</script>

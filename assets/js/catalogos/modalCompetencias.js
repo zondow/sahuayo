@@ -100,7 +100,7 @@ $(document).ready(function (e) {
                 $("#com_Nombre").val(data.info['com_Nombre']);
                 $("#com_Descripcion").html(data.info['com_Descripcion']);
                 $("#com_Tipo").val(data.info['com_Tipo']);
-                $("#com_Tipo").trigger('chosen:updated');
+                $("#com_Tipo").trigger('change');
                 $("#com_NoOrden").val(data.info['com_NoOrden']);
             }
         }).fail(function () {

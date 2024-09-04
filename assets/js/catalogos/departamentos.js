@@ -39,7 +39,7 @@ $("#tblDepartamentos").DataTable({
             title: 'Catalogo de Departamentos',
             text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
             titleAttr: "Exportar a excel",
-            className: "btn l-slategray",
+            className: "btn l-slategray btn-round",
             autoFilter: true,
             exportOptions: {
                 columns: ':visible'
@@ -50,7 +50,7 @@ $("#tblDepartamentos").DataTable({
             title: 'Catalogo de Departamentos',
             text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
             titleAttr: "Exportar a PDF",
-            className: "btn l-slategray",
+            className: "btn l-slategray btn-round",
             orientation: 'landscape',
             pageSize: 'LETTER',
             exportOptions: {
@@ -60,7 +60,7 @@ $("#tblDepartamentos").DataTable({
         {
             extend: 'colvis',
             text: 'Columnas',
-            className: "btn l-slategray",
+            className: "btn l-slategray btn-round",
         }
     ],
 });
@@ -83,7 +83,7 @@ $('body').on('click', '.editar', function(e) {
             $("#id").val(data.result.dep_DepartamentoID);
             $("#nombre").val(data.result.dep_Nombre);
             $("#selectJefeID").val(data.result.dep_JefeID);
-            $("#selectJefeID").trigger('chosen:updated');
+            $("#selectJefeID").trigger('change');
             
         }
     }).fail(function () {
