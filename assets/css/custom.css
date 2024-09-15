@@ -116,7 +116,7 @@ textarea::placeholder {
     border-radius: 10px !important;
 }
 
-.bootstrap-timepicker-widget.dropdown-menu.open{
+.bootstrap-timepicker-widget.dropdown-menu.open {
     right: unset !important;
 }
 
@@ -128,5 +128,9 @@ textarea::placeholder {
 }
 
 .separator {
-background-color: #fff !important;
+    background-color: #fff !important;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field{
+    width: 100% !important;
 }

@@ -38,8 +38,8 @@ $(document).ready(function(e) {
         stateSave:false,
         language: {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
@@ -53,7 +53,7 @@ $(document).ready(function(e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
@@ -67,7 +67,7 @@ $(document).ready(function(e) {
         let button = '';
         if(row['com_Estado'] === 'Creado'){
             button+=' <a type="button" class="btn btn-danger waves-effect waves-light eliminarComunicado" title="Eliminar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="fa fa-trash"></i> </a>';
-            button+=' <a type="button" class="btn btn-primary waves-effect waves-light enviarComunicado" title="Enviar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="mdi mdi-send"></i> </a>';
+            button+=' <a type="button" class="btn btn-primary waves-effect waves-light enviarComunicado" title="Enviar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="zmdi zmdi-mail-send"></i> </a>';
         }
         button+=' <a type="button" class="btn btn-warning waves-effect waves-light verComunicado" title="Ver comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="fa fa-eye"></i> </a>';
         button+=' <a type="button" class="btn btn-info waves-effect waves-light verRemitentes" title="Ver destinatarios" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="fa fa-users"></i> </a><br>';
@@ -206,8 +206,8 @@ $(document).ready(function(e) {
             stateSave:false,
             language: {
                 paginate: {
-                    previous: "<i class='mdi mdi-chevron-left'>",
-                    next: "<i class='mdi mdi-chevron-right'>"
+                    previous: "<i class='zmdi zmdi-caret-left'>",
+                    next: "<i class='zmdi zmdi-caret-right'>"
                 },
                 search: "_INPUT_",
                 searchPlaceholder: "Buscar...",
@@ -221,7 +221,7 @@ $(document).ready(function(e) {
                 "oPaginate": {
                     "sFirst":    "Primero",
                     "sLast":     "Último",
-                    "sNext":    "<i class='mdi mdi-chevron-right'>",
+                    "sNext":    "<i class='zmdi zmdi-caret-right'>",
                     "sPrevious": "<i class='zmdi zmdi-caret-left'>"
                 },
             },

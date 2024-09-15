@@ -40,9 +40,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Permisos aplicados',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -51,9 +51,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Permisos aplicados',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -63,7 +63,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -98,7 +98,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Aplicar solicitud',
             text: '¿Esta seguro que desea aplicar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -114,7 +114,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Rechazar solicitud',
             text: '¿Esta seguro que desea rechazar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -130,7 +130,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Declinar solicitud',
             text: '¿Esta seguro que desea declinar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',

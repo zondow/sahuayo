@@ -5,7 +5,7 @@ defined('WRITEPATH') or exit('No direct script access allowed');
 function load_plugins($plugins, &$data)
 {
     foreach ($plugins as $plugin) {
-        $function_name = 'load_' . strtolower($plugin);
+        $function_name = 'load_' . trim(strtolower($plugin));
         if (function_exists($function_name)) {
             call_user_func_array($function_name, array(&$data));
         }

@@ -179,7 +179,7 @@ $horario = (is_array($perfilpuesto) && array_key_exists('per_Horario', $perfilpu
                                                     <textarea class="form-control" name="Funciones[]" placeholder="Escribir función" required><?= $puestosF['F' . $i] ?></textarea>
                                                 </div>
                                                 <div class="form-group col-md-1 text-center pt-3">
-                                                    <button class="btn btn-danger  btnEliminar text-center" data-id="<?= $contador ?>"><i class="dripicons-trash"></i></button>
+                                                    <button class="btn btn-danger  btnEliminar text-center" data-id="<?= $contador ?>"><i class="zmdi zmdi-delete"></i></button>
                                                 </div>
                                             </div>
                             <?php }

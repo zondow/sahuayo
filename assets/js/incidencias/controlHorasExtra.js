@@ -37,9 +37,9 @@
             {
                 extend: 'excelHtml5',
                 title: 'Mis horas extra',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -48,9 +48,9 @@
             {
                 extend: 'pdfHtml5',
                 title: 'Mis horas extra',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -60,7 +60,7 @@
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -152,7 +152,7 @@
             btnGuardar.html('Guardar');
             if(data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud registrado!',
                     text: 'La solicitud se guardó correctamente',
                     showConfirmButton: false,
@@ -178,7 +178,7 @@
         Swal.fire({
             title: 'Eliminar solicitud',
             text: '¿Esta seguro que desea eliminar la solicitud de horas extra?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar'
@@ -200,7 +200,7 @@
             if (data.code === 1){
                 tblHoras.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud eliminada!',
                     text: 'La solicitud de horas extra se elimino correctamente.',
                     showConfirmButton: false,
@@ -222,7 +222,7 @@
         Swal.fire({
             title: 'Enviar solicitud',
             text: '¿Esta seguro que desea enviar a revisión la solicitud de horas extra?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar'
@@ -247,7 +247,7 @@
             if (data.code === 1){
                 tblHoras.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud enviada!',
                     text: 'La solicitud de horas extra se envio correctamente.',
                     showConfirmButton: false,

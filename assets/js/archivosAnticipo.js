@@ -88,7 +88,7 @@ $(document).ready(function (e) {
             Swal.fire({
                 title: 'Eliminar archivo',
                 text: '¿Esta seguro que desea eliminar el archivo?',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',

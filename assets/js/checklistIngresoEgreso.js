@@ -39,9 +39,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Checklist ingreso|egreso empleado',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -50,9 +50,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Checklist ingreso|egreso empleado',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -62,7 +62,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -82,7 +82,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
@@ -124,7 +124,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'INACTIVAR',
             text: '¿Esta seguro que desea INACTIVAR?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -139,7 +139,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'ACTIVAR',
             text: '¿Esta seguro que desea ACTIVAR?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',

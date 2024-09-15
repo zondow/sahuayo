@@ -15,7 +15,6 @@
             "serverSide": true
         },
         columns: [
-            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
             { "data": "count"},
             { "data": "rep_FechaRegistro"},
             { "data": "emp_Nombre"},
@@ -23,7 +22,8 @@
             { "data": "totalDias"},
             { "data": "rep_Dias"},
             { "data": "rep_ObservacionesRJ"},
-            { "data": "rep_Estado",render: function (data,type,row) {return estatus(data)}}
+            { "data": "rep_Estado",render: function (data,type,row) {return estatus(data)}},
+            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -36,9 +36,9 @@
             {
                 extend: 'excelHtml5',
                 title: 'Salidas colaboradores',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -47,9 +47,9 @@
             {
                 extend: 'pdfHtml5',
                 title: 'Salidas colaboradores',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -59,7 +59,7 @@
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -84,7 +84,7 @@
             },
 
         },
-        "order": [[ 1, "asc" ]],
+        "order": [[ 0, "desc" ]],
         "processing":false
     });
 
@@ -95,19 +95,19 @@
 
         var urlImprimir = BASE_URL+'PDF/imprimirInformeSalidas/'+row.rep_ReporteSalidaID;
 
-        var btnImprimir = ' <a href="' + urlImprimir +'"'+
-            'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Informe de salidas" title="Fromato de informe">'+
-            '<i class="dripicons-print"></i></a>';
+        var btnImprimir = ' <button href="' + urlImprimir +'"'+
+            'class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down show-pdf" data-title="Informe de salidas" title="Fromato de informe">'+
+            '<i class="zmdi zmdi-local-printshop"></i></button>';
 
         var btnAutorizar = '';
         var btnRechazar = '';
         if(row.rep_Estado == 'AUTORIZADO') {
-            btnAutorizar = '<a href="#" class="btn btn-primary btn-block waves-light waves-effect btnRevisar" ' +
+            btnAutorizar = '<button href="#" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down btnRevisar" ' +
                 'data-id="'+row.rep_ReporteSalidaID+'" data-accion="APLICAR" title="Aplicar">' +
-                '<i class="fa fa-check"></i></a>';
-            btnRechazar = '<a href="#" class="btn btn-danger btn-block waves-light waves-effect btnRevisar" ' +
+                '<i class="zmdi zmdi-check"></i></button>';
+            btnRechazar = '<button href="#" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down btnRevisar" ' +
             'data-id="'+row.rep_ReporteSalidaID+'" data-accion="RECHAZAR" title="Rechazar">' +
-            '<i class="fa fa-times"></i></a>';
+            '<i class="zmdi zmdi-close"></i></button>';
         }//if
 
         return btnImprimir + btnAutorizar + btnRechazar;
@@ -145,7 +145,7 @@
         Swal.fire({
             title: titulo,
             text: text,
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -158,7 +158,6 @@
     });
 
     function ajax_revisarInforme(salidaID,accion,observaciones,button){
-        button.html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Revisando...');
         $.ajax({
             url: BASE_URL+'Incidencias/ajax_revisarReporteSalidasCH',
             cache: false,
@@ -169,7 +168,7 @@
             if (data.code === 1){
                 tblSalidas.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: 'Informe revisado!',
                     text: 'El informe de salidas se reviso correctamente.',
                     showConfirmButton: false,

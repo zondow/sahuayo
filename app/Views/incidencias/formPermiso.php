@@ -30,7 +30,7 @@
                         <div class="position-relative row form-group">
                             <div class="col-md-12 mb-2">
                                 <label>*Tipo de permiso</label>
-                                <select name="txtTipoPermiso" id="txtTipoPermiso" class="chosen-select" data-placeholder="Seleccionar tipo de permiso" style="width: 100% !important;" required>
+                                <select name="txtTipoPermiso" id="txtTipoPermiso" class="select2" data-placeholder="Seleccionar tipo de permiso" style="width: 100% !important;" required>
                                     <option value="" hidden>Seleccione</option>
                                     <?php
                                     if (!empty($catalogoPermisos)) {
@@ -87,8 +87,8 @@
                                     <textarea name="txtMotivos" id="txtMotivos" placeholder="Motivo del permiso" class="form-control"></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-12 text-left align-self-center">
-                                <button class="btn btn-success" id="btnRegistarPermiso"><span><i class="fe-plus"></i> Registrar</span></button>
+                            <div class="col-md-12 text-right align-self-center">
+                                <button class="btn btn-round btn-success" id="btnRegistarPermiso"><span><i class="fe-plus"></i> Registrar</span></button>
                             </div>
                         </div>
                     </form>
@@ -123,3 +123,13 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            //dropdownParent: $('#modalAddGuardia .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
+    });
+</script>

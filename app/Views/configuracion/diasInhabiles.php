@@ -31,13 +31,13 @@
                     <br>
                     <div class="col-12">
                         <label for="motivo"><b>* Sucursal</b></label>
-                        <select id="sucursales" name="sucursales[]" multiple="multiple" class="chosen-select" style="width: 100% !important;">
+                        <select id="sucursales" name="sucursales[]" multiple="multiple" class="select2" style="width: 100% !important;">
                         </select>
                     </div>
                     <br>
                     <div class="col-12">
                         <label for="motivo"><b>* Tipo</b></label>
-                        <select class="chosen-select" id="dia_MedioDia" name="dia_MedioDia" style="width: 100%;">
+                        <select class="select2" id="dia_MedioDia" name="dia_MedioDia" style="width: 100%;">
                             <option value="" hidden>Seleccione</option>
                             <option value="0">Día completo</option>
                             <option value="1">Mediodía</option>
@@ -90,3 +90,14 @@
             </div>
         </div>
     </div>
+</div>
+<script>
+$(document).ready(function (e) {
+    $('.select2').select2({
+        dropdownParent: $('#modalDiaInhabil .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+});
+</script>

@@ -28,7 +28,7 @@ class BaseModel extends Model
 
     public function getEmpleados()
     {
-        return $this->db->query("SELECT * FROM empleado WHERE emp_Estatus=1 AND emp_Estado='Activo' ORDER BY emp_Nombre ASC")->getResultArray();
+        return $this->db->query("SELECT *,suc_Sucursal FROM empleado JOIN sucursal ON emp_SucursalID=suc_SucursalID WHERE emp_Estatus=1 AND emp_Estado='Activo' ORDER BY emp_Nombre ASC")->getResultArray();
     }
 
     public function getNotificacionesPush()
@@ -42,7 +42,7 @@ class BaseModel extends Model
     }
 
     public function getRH(){
-        return $this->db->query("SELECT E.emp_EmpleadoID,E.emp_Nombre, E.emp_Correo FROM empleado E WHERE E.emp_Rol=1")->getResultArray();
+        return $this->db->query("SELECT E.emp_EmpleadoID,E.emp_Nombre, E.emp_Correo FROM empleado E WHERE E.emp_Estatus=1 AND E.emp_Rol=1")->getResultArray();
     }
     
     public function getHorasExtra($empleadoID)
@@ -94,6 +94,5 @@ class BaseModel extends Model
     
         return $empleado;
     }
-    
     
 }

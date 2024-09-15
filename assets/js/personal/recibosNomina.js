@@ -48,7 +48,7 @@ $(document).ready(function (e) {
                     Swal.fire({
                         title: "¡Archivos guardados exitosamente!",
                         text: "",
-                        type: 'success',
+                        icon: 'success',
                     }).then(() => {
 
                         location.reload();

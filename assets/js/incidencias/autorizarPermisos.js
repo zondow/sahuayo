@@ -38,9 +38,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Permisos de mis colaboradores',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -49,9 +49,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Permisos de mis colaboradores',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -61,7 +61,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -101,7 +101,7 @@ $(document).ready(function (e) {
             Swal.fire({
                 title: 'Autorizar solicitud',
                 text: '¿Esta seguro que desea autorizar la solicitud de permiso?',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
@@ -120,7 +120,7 @@ $(document).ready(function (e) {
             Swal.fire({
                 title: 'Autorizar solicitud',
                 text: '¿Esta seguro que desea autorizar la solicitud de permiso?',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
@@ -138,7 +138,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Rechazar permiso',
             text: '¿Esta seguro que desea rechazar el permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -195,7 +195,7 @@ $(document).ready(function (e) {
             if (data.code === 1){
                 tblPermisos.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Permiso autorizado!',
                     text: 'El permiso se autorizo correctamente',
                     showConfirmButton: false,
@@ -223,7 +223,7 @@ $(document).ready(function (e) {
                 if (data.code === 1){
                     tblPermisos.ajax.reload();
                     Swal.fire({
-                        type: 'success',
+                        icon: 'success',
                         title: '¡Permiso autorizado!',
                         text: 'El permiso se autorizo correctamente',
                         showConfirmButton: false,
@@ -253,7 +253,7 @@ $(document).ready(function (e) {
             if (data.code === 1){
                 tblPermisos.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Permiso rechazado!',
                     text: 'El permiso se rechazo correctamente',
                     showConfirmButton: false,

@@ -54,7 +54,7 @@ $txtAntiguedad = " {$antiguedad->format('%Y')} años y {$antiguedad->format('%m'
                 <form method="post" id="vacacionesForm" action="<?= base_url("Incidencias/crearVacaciones") ?>" autocomplete="off">
                     <input type="hidden" name="diasRestantes" value="<?= $diasRestantes ?>">
                     <div class="form-group">
-                        <label><a style="color:red">*</a> Período: </label>
+                        <label>* Período: </label>
                         <div>
                             <div class="input-daterange input-group" id="date-range">
                                 <input type="text" class="form-control " name="vac_FechaInicio" id="vac_FechaInicio" placeholder="Inicio" required>

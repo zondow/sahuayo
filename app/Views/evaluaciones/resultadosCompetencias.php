@@ -60,7 +60,7 @@
                             html += '<tr>';
                             html += '<td> ' +
                                 '<a href="' + BASE_URL + "Evaluaciones/resultadosCompetenciaEmpleadoCH/" + value.evac_EvaluacionCompetenciaID + "/" + 1 + '" class="btn btn-success btn-block waves-light waves-effect"> ' +
-                                '<i class="dripicons-print"></i>&nbsp; Ver resultados ' +
+                                '<i class="zmdi zmdi-local-printshop"></i>&nbsp; Ver resultados ' +
                                 '</a> ' +
                                 '</td>';
                             html += '<td><b> Del periodo del ' + value.eva_FechaInicio + ' al ' + value.eva_FechaFin + '</b></td>';
@@ -105,8 +105,8 @@
             $("#tPeriodos").DataTable({
                 language: {
                     paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
+                        previous: "<i class='zmdi zmdi-caret-left'>",
+                        next: "<i class='zmdi zmdi-caret-right'>"
                     },
                     "sProcessing": "Procesando...",
                     "sLengthMenu": "Mostrar _MENU_ registros",
@@ -121,9 +121,9 @@
                     "sInfoThousands": ",",
                     "sLoadingRecords": "Cargando...",
                     "oPaginate": {
-                        "sFirst": "<i class='mdi mdi-chevron-right'>",
-                        "sLast": "<i class='mdi mdi-chevron-left'>",
-                        "sNext": "<i class='mdi mdi-chevron-right'>",
+                        "sFirst": "<i class='zmdi zmdi-caret-right'>",
+                        "sLast": "<i class='zmdi zmdi-caret-left'>",
+                        "sNext": "<i class='zmdi zmdi-caret-right'>",
                         "sPrevious": "<i class='zmdi zmdi-caret-left'>"
                     },
                 },

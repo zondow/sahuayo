@@ -80,15 +80,38 @@ foreach ($result as $row) {
         <li><a href="<?= base_url("Incidencias/controlHorasExtra") ?>">Control de mis horas extra</a></li>
         <?php
         if (isJefe($this)) : ?> <li><a href="<?= base_url("Incidencias/horasExtraMisEmpleados") ?>">Autorizar Horas Extra</a></li> <?php endif;
-        addMenuOption('aplicarReporteHoras','Incidencias','Aplicar Horas Extra');
+        echo addMenuOption('aplicarReporteHoras','Incidencias','Aplicar Horas Extra');
         ?>
     </ul>
 </li>
 <?php endif; ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-car"></i><span>Salidas</span> </a>
     <ul class="ml-menu">
-        <li> <a href="google.html">Google Map</a> </li>
-        <li> <a href="yandex.html">YandexMap</a> </li>
-        <li> <a href="jvectormap.html">jVectorMap</a> </li>
+        <li><a href="<?= base_url("Incidencias/reporteSalidas") ?>">Mis salidas</a></li>
+        <?php if (isJefe($this)) { ?>
+            <li><a href="<?= base_url("Incidencias/informeSalidasMisEmpleados") ?>">Autorizar salidas</a></li>
+        <?php }
+        echo addMenuOption('aplicarInformeSalidas','Incidencias', 'Aplicar salidas');
+        ?>
+    </ul>
+</li>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-hospital-alt"></i><span>Incapacidades</span> </a>
+    <ul class="ml-menu">
+    <li><a href="<?= base_url("Incidencias/misIncapacidades") ?>">Mis incapacidades</a></li>
+        <?php if (isJefe($this)) { ?>
+            <li><a href="<?= base_url("Incidencias/incapacidadesMisEmpleados")?>">Incapacidades de Colaboradores</a></li>
+        <?php }
+        echo addMenuOption('incapacidad','Incidencias', 'Revisar Incapacidades');
+        ?>
+    </ul>
+</li>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-card-alert"></i><span>Sanciones</span> </a>
+    <ul class="ml-menu">
+    <li><a href="<?= base_url("Incidencias/misSanciones") ?>">Mis sanciones</a></li>
+        <?php if (isJefe($this)) { ?>
+            <li><a href="<?= base_url("Incidencias/sancionesMisEmpleados") ?>">Sanciones de Colaboradores</a></li>
+        <?php }
+        echo addMenuOption('sanciones','Incidencias', 'Crear sanciones');
+        ?>
     </ul>
 </li>

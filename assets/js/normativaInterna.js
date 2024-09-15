@@ -36,8 +36,8 @@ $(document).ready(function(e) {
         stateSave:false,
         language: {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
@@ -51,7 +51,7 @@ $(document).ready(function(e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
@@ -519,8 +519,8 @@ $(document).ready(function(e) {
             stateSave:false,
             language: {
                 paginate: {
-                    previous: "<i class='mdi mdi-chevron-left'>",
-                    next: "<i class='mdi mdi-chevron-right'>"
+                    previous: "<i class='zmdi zmdi-caret-left'>",
+                    next: "<i class='zmdi zmdi-caret-right'>"
                 },
                 search: "_INPUT_",
                 searchPlaceholder: "Buscar...",
@@ -534,7 +534,7 @@ $(document).ready(function(e) {
                 "oPaginate": {
                     "sFirst":    "Primero",
                     "sLast":     "Último",
-                    "sNext":    "<i class='mdi mdi-chevron-right'>",
+                    "sNext":    "<i class='zmdi zmdi-caret-right'>",
                     "sPrevious": "<i class='zmdi zmdi-caret-left'>"
                 },
             },

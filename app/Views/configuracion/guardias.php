@@ -57,7 +57,7 @@
                     <div class="row">
                         <div class="form-group col-md-8">
                             <label for="nombre"> <span style="color:red">*</span>Nombre</label>
-                            <select id="colaborador" name="colaborador" class="chosen-select ">
+                            <select id="colaborador" name="colaborador" class="select2 ">
                                 <option></option>
                                 <?php foreach ($empleados as $empleado) { ?>
                                     <option value="<?= encryptDecrypt('encrypt', $empleado['emp_EmpleadoID']) ?>"><?= $empleado['emp_Nombre'] ?></option>
@@ -82,7 +82,7 @@
 </div>
 <script>
     $(document).ready(function(e) {
-       
+
         $('#txtFechas').datepicker({
             autoclose: true,
             format: 'yyyy/mm/dd',
@@ -94,6 +94,13 @@
             firstDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
             lastDate = moment($('#txtFechas').val(), "YYYY-MM-DD").day(6).format("YYYY-MM-DD");
             $("#txtFechas").val(firstDate + "   al   " + lastDate);
+        });
+
+        $('.select2').select2({
+            dropdownParent: $('#modalAddGuardia .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
         });
     });
 </script>

@@ -3,8 +3,8 @@ $(document).ready(function () {
         language:
         {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             "sProcessing": "Procesando...",
             "sLengthMenu": "Mostrar _MENU_ registros",
@@ -77,8 +77,8 @@ $(document).ready(function () {
             paging: true,
             language: {
                 paginate: {
-                    previous: "<i class='mdi mdi-chevron-left'>",
-                    next: "<i class='mdi mdi-chevron-right'>"
+                    previous: "<i class='zmdi zmdi-caret-left'>",
+                    next: "<i class='zmdi zmdi-caret-right'>"
                 },
                 search: "_INPUT_",
                 searchPlaceholder: "Buscar...",
@@ -121,8 +121,8 @@ $(document).ready(function () {
             "paging": false,
             language: {
                 paginate: {
-                    previous: "<i class='mdi mdi-chevron-left'>",
-                    next: "<i class='mdi mdi-chevron-right'>"
+                    previous: "<i class='zmdi zmdi-caret-left'>",
+                    next: "<i class='zmdi zmdi-caret-right'>"
                 },
                 search: "_INPUT_",
                 searchPlaceholder: "Buscar...",
@@ -331,7 +331,7 @@ $(document).ready(function () {
             $("body").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Seleccionando...');
             if (data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: data.mensaje,
                     text: data.mensaje,
                     showConfirmButton: false,

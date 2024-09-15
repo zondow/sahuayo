@@ -50,7 +50,7 @@ class Configuracion extends BaseController
             array("titulo" => 'Configuración de días inhabiles', "link" => base_url('Configuracion/diasInhabiles'), 'class' => 'active')
         );
 
-        load_plugins(['moment', 'fullcalendar','chosen'], $data);
+        load_plugins(['moment', 'fullcalendar','select2'], $data);
 
         //Custom Styles
         //Custom Scripts
@@ -131,7 +131,7 @@ class Configuracion extends BaseController
 
         $data['expedientes'] = $this->ConfiguracionModel->getExpedientes();
 
-        load_plugins(array('datatables_buttons','chosen'), $data);
+        load_plugins(array('datatables_buttons','select2'), $data);
 
         //Styles
         $data['styles'][] = base_url('assets/css/tables-custom.css');
@@ -186,7 +186,7 @@ class Configuracion extends BaseController
 
         $data['empleados'] = $this->BaseModel->getEmpleados();
 
-        load_plugins(['sweetalert2', 'dropzone', 'chosen', 'datepicker', 'moment', 'moment_locales', 'datatables_buttons'], $data);
+        load_plugins(['sweetalert2', 'dropzone', 'select2', 'datepicker', 'moment', 'moment_locales', 'datatables_buttons'], $data);
 
         //XLSX
         $data['scripts'][] = "https://bossanova.uk/jexcel/v3/jexcel.js";
@@ -220,7 +220,7 @@ class Configuracion extends BaseController
         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => '#', "class" => "");
         $data['breadcrumb'][] = array("titulo" => 'Catálogo de checklist', "link" => base_url('Configuracion/configChecklistIngresoEgreso'), "class" => "active");
 
-        load_plugins([ 'sweetalert2', 'datatables_buttons', 'chosen'], $data);
+        load_plugins([ 'sweetalert2', 'datatables_buttons', 'select2'], $data);
 
         //Custom Styles
         //Custom Scripts

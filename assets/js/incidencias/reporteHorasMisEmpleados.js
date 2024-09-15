@@ -16,7 +16,6 @@
             "serverSide": true
         },
         columns: [
-            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
             { "data": "count"},
             { "data": "rep_Fecha"},
             { "data": "emp_Nombre"},
@@ -24,7 +23,8 @@
             { "data": "rep_HoraFin"},
             { "data": "rep_Horas"},
             { "data": "rep_Motivos"},
-            { "data": "rep_Estado",render: function (data,type,row) {return estatus(data)}}
+            { "data": "rep_Estado",render: function (data,type,row) {return estatus(data)}},
+            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -37,9 +37,9 @@
             {
                 extend: 'excelHtml5',
                 title: 'Horas extra colaboradores',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -48,9 +48,9 @@
             {
                 extend: 'pdfHtml5',
                 title: 'Horas extra colaboradores',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -60,7 +60,7 @@
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -94,19 +94,19 @@
 
         var urlImprimir = BASE_URL+'PDF/imprimirReporteHorasExtra/'+row.rep_ReporteHoraExtraID;
 
-        var btnImprimir = ' <a href="' + urlImprimir +'"'+
-            'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Reporte horas" title="Formato de reporte">'+
-            '<i class="dripicons-print"></i></a>';
+        var btnImprimir = ' <button href="' + urlImprimir +'"'+
+            'class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down show-pdf" data-title="Reporte horas" title="Formato de reporte">'+
+            '<i class="zmdi zmdi-local-printshop"></i></button>';
 
         var btnAutorizar = '';
         var btnRechazar = '';
         if(row.rep_Estado == 'PENDIENTE') {
-            btnAutorizar = '<a href="#" class="btn btn-primary btn-block waves-light waves-effect btnRevisar" ' +
+            btnAutorizar = '<button href="#" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down btnRevisar" ' +
                 'data-id="'+row.rep_ReporteHoraExtraID+'" data-accion="AUTORIZADO" data-horas="'+row.rep_Horas+'" title="Autorizar">' +
-                '<i class="fa fa-check"></i></a>';
-            btnRechazar = '<a href="#" class="btn btn-danger btn-block waves-light waves-effect btnRevisar" ' +
+                '<i class="zmdi zmdi-check"></i></button>';
+            btnRechazar = '<button href="#" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down btnRevisar" ' +
             'data-id="'+row.rep_ReporteHoraExtraID+'" data-accion="RECHAZADO" title="Rechazar">' +
-            '<i class="fa fa-times"></i></a>';
+            '<i class="zmdi zmdi-close"></i></button>';
         }//if
 
         return btnImprimir + btnAutorizar + btnRechazar;
@@ -115,12 +115,12 @@
     function estatus(data,type,row){
         var html = data;
         switch (data){
-            case 'PENDIENTE':html = '<span class="badge badge-dark p-1">PENDIENTE</span>';break;
+            case 'PENDIENTE':html = '<span class="badge badge-info p-1">PENDIENTE</span>';break;
             case 'AUTORIZADO':html = '<span class="badge badge-warning p-1">AUTORIZADO</span>';break;
             case 'APLICADO':html = '<span class="badge badge-success p-1">APLICADO</span>';break;
             case 'RECHAZADO':html = '<span class="badge badge-danger p-1">RECHAZADO</span>';break;
             case 'RECHAZADO_RH':html = '<span class="badge badge-danger p-1">RECHAZADO</span>';break;
-            case 'PAGADO':html = '<span class="badge badge-info p-1">PAGADO</span>';break;
+            case 'PAGADO':html = '<span class="badge badge-success p-1">PAGADO</span>';break;
             case 'DECLINADO':html = '<span class="badge badge-light-danger p-1">DECLINADO</span>';break;
         }//switch
 
@@ -145,7 +145,7 @@
         Swal.fire({
             title: titulo,
             text: text,
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -158,7 +158,6 @@
     });
 
     function ajax_revisarInforme(reporteID,accion,observaciones,button){
-        button.html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Revisando...');
        
         $.ajax({
             url: BASE_URL+'Incidencias/ajax_revisarReporteHorasJefe',
@@ -170,7 +169,7 @@
             if (data.code === 1){
                 tblHoras.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: 'Solicitud revisada!',
                     text: 'La solicitud de horas extra se reviso correctamente.',
                     showConfirmButton: false,

@@ -13,7 +13,7 @@ function db()
 }*/
 
 //Verifica que la secion sea correcta
-function validarSesion($sesion)
+function validarSesion_old($sesion)
 {
     $ok = false;
     if (is_array($sesion)) {
@@ -36,7 +36,34 @@ function validarSesion($sesion)
         header($url);
         exit();
     }
-} //validateSession
+} 
+// Verifica que la sesión sea correcta
+function validarSesion($sesion)
+{
+    $ok = false;
+    if (is_array($sesion)) {
+        foreach ($sesion as $k) {
+            if (isset($_SESSION['type']) && $_SESSION['type'] === $k) {
+                $ok = true;
+            }
+        }
+    } else {
+        if (!isset($_SESSION['type']) || $_SESSION['type'] !== $sesion) {
+            $ok = false;
+        } else {
+            $ok = true;
+        }
+    }
+
+    if (!$ok) {
+        // Guarda la URL original antes de redirigir al login
+        $_SESSION['redirect_url'] = current_url();  // Guardar la URL actual
+        $url = "Location: " . base_url('Access/logIn');
+        header($url);
+        exit();
+    }
+}
+//validateSession
 
 //prints a safe value applying htmlspecialchars
 function output($str)
@@ -155,7 +182,7 @@ function longDate($date, $delimiter = '-')
 //returns a dd-month-yyyy mysql date
 function shortDate($date, $delimiter = '-')
 {
-    $meses = array('', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic');
+    $meses = array('', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic');
     $output = '';
     //Format date
     if (!empty($date)) {
@@ -1354,7 +1381,7 @@ function diferenciaMeses($fecha1, $fecha2)
     return $months;
 } //end diferenciaMeses
 
-function revisarPermisos($accion, $obj, $funcion = null)
+function revisarPermisos($accion, $funcion = null)
 {
     $permisos = json_decode(session('permisos'), 1);
     $response = false;

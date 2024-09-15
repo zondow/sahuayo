@@ -22,7 +22,7 @@ e.prototype.onDrop=function(e,t){
             "<input class='form-control' type=text value='"+t.title+"' />" +
             "<span class='input-group-append'>" +
             "<button type='submit' class='btn btn-success btn-md waves-effect waves-light'>" +
-            "<i class='fa fa-check'></i> Guardar</button></span></div>"),
+            "<i class='zmdi zmdi-check'></i> Guardar</button></span></div>"),
         a.$modal.modal({backdrop:"static"}),
         a.$modal.find(".delete-event").show().end().find(".save-event").hide().end().find(".modal-body").empty().prepend(o).end().find(".delete-event").unbind("click").click(function(){a.$calendarObj.fullCalendar("removeEvents",function(e){return e._id==t._id}),a.$modal.modal("hide")}),a.$modal.find("form").on("submit",function(){return t.title=o.find("input[type=text]").val(),
         a.$calendarObj.fullCalendar("updateEvent",t),

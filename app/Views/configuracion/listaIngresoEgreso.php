@@ -63,7 +63,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="txtReponsable">*Responsable (s)</label>
-                        <select id="txtResponsable" name="txtResponsable[]" class="chosen-select" multiple="multiple">
+                        <select id="txtResponsable" name="txtResponsable[]" class="select2-add" multiple="multiple">
                             <?php
                             foreach ($empleados as $emp) {
                                 echo '<option value="' . $emp['emp_EmpleadoID'] . '">' . $emp['emp_Nombre'] . '</option>';
@@ -74,7 +74,7 @@
 
                     <div class="col-md-12">
                         <label for="txtTipo">*Tipo</label>
-                        <select id="txtTipo" name="txtTipo" class="chosen-select">
+                        <select id="txtTipo" name="txtTipo" class="select2-add">
                             <option hidden>Seleccione</option>
                             <option value="Ingreso">Ingreso</option>
                             <option value="Egreso">Egreso</option>
@@ -83,7 +83,7 @@
 
                     <div class="col-md-12">
                         <label for="txtRequerido">*Requerido</label>
-                        <select id="txtRequerido" name="txtRequerido" class="chosen-select">
+                        <select id="txtRequerido" name="txtRequerido" class="select2-add">
                             <option hidden>Seleccione</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>
@@ -118,7 +118,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="txt_Responsable">*Responsable</label>
-                        <select id="txt_Responsable" name="txt_Responsable" class="chosen-select" multiple="multiple">
+                        <select id="txt_Responsable" name="txt_Responsable" class="select2-edit" multiple="multiple">
 
                             <?php
                             foreach ($empleados as $emp) {
@@ -130,7 +130,7 @@
 
                     <div class="form-group col-md-12">
                         <label for="txt_Tipo">*Tipo</label>
-                        <select id="txt_Tipo" name="txt_Tipo" class="chosen-select">
+                        <select id="txt_Tipo" name="txt_Tipo" class="select2-edit">
                             <option hidden>Seleccione</option>
                             <option value="Ingreso">Ingreso</option>
                             <option value="Egreso">Egreso</option>
@@ -139,7 +139,7 @@
 
                     <div class="form-group col-md-12">
                         <label for="txt_Requerido">*Requerido</label>
-                        <select id="txt_Requerido" name="txt_Requerido" class="chosen-select">
+                        <select id="txt_Requerido" name="txt_Requerido" class="select2-edit">
                             <option hidden>Seleccione</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>
@@ -156,3 +156,20 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function (e) {
+    $('.select2-add').select2({
+        dropdownParent: $('#modalAddChecklist .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+    $('.select2-edit').select2({
+        dropdownParent: $('#modalEditChecklist .modal-body'),
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: 'resolve'
+    });
+});
+
+</script>

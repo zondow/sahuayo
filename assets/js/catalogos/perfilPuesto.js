@@ -184,7 +184,7 @@ $(document).ready(function (e) {
                 row += '<td data-expanded="true">'+tipo+'</td>';
                 row += '<td data-expanded="true" class="text-center">';
                 row += '<button class="btn btn-danger btn-sm btn-icon btnDeleteCompetencia" data-competencia="'+id+'" data-puesto="'+puestoID+'">';
-                row += '<i class="fa fa-times"></i>';
+                row += '<i class="zmdi zmdi-close"></i>';
                 row += '</button>';
                 row += '</td>';
                 row += '</tr>';

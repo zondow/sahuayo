@@ -10,11 +10,11 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="nombre"><span style="color:red">*</span>Nombre</label>
+                            <label for="nombre">*Nombre</label>
                             <input id="txtNombre" name="txtNombre" class="form-control">
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="nombre"><span style="color:red">*</span>Tolerancia</label>
+                            <label for="nombre">*Tolerancia</label>
                             <input id="txtTolerancia" name="txtTolerancia" class="form-control numeric">
                         </div>
                     </div>

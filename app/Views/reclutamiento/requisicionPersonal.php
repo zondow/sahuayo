@@ -36,7 +36,7 @@
                         echo '<tr>';
                         echo '<td >';
 
-                        echo '<a type="button" href="' . base_url("PDF/imprimirSolicitudPersonal/" . encryptDecrypt('encrypt', $solicitud['sol_SolicitudPersonalID'])) . '" class="show-pdf btn btn-info btn-block" style="color:#FFFFFF;" data-title="Solicitud de personal"><i class="dripicons-print"></i> </a>';
+                        echo '<a type="button" href="' . base_url("PDF/imprimirSolicitudPersonal/" . encryptDecrypt('encrypt', $solicitud['sol_SolicitudPersonalID'])) . '" class="show-pdf btn btn-info btn-block" style="color:#FFFFFF;" data-title="Solicitud de personal"><i class="zmdi zmdi-local-printshop"></i> </a>';
 
                         if (revisarPermisos('Autorizar', $this)) {
                             if ($solicitud['sol_DirGeneralAutorizada'] === 'PENDIENTE') {

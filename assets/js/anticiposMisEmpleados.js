@@ -39,9 +39,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Anticipos colaboradores',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -50,9 +50,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Anticipos colaboradores',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -62,7 +62,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -82,7 +82,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
@@ -106,7 +106,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Autorizar anticipo',
             text: '¿Esta seguro que desea autorizar el anticipo?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -122,7 +122,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Rechazar anticipo',
             text: '¿Esta seguro que desea rechazar el anticipo?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -194,7 +194,7 @@ $(document).ready(function (e) {
 
         var btnImprimir = ' <a href="' + urlImprimir +'"'+
             'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Solicitud de anticipo">'+
-            '<i class="dripicons-print"></i>&nbsp; Imprimir anticipo</a>';
+            '<i class="zmdi zmdi-local-printshop"></i>&nbsp; Imprimir anticipo</a>';
 
         var btnFiles = ' <button type="button" data-anticipo="'+data+'" data-estatus="'+row.ant_Estado+'" '+
             'class="btn btn-dark btn-block waves-light waves-effect btnDocumentacion">'+
@@ -208,17 +208,17 @@ $(document).ready(function (e) {
         if(row.ant_Estado == 'AUTORIZADO_DIRECCION') {
             btnImprimirPagare = ' <a href="' + urlImprimirPagare + '"' +
                 'class="btn btn-warning btn-block waves-light waves-effect show-pdf" data-title="Pagaré">' +
-                '<i class="dripicons-print"></i>&nbsp; Imprimir pagaré</a>';
+                '<i class="zmdi zmdi-local-printshop"></i>&nbsp; Imprimir pagaré</a>';
         }
 
         var btnRechazar = '';
         var btnAutorizar = '';
         if(row.ant_Estado == 'PENDIENTE') {
             btnAutorizar = '<button type="button" class="btn btn-success btn-block waves-light waves-effect btnAutAnticipo" ' +
-                'data-anticipo="'+data+'"><i class="fa fa-check"></i>&nbsp; Autorizar</button>';
+                'data-anticipo="'+data+'"><i class="zmdi zmdi-check"></i>&nbsp; Autorizar</button>';
 
             btnRechazar = '<button type="button" class="btn btn-danger btn-block waves-light waves-effect btnRecAnticipo" ' +
-                'data-anticipo="'+data+'"><i class="fa fa-times"></i>&nbsp; Rechazar</button>';
+                'data-anticipo="'+data+'"><i class="zmdi zmdi-close"></i>&nbsp; Rechazar</button>';
 
         }//if
         return btnImprimir + btnImprimirPagare + btnFiles + btnAspectos + btnAutorizar + btnRechazar;
@@ -325,7 +325,7 @@ $(document).ready(function (e) {
                 tblAnticipos.ajax.reload();
                 var title = estatus == 'AUTORIZADO_JEFE' ? '¡Anticipo autorizado correctamente!' : '¡Anticipo rechazado correctamente!';
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: title,
                     showConfirmButton: false,
                     timer: 2000
@@ -353,7 +353,7 @@ $(document).ready(function (e) {
                 tblAnticipos.ajax.reload();
                 modalAspectosAnticipo.modal('toggle');
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Información actualizada!',
                     text: 'Los aspectos se guardaron correctamente',
                     showConfirmButton: false,

@@ -145,7 +145,7 @@ $arrayPreguntas = array(
                                         <h4>
                                             <b id="prom"></b>
 
-                                            <a href="<?= base_url("PDF/reporteClimaLaboral/" . $f1 . "/" . $f2."/".$sucursal) ?>" class="btn btn-warning show-pdf" style="color: white" data-title="Resultados evaluación Clima Laboral"><b class="dripicons-print"></b> Imprimir resultados</a>
+                                            <a href="<?= base_url("PDF/reporteClimaLaboral/" . $f1 . "/" . $f2."/".$sucursal) ?>" class="btn btn-warning show-pdf" style="color: white" data-title="Resultados evaluación Clima Laboral"><b class="zmdi zmdi-local-printshop"></b> Imprimir resultados</a>
                                         </h4>
                                 </div>
                             </div>

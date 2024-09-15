@@ -9,9 +9,9 @@ $(document).ready(function () {
             {
                 extend: 'excelHtml5',
                 title: 'Vacaciones mis colaboradores',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -20,9 +20,9 @@ $(document).ready(function () {
             {
                 extend: 'pdfHtml5',
                 title: 'Vacaciones mis colaboradores',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -32,7 +32,7 @@ $(document).ready(function () {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -104,7 +104,7 @@ $(document).ready(function () {
         }).done(function (data) {
             if(data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: 'Solicitud revisada!',
                     text: 'La solicitud de vacaciones se reviso correctamente.',
                     showConfirmButton: false,

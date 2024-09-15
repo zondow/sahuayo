@@ -7,7 +7,7 @@
 
                     <div class="col-md-12 text-right">
                         <?php if (!is_null($lastEC)) {
-                            echo '<a href="' . base_url('PDF/resultadosEvaluacionCompetencias/' . encryptDecrypt('encrypt', $empleado['emp_EmpleadoID'])) . '" id="printReporteCompetencias" class="btn btn-secondary"><i class="dripicons-print"></i> Imprimir resultados</a>';
+                            echo '<a href="' . base_url('PDF/resultadosEvaluacionCompetencias/' . encryptDecrypt('encrypt', $empleado['emp_EmpleadoID'])) . '" id="printReporteCompetencias" class="btn btn-secondary"><i class="zmdi zmdi-local-printshop"></i> Imprimir resultados</a>';
                         } ?>
                     </div>
 
