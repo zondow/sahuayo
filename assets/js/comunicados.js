@@ -6,16 +6,91 @@ $(document).ready(function(e) {
         lang: 'es-ES' // default: 'en-US'
     });
 
-    $(".select2-multiple").select2({
-        language: "es",
-        selectOnClose: false,
-        allowClear: true,
-        placeholder: " Seleccione",
+    var tblComunicados = $("#datatableComunicados").DataTable({
+        destroy: true,
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "Todos"]],
+        fixedHeader: true,
+        //scrollY: "200px",
+        scrollCollapse: true,
+        scrollX: true,
+        paging: true,
+        ajax: {
+            url: BASE_URL + "Comunicados/ajax_getComunicados",
+            dataType: "json",
+            type: "POST",
+            "processing": true,
+            "serverSide": true
+        },
+        columns: [
+            { "data": "com_Estado",render: function(data,type,row){return estado(data,type,row)}},
+            { "data": "com_Asunto"},
+            { "data": "com_Fecha"},
+            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
+        ],
+        columnDefs: [
+            {targets:0,className: 'text-center'},
+        ],
+        responsive: true,
+        stateSave: false,
+        //dom: 'Blfrtip',
+        dom: '<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Comunicados',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
+                titleAttr: "Exportar a excel",
+                className: "btn l-slategray btn-round",
+                autoFilter: true,
+                exportOptions: {
+                    columns: ':visible'
+                },
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Comunicados',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
+                titleAttr: "Exportar a PDF",
+                className: "btn l-slategray btn-round",
+                orientation: 'landscape',
+                pageSize: 'LETTER',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+            {
+                extend: 'colvis',
+                text: 'Columnas',
+                className: "btn l-slategray btn-round",
+            }
+        ],
+        language: {
+            paginate: {
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
+            },
+            search: "_INPUT_",
+            searchPlaceholder: "Buscar...",
+            lengthMenu: "Registros por página _MENU_",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "Mostrando 0 a 0 de 0 registros",
+            zeroRecords: "No hay datos para mostrar",
+            loadingRecords: "Cargando...",
+            infoFiltered: "(filtrado de _MAX_ registros)",
+            "processing": "Procesando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "<i class='zmdi zmdi-caret-right'>",
+                "sPrevious": "<i class='zmdi zmdi-caret-left'>"
+            },
 
+        },
+        "order": [[ 2, "desc" ]],
+        "processing":true,
     });
 
-
-    var tblComunicados = $("#datatableComunicados").DataTable({
+    /*var tblComunicados = $("#datatableComunicados").DataTable({
         destroy: true,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
         ajax: {
@@ -25,10 +100,10 @@ $(document).ready(function(e) {
             "processing": true,
         },
         columns: [
-            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
             { "data": "com_Estado",render: function(data,type,row){return estado(data,type,row)}},
             { "data": "com_Asunto"},
             { "data": "com_Fecha"},
+            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -57,20 +132,20 @@ $(document).ready(function(e) {
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
-        "order": [[ 3, "desc" ]],
+        "order": [[ 2, "desc" ]],
         "processing":true,
 
-    });
+    });*/
 
     function acciones(data,type,row){
         
         let button = '';
         if(row['com_Estado'] === 'Creado'){
-            button+=' <a type="button" class="btn btn-danger waves-effect waves-light eliminarComunicado" title="Eliminar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="fa fa-trash"></i> </a>';
-            button+=' <a type="button" class="btn btn-primary waves-effect waves-light enviarComunicado" title="Enviar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="zmdi zmdi-mail-send"></i> </a>';
+            button+=' <button type="button" class="btn btn-danger  btn-icon btn-icon-mini btn-round hidden-sm-down eliminarComunicado" title="Eliminar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="zmdi zmdi-delete"></i> </button>';
+            button+=' <button type="button" class="btn btn-primary  btn-icon btn-icon-mini btn-round hidden-sm-down enviarComunicado" title="Enviar comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="zmdi zmdi-mail-send"></i> </button>';
         }
-        button+=' <a type="button" class="btn btn-warning waves-effect waves-light verComunicado" title="Ver comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="fa fa-eye"></i> </a>';
-        button+=' <a type="button" class="btn btn-info waves-effect waves-light verRemitentes" title="Ver destinatarios" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="fa fa-users"></i> </a><br>';
+        button+=' <button type="button" class="btn btn-warning  btn-icon btn-icon-mini btn-round hidden-sm-down verComunicado" title="Ver comunicado" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="zmdi zmdi-email-open"></i> </button>';
+        button+=' <button type="button" class="btn btn-info  btn-icon btn-icon-mini btn-round hidden-sm-down verRemitentes" title="Ver destinatarios" data-id="'+row['com_ComunicadoID']+'" style="color:#FFFFFF"><i class="zmdi zmdi-accounts-alt"></i> </button><br>';
         return button;
     }
 
@@ -186,6 +261,77 @@ $(document).ready(function(e) {
         var tblRemitentes = $("#tableRemitentes").DataTable({
             destroy: true,
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+            fixedHeader: true,
+            //scrollY: "200px",
+            scrollCollapse: true,
+            scrollX: true,
+            paging: true,
+            ajax: {
+                url: BASE_URL + "Comunicados/ajax_getRemitentesComunicados/"+comunicadoID,
+                dataType: "json",
+                type: "POST",
+                "processing": true,
+            },
+            columns: [
+                { "data": "numero"},
+                { "data": "emp_Nombre"},
+                { "data": "visto"},
+                { "data": "enterado"},
+            ],
+            columnDefs: [
+                {targets:0,className: 'text-center'},
+            ],
+            responsive: true,
+            stateSave: false,
+            //dom: 'Blfrtip',
+            dom: '<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Empleados Comunicado',
+                    text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
+                    titleAttr: "Exportar a excel",
+                    className: "btn l-slategray btn-round",
+                    autoFilter: true,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                },
+                {
+                    extend: 'colvis',
+                    text: 'Columnas',
+                    className: "btn l-slategray btn-round",
+                }
+            ],
+            language: {
+                paginate: {
+                    previous: "<i class='zmdi zmdi-caret-left'>",
+                    next: "<i class='zmdi zmdi-caret-right'>"
+                },
+                search: "_INPUT_",
+                searchPlaceholder: "Buscar...",
+                lengthMenu: "Registros por página _MENU_",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty: "Mostrando 0 a 0 de 0 registros",
+                zeroRecords: "No hay datos para mostrar",
+                loadingRecords: "Cargando...",
+                infoFiltered: "(filtrado de _MAX_ registros)",
+                "processing": "Procesando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "<i class='zmdi zmdi-caret-right'>",
+                    "sPrevious": "<i class='zmdi zmdi-caret-left'>"
+                },
+    
+            },
+            "order": [[ 2, "desc" ]],
+            "processing":true,
+        });
+
+        /*var tblRemitentes = $("#tableRemitentes").DataTable({
+            destroy: true,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
             ajax: {
                 url: BASE_URL + "Comunicados/ajax_getRemitentesComunicados/"+comunicadoID,
                 dataType: "json",
@@ -228,7 +374,7 @@ $(document).ready(function(e) {
             "order": [[ 0, "asc" ]],
             "processing":true,
 
-        });
+        });*/
     }
 
     $("body").on("click", ".enviarComunicado", function (evt) {

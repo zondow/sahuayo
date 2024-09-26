@@ -3,7 +3,7 @@
 <div class="card">
     <div class="card-body">
         <div class="col-md-12 text-right" style="padding-bottom: 2%">
-            <?php if (revisarPermisos('Agregar', $this)) { ?>
+            <?php if (revisarPermisos('Agregar', 'expediente')) { ?>
                 <button class="btn btn-success btn-round btnAddExpediente">
                     <i class="zmdi zmdi-plus"></i> Agregar
                 </button>
@@ -28,7 +28,7 @@
                         $html .= '<td>' . $expediente['exp_Numero'] . '</td>';
                         $html .= '<td>' . $expediente['exp_Nombre'] . '</td>';
 
-                        if (revisarPermisos('Baja', $this)) {
+                        if (revisarPermisos('Baja', 'expediente')) {
                             $estatus = $expediente['exp_Estatus'] == 1 ?
                                 '<a href="' . base_url("Configuracion/estatusExpediente/0/" . encryptDecrypt('encrypt', $expediente['exp_ExpedienteID'])) . '"><span class="badge badge-info btnActivo" title="Click para cambiar estatus">Activo</span></a>' :
                                 '<a href="' . base_url("Configuracion/estatusExpediente/1/" . encryptDecrypt('encrypt', $expediente['exp_ExpedienteID'])) . '"><span class="badge badge-default btnInactivo" title="Click para cambiar estatus">Inactivo</span></a>';

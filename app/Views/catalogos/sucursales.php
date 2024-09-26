@@ -2,7 +2,7 @@
 <div class="content pt-0">
     <div class="row mb-3">
         <div class="col-md-12 mt-2 text-right">
-            <?php if (revisarPermisos('Agregar', $this)) { ?>
+            <?php if (revisarPermisos('Agregar', 'sucursales')) { ?>
                 <button type="button"  class="btn btn-success btn-round btnAddSucursal"> <i class="zmdi zmdi-plus"></i> Agregar </button>
             <?php } ?>
         </div>
@@ -33,7 +33,7 @@
                             $sucursalID = (int)$sucursal['suc_SucursalID'];
 
                             // Manejo del estatus de la sucursal si se tienen permisos
-                            if (revisarPermisos('Baja', $this)) {
+                            if (revisarPermisos('Baja', 'sucursales')) {
                                 $sucStatus = (int)$sucursal['suc_Estatus'];
                                 $encryptedID = encryptDecrypt('encrypt', $sucursalID);
 
@@ -49,7 +49,7 @@
                             <tr <?= $style ?>>
                                 <td><strong><?= strtoupper(htmlspecialchars($sucursal['suc_Sucursal'])) ?></strong></td>
                                 <td>
-                                    <?php if (revisarPermisos('Editar', $this)) { ?>
+                                    <?php if (revisarPermisos('Editar', 'sucursales')) { ?>
                                         <a type="button" class="btn btn-info btn-icon  btn-icon-mini btn-round editarSucursal" data-id="<?= $encryptedID ?>" style="color:#FFFFFF"><i class="zmdi zmdi-edit pt-2"></i></a>
                                     <?php } ?>
                                     <?= $estatus ?>

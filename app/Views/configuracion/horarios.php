@@ -12,7 +12,7 @@
 <div class="card">
     <div class="card-body">
         <div class="col-md-12 mb-2 text-right">
-            <?php if (revisarPermisos('Agregar', $this)) { ?>
+            <?php if (revisarPermisos('Agregar', 'horarios')) { ?>
                 <button id="btnAddHorario" class="btn btn-success btn-round ">
                     <i class="zmdi zmdi-plus"></i> Agregar
                 </button>

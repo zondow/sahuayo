@@ -62,8 +62,8 @@ class BaseModel extends Model
     }
 
     public function getHorasAdministrativas($empleadoID){
-        $horasAdm = $this->db->query("SELECT acu_DiasAdministrativos FROM acumulados WHERE acu_EmpleadoID=?",[$empleadoID])->getRowArray()['acu_DiasAdministrativos'];
-        $horasAdmConsumidas = $this->db->query("SELECT SUM(per_Horas) as horas FROM permiso WHERE per_EmpleadoID = ? AND per_TipoID = 8 AND per_Estatus=1 AND per_Estado NOT IN('RECHAZADO_JEFE','RECHAZADO_RH','DECLINADO') AND ? BETWEEN YEAR(per_FechaInicio) AND YEAR(per_FechaFin)",[$empleadoID,date('Y')])->getRowArray()['horas'];
+        $horasAdm = $this->db->query("SELECT acu_DiasAdministrativos FROM acumulados WHERE acu_EmpleadoID=?",[$empleadoID])->getRowArray()['acu_DiasAdministrativos'] ?? 16;
+        $horasAdmConsumidas = $this->db->query("SELECT SUM(per_Horas) as horas FROM permiso WHERE per_EmpleadoID = ? AND per_TipoID = 8 AND per_Estatus=1 AND per_Estado NOT IN('RECHAZADO_JEFE','RECHAZADO_RH','DECLINADO') AND ? BETWEEN YEAR(per_FechaInicio) AND YEAR(per_FechaFin)",[$empleadoID,date('Y')])->getRowArray()['horas'] ?? 0;
         return ($horasAdm - $horasAdmConsumidas);
     }
 
@@ -94,5 +94,12 @@ class BaseModel extends Model
     
         return $empleado;
     }
+ 
+    public function getSucursalByID($sucursalID){
+        return db()->query("SELECT * FROM sucursal WHERE suc_SucursalID=?", array($sucursalID))->getRowArray();
+    }
     
+    public function getTotalEmpleadosBySucursal($sucursal){
+        return $this->db->query("SELECT COUNT(emp_EmpleadoID) as 'empleados' FROM empleado WHERE emp_SucursalID=? AND emp_Estatus=1", array($sucursal))->getRowArray()['empleados'];
+    }
 }

@@ -168,7 +168,7 @@ $(document).ready(function (e) {
             let button = '';
             button += '<div>';
             if(revisarPermisos('Eliminar','participantesCapacitacion'))
-            button += '<a href="#" class="btn  btn-sm btn-danger btnDeleteParticipante" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Eliminar"><i class="fa fa-trash"></i></a>';
+            button += '<a href="#" class="btn  btn-sm btn-danger btnDeleteParticipante" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Eliminar"><i class="zmdi zmdi-delete"></i></a>';
             if(revisarPermisos('Calificacion','participantesCapacitacion'))
                 button += '<a href="#" class="btn  btn-sm btn-info btnCalificacionEmpleado" min="0" max="10" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Calificación"><i class="mdi mdi-file-document-box-check-outline"></i></a>';
             

@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col-md-12 mb-2">
                         <div class="col-md-12 text-right">
-                            <?php if (revisarPermisos('Agregar', $this)) { ?>
+                            <?php if (revisarPermisos('Agregar', 'roles')) { ?>
                                 <!-- <a href="#" class="btn btn-info waves-light waves-effect addRol">Agregar</a> -->
                                 <button class="btn btn-success btn-round addRol">
                                     <i class="zmdi zmdi-plus"></i> Agregar

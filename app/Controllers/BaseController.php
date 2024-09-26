@@ -80,6 +80,8 @@ class BaseController extends Controller
 		$this->PdfModel = model('App\Models\PdfModel', false);
 		$this->IncidenciasModel = model('App\Models\IncidenciasModel', false);
 		$this->PersonalModel = model('App\Models\PersonalModel', false);
+		$this->EvaluacionesModel = model('App\Models\EvaluacionesModel', false);
+		$this->ComunicadosModel = model('App\Models\ComunicadosModel', false);
     }
 
 }

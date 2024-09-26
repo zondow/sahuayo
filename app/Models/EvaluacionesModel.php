@@ -6,17 +6,98 @@ use CodeIgniter\Model;
 
 class EvaluacionesModel extends Model
 {
+
     //Lia->Trae los periodos de evaluacion
     public function getPeriodosEvaluacion()
     {
         return $this->db->query("SELECT E.* FROM evaluacion E ORDER BY eva_FechaInicio DESC")->getResultArray();
     }
 
-    //Diego -> mejora de la funcion donde regresa el periodo de evaluacion y no la cantidad de periodos encontrados
-    public function getFechaEvaluacionNom035()
+    public function getEvaluacionExistente($tipo, $fechaInicio, $fechaFin)
     {
-        return $this->db->query("SELECT * FROM evaluacion WHERE eva_Tipo='Nom035' AND eva_Estatus=1 AND CURDATE() BETWEEN eva_FechaInicio AND eva_FechaFin ORDER BY eva_EvaluacionID DESC")->getRowArray();
-    } //end getFechaEvaluacionNom035
+        $sql = "SELECT count(eva_EvaluacionID) as 'evaluacion'
+                from evaluacion
+                WHERE eva_Tipo = ? AND
+                (( ? >= eva_FechaInicio AND ? < eva_FechaFin) OR
+                (? > eva_FechaInicio AND ? <= eva_FechaFin) OR
+                (? <= eva_FechaInicio AND ? >= eva_FechaFin)) AND eva_Estatus = 1";
+        return $this->db->query($sql, array($tipo, $fechaInicio, $fechaInicio, $fechaFin, $fechaFin, $fechaInicio, $fechaFin))->getRowArray();
+    }
+
+    //Lia -> Trae la fecha de la evaluacinde clima laboral
+    public function getFechaEvaluacionClimaLaboral()
+    {
+        $sql = "SELECT *
+                FROM evaluacion
+                WHERE eva_Tipo='Clima Laboral' AND eva_Estatus= 1 AND
+                  CURDATE() BETWEEN eva_FechaInicio AND eva_FechaFin ORDER BY eva_EvaluacionID DESC LIMIT 1";
+        $fechas = $this->db->query($sql)->getRowArray();
+        return $fechas;
+    }
+
+    //Lia->Trae la evaluacion de clima realizada
+    public function evaluacionClimaLaboralRealizada($empleadoID)
+    {
+        $fecha = $this->db->query("
+            SELECT *
+            FROM evaluacion
+            WHERE eva_Tipo='Clima Laboral' 
+            AND eva_Estatus = 1 
+            AND CURDATE() BETWEEN eva_FechaInicio AND eva_FechaFin
+            ORDER BY eva_FechaRegistro DESC
+        ")->getRowArray();
+        if ($fecha ==  null) {
+            return false;
+        } else {
+            return $this->db->query("
+            SELECT *
+            FROM evaluacionclimalaboral
+            WHERE eva_EmpleadoID = ? 
+            AND eva_FechaEvaluacionClimaLaboral BETWEEN ? AND ?
+            ORDER BY eva_EvaluacionClimaLaboralID DESC
+        ", [$empleadoID, $fecha['eva_FechaInicio'], $fecha['eva_FechaFin']])->getRowArray();
+        }
+    }
+
+    //Lia-> Obtiene la suma de los rubros para el Clima Laboral
+    public function getAllCalificacionForClimaLaboral($fechaI, $fechaF, $sucursal)
+    {
+        $sucursalID = ($sucursal != '0') ? ' AND E.emp_SucursalID=' . encryptDecrypt('decrypt', $sucursal) : '';
+
+        $join = ($sucursal != '0') ? ' JOIN empleado E ON E.emp_EmpleadoID=eva_EmpleadoID ' : '';
+
+        $query = "SELECT
+            SUM(eva_AmFi1 + eva_AmFi2 + eva_AmFi3 + eva_AmFi4) AS 'ambiente',
+            SUM(eva_FoCa1 + eva_FoCa2 + eva_FoCa3 + eva_FoCa4 + eva_FoCa5 + eva_FoCa6 + eva_FoCa7) AS 'formacion',
+            SUM(eva_Lid1 + eva_Lid2 + eva_Lid3 + eva_Lid4 + eva_Lid5 + eva_Lid6 + eva_Lid7 + eva_Lid8 + eva_Lid9 + eva_Lid10 + eva_Lid11) AS 'liderazgo',
+            SUM(eva_ReTra1 + eva_ReTra2 + eva_ReTra3 + eva_ReTra4 + eva_ReTra5 + eva_ReTra6 + eva_ReTra7 + eva_ReTra8 + eva_ReTra9 + eva_ReTra10) AS 'relaciones',
+            SUM(eva_SenPer1 + eva_SenPer2 + eva_SenPer3 + eva_SenPer4 + eva_SenPer5 + eva_SenPer6 + eva_SenPer7) AS 'pertenencia',
+            SUM(eva_SatLab1 + eva_SatLab2 + eva_SatLab3 + eva_SatLab4 + eva_SatLab5 + eva_SatLab6 + eva_SatLab7 + eva_SatLab8 + eva_SatLab9) AS 'laboral',
+            SUM(eva_Com1 + eva_Com2 + eva_Com3 + eva_Com4 + eva_Com5 + eva_Com6 + eva_Com7 + eva_Com8) AS 'comunicacion'
+        FROM evaluacionclimalaboral CLI $join 
+        WHERE eva_FechaEvaluacionClimaLaboral BETWEEN '$fechaI' AND '$fechaF' $sucursalID";
+
+        $resultprevio = $this->db->query($query)->getRowArray();
+
+        $empleadosRealizaron = $this->db->query("SELECT COUNT(eva_EmpleadoID) as 'empleados' FROM evaluacionclimalaboral CLI $join WHERE eva_FechaEvaluacionClimaLaboral BETWEEN '$fechaI' AND '$fechaF' $sucursalID")->getRowArray()['empleados'];
+
+        $calificaciones = [
+            'ambiente' => 4 * 5,
+            'formacion' => 7 * 5,
+            'liderazgo' => 11 * 5,
+            'relaciones' => 10 * 5,
+            'pertenencia' => 7 * 5,
+            'laboral' => 8 * 5,
+            'comunicacion' => 8 * 5
+        ];
+
+        $data = [];
+        foreach ($calificaciones as $key => $total) {
+            $data[$key] = ($empleadosRealizaron > 0) ? number_format(($resultprevio[$key] * 100) / ($empleadosRealizaron * $total), 2, '.', ',') : 0;
+        }
+
+        return $data;
+    }
 
     //Diego -> Busca si la evaluacion nom 035
     public function evaluacionNom035Realizada($empleadoID)
@@ -28,25 +109,37 @@ class EvaluacionesModel extends Model
         return false;
     } //end evaluacionNom035Realizada
 
-    //Diego-> obtiene todas las evaluaciones g1
+    public function getFechaEvaluacionByTipo($tipo)
+    {
+        return $this->db->query("SELECT * FROM evaluacion WHERE eva_Tipo=? AND eva_Estatus=1 AND CURDATE() BETWEEN eva_FechaInicio AND eva_FechaFin ORDER BY eva_FechaRegistro DESC", [$tipo])->getRowArray();
+    }
+
+    public function getEvaluacionRealizadaGuia2($evaluado, $fechaInicio, $fechaFin)
+    {
+        return $this->db->query("SELECT * FROM evaluaciong2  WHERE eva_EvaluadoID=? AND (eva_Fecha BETWEEN ? AND ? ) ORDER BY eva_EvaluacionG2 DESC", array($evaluado, $fechaInicio, $fechaFin))->getRowArray();
+    }
+
+    public function getEvaluacionRealizadaGuia3($evaluado, $fechaInicio, $fechaFin)
+    {
+        return $this->db->query("SELECT * FROM evaluaciong3  WHERE eva_EvaluadoID=? AND (eva_Fecha BETWEEN ? AND ? ) ORDER BY eva_EvaluacionG3 DESC", array($evaluado, $fechaInicio, $fechaFin))->getRowArray();
+    }
+
     function getEvaluacionesGuia1($fInicio, $fFin, $sucursal)
     {
-        $where='';
-        if($sucursal>0){
-            $where = "E.emp_SucursalID=".$sucursal." AND ";
-        }
-        return $this->db->query("SELECT * FROM
-        evaluaciong1 EG1
-        LEFT JOIN empleado E ON E.emp_EmpleadoID=EG1.eva_EvaluadoID
-        WHERE $where EG1.eva_Fecha BETWEEN ? AND ?", array($fInicio, $fFin))->getResultArray();
-    } //end getEvaluacionesGuia1
+        $where = $sucursal > 0 ? "E.emp_SucursalID = $sucursal AND " : '';
+        $sql = "SELECT * FROM evaluaciong1 EG1
+            LEFT JOIN empleado E ON E.emp_EmpleadoID = EG1.eva_EvaluadoID
+            WHERE $where EG1.eva_Fecha BETWEEN ? AND ?";
 
-    public function getCF($fInicio, $fFin,$sucursal)
+        return $this->db->query($sql, [$fInicio, $fFin])->getResultArray();
+    }
+
+    /*public function getCF($fInicio, $fFin, $sucursal)
     {
-        $sucursal =encryptDecrypt('decrypt',$sucursal);
-        $where ='';
-        if($sucursal>0){
-            $where = "emp_SucursalID=".$sucursal." AND ";
+        $sucursal = encryptDecrypt('decrypt', $sucursal);
+        $where = '';
+        if ($sucursal > 0) {
+            $where = "emp_SucursalID=" . $sucursal . " AND ";
         }
         $evaluados = $this->db->query("SELECT * FROM empleado WHERE $where emp_Estatus=1")->getResultArray();
         $suma = 0;
@@ -60,14 +153,46 @@ class EvaluacionesModel extends Model
         }
         if ((int)$suma > 0 && $totalEvaluados > 0) return (int)$suma / $totalEvaluados;
         else return 0;
+    }*/
+    public function getCF($fInicio, $fFin, $sucursal)
+    {
+        $sucursal = encryptDecrypt('decrypt', $sucursal);
+        $where = $sucursal > 0 ? "emp_SucursalID=$sucursal AND " : '';
+
+        $evaluados = $this->db->query("SELECT emp_EmpleadoID FROM empleado WHERE $where emp_Estatus=1")->getResultArray();
+
+        $suma = $totalEvaluados = 0;
+
+        foreach ($evaluados as $evaluado) {
+            $calificacionEvaluado = $this->db->query(
+                "
+                SELECT SUM(
+                    eva_P1+eva_P2+eva_P3+eva_P4+eva_P5+eva_P6+eva_P7+eva_P8+eva_P9+eva_P10+
+                    eva_P11+eva_P12+eva_P13+eva_P14+eva_P15+eva_P16+eva_P17+eva_P18+eva_P19+eva_P20+
+                    eva_P21+eva_P22+eva_P23+eva_P24+eva_P25+eva_P26+eva_P27+eva_P28+eva_P29+eva_P30+
+                    eva_P31+eva_P32+eva_P33+eva_P34+eva_P35+eva_P36+eva_P37+eva_P38+eva_P39+eva_P40+
+                    eva_P41+eva_P42+eva_P43+eva_P44+eva_P45+eva_P46
+                ) AS calificacionT 
+                FROM evaluaciong2 
+                WHERE eva_Fecha BETWEEN ? AND ? AND eva_EvaluadoID = ?",
+                [$fInicio, $fFin, $evaluado['emp_EmpleadoID']]
+            )->getRowArray();
+
+            if (!empty($calificacionEvaluado['calificacionT'])) {
+                $suma += $calificacionEvaluado['calificacionT'];
+                $totalEvaluados++;
+            }
+        }
+
+        return $totalEvaluados > 0 ? (int)$suma / $totalEvaluados : 0;
     }
 
-    public function getDominios($fInicio, $fFin, $sucursal)
+    /*public function getDominios($fInicio, $fFin, $sucursal)
     {
-        $sucursal =encryptDecrypt('decrypt',$sucursal);
-        $where ='';
-        if($sucursal>0){
-            $where = "emp_SucursalID=".$sucursal." AND ";
+        $sucursal = encryptDecrypt('decrypt', $sucursal);
+        $where = '';
+        if ($sucursal > 0) {
+            $where = "emp_SucursalID=" . $sucursal . " AND ";
         }
         $sql = "SELECT
                 AVG(eva_P2+eva_P1+eva_P3) AS 'ambienteTrabajo',
@@ -99,27 +224,54 @@ class EvaluacionesModel extends Model
         }
 
         return $data;
-    }
+    }*/
 
-    public function getEvaluados($fInicio, $fFin,$sucursal)
+    public function getDominios($fInicio, $fFin, $sucursal)
     {
-        $array = array();
-        $where='';
-        if($sucursal>0){
-            $where = " emp_SucursalID=".$sucursal." AND ";
-        }
-        $data = $this->db->query("SELECT emp_Nombre,emp_EmpleadoID FROM evaluaciong2 LEFT JOIN empleado ON emp_EmpleadoID=eva_EvaluadoID WHERE $where eva_Fecha BETWEEN '" . $fInicio . "' AND '" . $fFin . "' AND emp_Estatus=1")->getResultArray();
-        foreach ($data as $d) {
-            $d['id'] = encryptDecrypt('encrypt', $d['emp_EmpleadoID']);
-            array_push($array, $d);
-        }
-        return $array;
+        $sucursal = encryptDecrypt('decrypt', $sucursal);
+        $where = $sucursal > 0 ? "emp_SucursalID = $sucursal AND " : '';
+
+        $sql = "SELECT
+                    AVG(eva_P2+eva_P1+eva_P3) AS 'ambienteTrabajo',
+                    AVG(eva_P4+eva_P9+eva_P5+eva_P6+eva_P7+eva_P8+eva_P41+eva_P42+eva_P43+eva_P10+eva_P11+eva_P12+eva_P13) AS 'cargaTrabajo',
+                    AVG(eva_P20+eva_P21+eva_P22+eva_P18+eva_P19+eva_P26+eva_P27) AS 'faltaControl',
+                    AVG(eva_P14+eva_P15) AS 'jornadaTrabajo',
+                    AVG(eva_P16+eva_P17) AS 'interferencia',
+                    AVG(eva_P23+eva_P24+eva_P25+eva_P28+eva_P29) AS 'liderazgo',
+                    AVG(eva_P44+eva_P45+eva_P46+eva_P30+eva_P31+eva_P32) AS 'relacionTrabajo',
+                    AVG(eva_P33+eva_P34+eva_P35+eva_P36+eva_P37+eva_P38+eva_P39+eva_P40) AS 'violencia'
+                FROM evaluaciong2
+                JOIN empleado ON emp_EmpleadoID = eva_EvaluadoID
+                WHERE $where eva_Fecha BETWEEN ? AND ?";
+
+        $query = $this->db->query($sql, [$fInicio, $fFin])->getRowArray();
+
+        return $query ? array_map('intval', $query) : array_fill_keys(
+            ["ambienteTrabajo", "cargaTrabajo", "faltaControl", "jornadaTrabajo", "interferencia", "liderazgo", "relacionTrabajo", "violencia"],
+            0
+        );
     }
 
-    public function getDominiosBajoRiesgo($fInicio, $fFin,$sucursal)
+    public function getEvaluados($fInicio, $fFin, $sucursal)
+    {
+        $where = $sucursal > 0 ? "emp_SucursalID=$sucursal AND " : '';
+        $data = $this->db->query("
+            SELECT emp_Nombre, emp_EmpleadoID 
+            FROM evaluaciong2 
+            LEFT JOIN empleado ON emp_EmpleadoID = eva_EvaluadoID 
+            WHERE $where eva_Fecha BETWEEN '$fInicio' AND '$fFin' AND emp_Estatus = 1
+        ")->getResultArray();
+
+        return array_map(function ($d) {
+            $d['id'] = encryptDecrypt('encrypt', $d['emp_EmpleadoID']);
+            return $d;
+        }, $data);
+    }
+
+    /*public function getDominiosBajoRiesgo($fInicio, $fFin, $sucursal)
     {
         $where = '';
-        if($sucursal>0) $where=" emp_SucursalID=".$sucursal." AND ";
+        if ($sucursal > 0) $where = " emp_SucursalID=" . $sucursal . " AND ";
         $sql = "SELECT
                     SUM(eva_P2+eva_P1+eva_P3) as 'ambienteTrabajo',
                     SUM(eva_P4+eva_P9+eva_P5+eva_P6+eva_P7+eva_P8+eva_P41+eva_P42+eva_P43+eva_P10+eva_P11+eva_P12+eva_P13) as 'cargaTrabajo',
@@ -160,32 +312,217 @@ class EvaluacionesModel extends Model
         }
 
         return $data;
-    }
-
-    public function getInfoEvaluado($evaluadoID)
+    }*/
+    public function getDominiosBajoRiesgo($fInicio, $fFin, $sucursal)
     {
-        return $this->db->query("SELECT * FROM empleado WHERE emp_EmpleadoID=" . $evaluadoID)->getRowArray();
+        $where = $sucursal > 0 ? "emp_SucursalID=$sucursal AND " : '';
+        $sql = "
+        SELECT
+            SUM(eva_P2+eva_P1+eva_P3) as ambienteTrabajo,
+            SUM(eva_P4+eva_P9+eva_P5+eva_P6+eva_P7+eva_P8+eva_P41+eva_P42+eva_P43+eva_P10+eva_P11+eva_P12+eva_P13) as cargaTrabajo,
+            SUM(eva_P20+eva_P21+eva_P22+eva_P18+eva_P19+eva_P26+eva_P27) as faltaControl,
+            SUM(eva_P14+eva_P15) as jornadaTrabajo,
+            SUM(eva_P16+eva_P17) as interferencia,
+            SUM(eva_P23+eva_P24+eva_P25+eva_P28+eva_P29) as liderazgo,
+            SUM(eva_P44+eva_P45+eva_P46+eva_P30+eva_P31+eva_P32) as relacionTrabajo,
+            SUM(eva_P33+eva_P34+eva_P35+eva_P36+eva_P37+eva_P38+eva_P39+eva_P40) as violencia,
+            eva_EvaluadoID
+        FROM evaluaciong2
+        JOIN empleado ON emp_EmpleadoID = eva_EvaluadoID
+        WHERE $where eva_Fecha BETWEEN ? AND ?
+        GROUP BY eva_EvaluadoID
+    ";
+
+        $query = $this->db->query($sql, [$fInicio, $fFin])->getResultArray();
+
+        $dominios = ['ambienteTrabajo', 'cargaTrabajo', 'faltaControl', 'jornadaTrabajo', 'interferencia', 'liderazgo', 'relacionTrabajo', 'violencia'];
+        $data = array_fill_keys(['bajo', 'medio', 'alto'], array_fill(0, count($dominios), 0));
+
+        foreach ($query as $row) {
+            foreach ($dominios as $index => $dominio) {
+                $valor = (int)$row[$dominio];
+                if ($valor !== null) {
+                    $data[$valor < 5 ? 'bajo' : ($valor < 7 ? 'medio' : 'alto')][$index]++;
+                }
+            }
+        }
+
+        return $data;
     }
 
     public function getDominiosByEvaluado($evaluadoID, $fInicio, $fFin)
     {
-        return $this->db->query("SELECT
-            SUM(eva_P2+eva_P1+eva_P3) as 'ambienteTrabajo',
-            SUM(eva_P4+eva_P9+eva_P5+eva_P6+eva_P7+eva_P8+eva_P41+eva_P42+eva_P43+eva_P10+eva_P11+eva_P12+eva_P13) as 'cargaTrabajo',
-            SUM(eva_P20+eva_P21+eva_P22+eva_P18+eva_P19+eva_P26+eva_P27) as 'faltaControl',
-            SUM(eva_P14+eva_P15) as 'jornadaTrabajo',
-            SUM(eva_P16+eva_P17) as 'interferencia',
-            SUM(eva_P23+eva_P24+eva_P25+eva_P28+eva_P29) as 'liderazgo',
-            SUM(eva_P44+eva_P45+eva_P46+eva_P30+eva_P31+eva_P32) as 'relacionTrabajo',
-            SUM(eva_P33+eva_P34+eva_P35+eva_P36+eva_P37+eva_P38+eva_P39+eva_P40) as 'violencia'
-            FROM evaluaciong2 WHERE eva_Fecha BETWEEN '" . $fInicio . "' AND '" . $fFin . "' AND eva_EvaluadoID=" . $evaluadoID)->getRowArray();
+        $sql = "SELECT
+                    SUM(eva_P2+eva_P1+eva_P3) as 'ambienteTrabajo',
+                    SUM(eva_P4+eva_P9+eva_P5+eva_P6+eva_P7+eva_P8+eva_P41+eva_P42+eva_P43+eva_P10+eva_P11+eva_P12+eva_P13) as 'cargaTrabajo',
+                    SUM(eva_P20+eva_P21+eva_P22+eva_P18+eva_P19+eva_P26+eva_P27) as 'faltaControl',
+                    SUM(eva_P14+eva_P15) as 'jornadaTrabajo',
+                    SUM(eva_P16+eva_P17) as 'interferencia',
+                    SUM(eva_P23+eva_P24+eva_P25+eva_P28+eva_P29) as 'liderazgo',
+                    SUM(eva_P44+eva_P45+eva_P46+eva_P30+eva_P31+eva_P32) as 'relacionTrabajo',
+                    SUM(eva_P33+eva_P34+eva_P35+eva_P36+eva_P37+eva_P38+eva_P39+eva_P40) as 'violencia'
+                FROM evaluaciong2
+                WHERE eva_Fecha BETWEEN ? AND ? AND eva_EvaluadoID = ?";
+
+        return $this->db->query($sql, [$fInicio, $fFin, $evaluadoID])->getRowArray();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function getCFG3($fInicio, $fFin, $sucursal)
     {
         $sucursal = encryptDecrypt('decrypt', $sucursal);
         $where = '';
-        if($sucursal>0) $where="WHERE emp_SucursalID=".$sucursal;
+        if ($sucursal > 0) $where = "WHERE emp_SucursalID=" . $sucursal;
         $evaluados = $this->db->query("SELECT * FROM empleado $where")->getResultArray();
         $suma = 0;
         $totalEvaluados = 0;
@@ -203,7 +540,7 @@ class EvaluacionesModel extends Model
     {
         $sucursal = encryptDecrypt('decrypt', $sucursal);
         $where = '';
-        if($sucursal>0) $where="WHERE emp_SucursalID=".$sucursal;
+        if ($sucursal > 0) $where = "WHERE emp_SucursalID=" . $sucursal;
         $evaluados = $this->db->query("SELECT emp_EmpleadoID FROM empleado $where")->getResultArray();
         $i = 0;
         $ambienteT = 0;
@@ -273,11 +610,11 @@ class EvaluacionesModel extends Model
         return $data;
     }
 
-    public function getEvaluadosG3($fInicio, $fFin,$sucursal)
+    public function getEvaluadosG3($fInicio, $fFin, $sucursal)
     {
         $array = array();
         $where = '';
-        if($sucursal>0) $where=" emp_SucursalID=".$sucursal." AND ";
+        if ($sucursal > 0) $where = " emp_SucursalID=" . $sucursal . " AND ";
         $data = $this->db->query("SELECT emp_Nombre,emp_EmpleadoID FROM evaluaciong3 LEFT JOIN empleado ON emp_EmpleadoID=eva_EvaluadoID WHERE $where eva_Fecha BETWEEN '" . $fInicio . "' AND '" . $fFin . "' ")->getResultArray();
         foreach ($data as $d) {
             $d['id'] = encryptDecrypt('encrypt', $d['emp_EmpleadoID']);
@@ -307,7 +644,7 @@ class EvaluacionesModel extends Model
     public function getDominiosBajoRiesgoG3($fInicio, $fFin, $sucursal)
     {
         $where = '';
-        if($sucursal>0) $where="WHERE emp_SucursalID=".$sucursal;
+        if ($sucursal > 0) $where = "WHERE emp_SucursalID=" . $sucursal;
         $evaluados = $this->db->query("SELECT * FROM empleado $where")->getResultArray();
         $ambienteTBR = 0;
         $ambienteTRM = 0;
@@ -518,86 +855,9 @@ class EvaluacionesModel extends Model
         return $data;
     }
 
-    //Lia -> Trae la fecha de la evaluacinde clima laboral
-    public function getFechaEvaluacionClimaLaboral()
-    {
-        $sql = "SELECT *
-                FROM evaluacion
-                WHERE eva_Tipo='Clima Laboral' AND eva_Estatus= 1 AND
-                  CURDATE() BETWEEN eva_FechaInicio AND eva_FechaFin ORDER BY eva_EvaluacionID DESC LIMIT 1";
-        $fechas = $this->db->query($sql)->getRowArray();
-        return $fechas;
-    }
 
-    //Lia->Trae la evaluacion de clima realizada
-    public function evaluacionClimaLaboralRealizada($empleadoID)
-    {
-        $sql = "SELECT *
-            FROM evaluacion
-            WHERE eva_Tipo='Clima Laboral' AND eva_Estatus = 1  AND
-              CURDATE() BETWEEN eva_FechaInicio AND eva_FechaFin
-            ORDER BY eva_FechaRegistro DESC";
-        $fecha = $this->db->query($sql)->getRowArray();
 
-        $sql = "SELECT *
-            FROM evaluacionclimalaboral
-            WHERE eva_EmpleadoID=? AND
-              (
-              (eva_FechaEvaluacionClimaLaboral BETWEEN ? AND ? )
-              )
-            ORDER BY eva_EvaluacionClimaLaboralID DESC";
-        $realizada = $this->db->query($sql, array(
-            $empleadoID,
-            $fecha['eva_FechaInicio'],
-            $fecha['eva_FechaFin'],
-        ))->getRowArray();
-        return $realizada;
-    }
 
-    //Lia-> Obtiene la suma de los rubros para el Clima Laboral
-    public function getAllCalificacionForClimaLaboral($fechaI, $fechaF, $sucursal)
-    {
-        $join = '';
-        $where = '';
-        if ($sucursal != '0') {
-            $join = ' JOIN empleado E ON E.emp_EmpleadoID=eva_EmpleadoID ';
-            $where = ' E.emp_SucursalID=' . encryptDecrypt('decrypt', $sucursal) . ' AND ';
-        }
-        $query = "SELECT
-                SUM(CLI.eva_AmFi1 + CLI.eva_AmFi2 + CLI.eva_AmFi3+ CLI.eva_AmFi4) AS 'ambiente',
-                SUM(CLI.eva_FoCa1 + CLI.eva_FoCa2 + CLI.eva_FoCa3 + CLI.eva_FoCa4+ CLI.eva_FoCa5+ CLI.eva_FoCa6+ CLI.eva_FoCa7) AS 'formacion',
-                SUM(CLI.eva_Lid1 + CLI.eva_Lid2+ CLI.eva_Lid3+ CLI.eva_Lid4+ CLI.eva_Lid5+ CLI.eva_Lid6+ CLI.eva_Lid7
-                    + CLI.eva_Lid8+ CLI.eva_Lid9+ CLI.eva_Lid10+ CLI.eva_Lid11) AS 'liderazgo',
-                SUM(CLI.eva_ReTra1 + CLI.eva_ReTra2 + CLI.eva_ReTra3 + CLI.eva_ReTra4+ CLI.eva_ReTra5+ CLI.eva_ReTra6
-                    + CLI.eva_ReTra7+ CLI.eva_ReTra8+ CLI.eva_ReTra9+ CLI.eva_ReTra10) AS 'relaciones',
-                SUM(CLI.eva_SenPer1 + CLI.eva_SenPer2 + CLI.eva_SenPer3 + CLI.eva_SenPer4+ CLI.eva_SenPer5+ CLI.eva_SenPer6+ CLI.eva_SenPer7) AS 'pertenencia',
-                SUM(CLI.eva_SatLab1 + CLI.eva_SatLab2 + CLI.eva_SatLab3 + CLI.eva_SatLab4+ CLI.eva_SatLab5+ CLI.eva_SatLab6+ CLI.eva_SatLab7+ CLI.eva_SatLab8) AS 'laboral',
-                SUM(CLI.eva_Com1 + CLI.eva_Com2 + CLI.eva_Com3 + CLI.eva_Com4+ CLI.eva_Com5+ CLI.eva_Com6+ CLI.eva_Com7+ CLI.eva_Com8) AS 'comunicacion'
-              FROM evaluacionclimalaboral CLI  $join WHERE $where eva_FechaEvaluacionClimaLaboral BETWEEN '" . $fechaI . "' AND '" . $fechaF . "'";
-        $resultprevio = $this->db->query($query)->getRowArray();
-
-        $empleadosRealizaron = $this->db->query("SELECT COUNT(eva_EmpleadoID) as 'empleados' FROM evaluacionclimalaboral  $join WHERE $where eva_FechaEvaluacionClimaLaboral BETWEEN '" . $fechaI . "' AND '" . $fechaF . "'")->getRowArray()['empleados'];
-
-        $data = array();
-        if ($empleadosRealizaron > 0) {
-            $data['ambiente'] = number_format(($resultprevio['ambiente'] * 100) / ($empleadosRealizaron * (4 * 5)), 2, '.', ',');
-            $data['formacion'] = number_format(($resultprevio['formacion'] * 100) / ($empleadosRealizaron * (7 * 5)), 2, '.', ',');
-            $data['liderazgo'] = number_format(($resultprevio['liderazgo'] * 100) / ($empleadosRealizaron * (11 * 5)), 2, '.', ',');
-            $data['relaciones'] = number_format(($resultprevio['relaciones'] * 100) / ($empleadosRealizaron * (10 * 5)), 2, '.', ',');
-            $data['pertenencia'] = number_format(($resultprevio['pertenencia'] * 100) / ($empleadosRealizaron * (7 * 5)), 2, '.', ',');
-            $data['laboral'] = number_format(($resultprevio['laboral'] * 100) / ($empleadosRealizaron * (8 * 5)), 2, '.', ',');
-            $data['comunicacion'] = number_format(($resultprevio['comunicacion'] * 100) / ($empleadosRealizaron * (8 * 5)), 2, '.', ',');
-        } else {
-            $data['ambiente'] = 0;
-            $data['formacion'] = 0;
-            $data['liderazgo'] = 0;
-            $data['relaciones'] = 0;
-            $data['pertenencia'] = 0;
-            $data['laboral'] = 0;
-            $data['comunicacio'] = 0;
-        }
-        return $data;
-    }
 
     //Diego -> Obtiene los empleados necesarios para realizar la evaluacion de 270 (Jefe, colegas, subordinados y el mismo)
     public function getEmpleadosByEmpleadoEvaluacion270($empleadoID)
@@ -713,7 +973,7 @@ class EvaluacionesModel extends Model
     public function getDesempeno270ByEmpleadoPeriodo($periodoID, $empleadoID)
     {
         $empleadoInfo = $this->getEmpleadoInfo($empleadoID);
-        $funcionesPP = $this->db->query("SELECT per_Funcion FROM perfilpuesto WHERE per_PuestoID=?",array($empleadoInfo['emp_PuestoID']))->getRowArray()['per_Funcion'] ?? null;
+        $funcionesPP = $this->db->query("SELECT per_Funcion FROM perfilpuesto WHERE per_PuestoID=?", array($empleadoInfo['emp_PuestoID']))->getRowArray()['per_Funcion'] ?? null;
         $funciones = array();
 
         //Evaluacion propia
@@ -882,7 +1142,7 @@ class EvaluacionesModel extends Model
         $sql = "SELECT *
                 FROM evaluacioncompetencia
                 WHERE evac_EmpleadoID=? AND ((evac_Fecha BETWEEN ? AND ? )) ORDER BY evac_EvaluacionCompetenciaID DESC";
-        $realizada = $this->db->query($sql, array(encryptDecrypt('decrypt',$empleadoID), $fecha['eva_FechaInicio'], $fecha['eva_FechaFin'],))->getRowArray();
+        $realizada = $this->db->query($sql, array(encryptDecrypt('decrypt', $empleadoID), $fecha['eva_FechaInicio'], $fecha['eva_FechaFin'],))->getRowArray();
         return $realizada;
     }
 
@@ -909,7 +1169,8 @@ class EvaluacionesModel extends Model
     }
 
     //Lia ->trae la fecha de la evaluacion de competencias
-    public function getFechaEvaluacionCompetencia(){
+    public function getFechaEvaluacionCompetencia()
+    {
         $sql = "SELECT  eva_EvaluacionID
                 FROM evaluacion
                 WHERE eva_Tipo='Competencias' AND eva_Estatus = 1 AND
@@ -918,7 +1179,8 @@ class EvaluacionesModel extends Model
     }
 
     //Lia-> regresa las competencias por puesto
-    public function getCompetencias($puestoID){
+    public function getCompetencias($puestoID)
+    {
         $sql = "SELECT C.* , CP.cmp_CompetenciaID,  CP.cmp_PuestoID, CP.cmp_Nivel
                 FROM competencia C join competenciapuesto CP on C.com_CompetenciaID = CP.cmp_CompetenciaID
                 WHERE CP.cmp_PuestoID=?";
@@ -926,33 +1188,35 @@ class EvaluacionesModel extends Model
     }
 
     //Lia->trae la info de la evaluacion de competencias
-    public function getInfoEvComp($evCompID){
+    public function getInfoEvComp($evCompID)
+    {
         $sql = "SELECT * FROM evaluacioncompetencia WHERE evac_EvaluacionCompetenciaID=?";
-        return $this->db->query($sql,array($evCompID))->getRowArray();
+        return $this->db->query($sql, array($evCompID))->getRowArray();
     }
 
     //Lia -> Obtiene la ultima evaluacion por competencias de un empleado
-    public function getLastEvaluacionCompetenciasByEmpleadoFecha($empleadoID,$fecha) {
+    public function getLastEvaluacionCompetenciasByEmpleadoFecha($empleadoID, $fecha)
+    {
         $sql = "SELECT *
                 FROM evaluacioncompetencia EC
                 WHERE EC.evac_EmpleadoID=? AND EC.evac_Fecha=?
                 ORDER BY EC.evac_Fecha DESC";
-        $lastEC = $this->db->query($sql,array((int)$empleadoID,$fecha))->getRowArray();
+        $lastEC = $this->db->query($sql, array((int)$empleadoID, $fecha))->getRowArray();
 
-        if(is_null($lastEC)){
+        if (is_null($lastEC)) {
             return null;
         }
 
-        $calificaciones = json_decode($lastEC['evac_Calificacion'],1);
-        $porcentajes = json_decode($lastEC['evac_Porcentaje'],1);
+        $calificaciones = json_decode($lastEC['evac_Calificacion'], 1);
+        $porcentajes = json_decode($lastEC['evac_Porcentaje'], 1);
 
-        $calificacionesJefe = json_decode($lastEC['evac_CalificacionJefe'],1);
-        $porcentajesJefe = json_decode($lastEC['evac_PorcentajeJefe'],1);
+        $calificacionesJefe = json_decode($lastEC['evac_CalificacionJefe'], 1);
+        $porcentajesJefe = json_decode($lastEC['evac_PorcentajeJefe'], 1);
 
         foreach ($porcentajes as $key => $val) {
             $comID = $calificaciones[$key]['IdComp'];
             $sql = 'SELECT com_Nombre,com_Tipo from competencia where com_CompetenciaID=?';
-            $comNombre = $this->db->query($sql,$comID)->getRowArray();
+            $comNombre = $this->db->query($sql, $comID)->getRowArray();
 
             $calificaciones[$key]['porcentaje'] = $val['Porcentaje'];
             $calificaciones[$key]['comNombre'] = $comNombre['com_Nombre'];

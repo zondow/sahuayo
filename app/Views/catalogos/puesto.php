@@ -10,7 +10,7 @@
 <div class="content pt-0">
     <div class="row mb-3">
         <div class="col-md-12 text-right">
-            <?php if(revisarPermisos('Agregar',$this)){ ?>
+            <?php if(revisarPermisos('Agregar','puestos')){ ?>
             <button type="button" data-toggle="modal" data-target="#addPuesto" class="btn btn-success btn-round" ><i class="zmdi zmdi-plus"></i> Agregar</button>
             <?php } ?>
         </div>
@@ -45,19 +45,19 @@
                                                     <td ><strong>' . strtoupper($pueNombre) . '</strong></td>
                                                     <td>';
                                                         
-                                                        if (revisarPermisos('Editar', $this)) {
+                                                        if (revisarPermisos('Editar', 'puestos')) {
                                                             $html .= '<a role="button" class="btn btn-info btn-icon  btn-icon-mini btn-round  btnCambiarNombre" data-nombre="' . $pueNombre . '" data-id="' . $puestoID . '" title="Da clic para editar el puesto" href="#"><i class="zmdi zmdi-edit pt-2"></i></a>';
                                                         }
-                                                        if (revisarPermisos('Eliminar', $this)) {
+                                                        if (revisarPermisos('Eliminar', 'puestos')) {
                                                             $html .= ' <a role="button" class="btn btn-danger btn-icon  btn-icon-mini btn-round  eliminar" data-id="' . $puestoID . '" title="Da clic para eliminar el puesto" href="#"><i class="zmdi zmdi-close pt-2"></i></a>';
                                                         }
                                                         
                                     
-                                                        if (revisarPermisos('Perfil', $this)) {
+                                                        if (revisarPermisos('Perfil', 'puestos')) {
                                                             $html .= '<a role="button" class="btn btn btn-dark  btn-icon  btn-icon-mini btn-round " href="' . base_url("Catalogos/crearPerfilPuesto/" . $puestoID) . '"><i class="zmdi zmdi-assignment-account pt-2"></i></a>';
                                                         }
                                                     
-                                                        if (revisarPermisos('Perfil', $this)) {
+                                                        if (revisarPermisos('Perfil', 'puestos')) {
                                                             $html .= '<a role="button" class="btn btn-warning btn-icon  btn-icon-mini btn-round  ' . $styleBtnPuesto . '" href="' . $puestoPDFbtn . '"><i class="zmdi zmdi-collection-pdf pt-2"></i></a>';
                                                         }
                                         $html .= '</td>

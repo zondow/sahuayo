@@ -85,44 +85,50 @@ $arrayPreguntas = array(
 </style>
 <div class="row">
     <div class="col-12">
-        <div class="card-box">
-            <h4 class="header-title">Configuración</h4>
-            <p class="sub-header">Seleccione un rango de fechas para calcular los resultados.</p>
+        <div class="card">
+            <div class="card-box">
+                <div class="col-md-12">
+                    <div class="header">
+                        <h2><strong>Configuración</strong></h2>
+                    </div>
+                    <p class="sub-header">Seleccione un rango de fechas para calcular los resultados.</p>
 
-            <div class="row">
-                <div class="col-12">
-                    <form method="post" action="<?= base_url("Evaluaciones/resultadosClimaLaboral") ?>" class="form-horizontal" autocomplete="off">
-                        <div class="form-group row">
-                            <label class="col-3 col-form-label"> * Periodo: </label>
-                            <div class="col-9">
-                                <div class="input-daterange input-group" id="date-range">
-                                    <input type="text" class="form-control" name="fechaInicio" placeholder=" -- Seleccione inicio --" required>
-                                    <input type="text" class="form-control" id="fechaFin" name="fechaFin" placeholder=" -- Seleccione fin --" required>
+                    <div class="row">
+                        <div class="col-12">
+                            <form method="post" action="<?= base_url("Evaluaciones/resultadosClimaLaboral") ?>" class="form-horizontal" autocomplete="off">
+                                <div class="form-group row">
+                                    <label class="col-3 col-form-label"> * Periodo: </label>
+                                    <div class="col-9">
+                                        <div class="input-daterange input-group" id="date-range">
+                                            <input type="text" class="form-control" name="fechaInicio" placeholder=" -- Seleccione inicio --" required>
+                                            <input type="text" class="form-control" id="fechaFin" name="fechaFin" placeholder=" -- Seleccione fin --" required>
+                                        </div>
+                                        <input id="txtF1" type="text" class="form-control" id="f1" value="<?= isset($f1) ? $f1 : "0000-00-00" ?>" hidden>
+                                        <input id="txtF2" type="text" class="form-control" id="f2" value="<?= isset($f2) ? $f2 : "0000-00-00" ?>" hidden>
+                                    </div>
                                 </div>
-                                <input id="txtF1" type="text" class="form-control" id="f1" value="<?= isset($f1) ? $f1 : "0000-00-00" ?>" hidden>
-                                <input id="txtF2" type="text" class="form-control" id="f2" value="<?= isset($f2) ? $f2 : "0000-00-00" ?>" hidden>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-3 col-form-label"> * Sucursal: </label>
-                            <div class="col-9">
-                                <div class="input-daterange input-group" id="date-range">
-                                    <select id="sucursal" name="sucursal" class="select2 form-control ">
-                                        <option value="0">TODAS</option>
-                                        <?php foreach($sucursales as $s){
-                                            echo '<option value="'.encryptDecrypt('encrypt',$s['suc_SucursalID']).'">'.$s['suc_Sucursal'].'</option>';
-                                        } ?>
-                                    </select>
+                                <div class="form-group row">
+                                    <label class="col-3 col-form-label"> * Sucursal: </label>
+                                    <div class="col-9">
+                                        <div class="input-daterange input-group" id="date-range">
+                                            <select id="sucursal" name="sucursal" class="select2 form-control ">
+                                                <option value="0">TODAS</option>
+                                                <?php foreach ($sucursales as $s) {
+                                                    echo '<option value="' . encryptDecrypt('encrypt', $s['suc_SucursalID']) . '">' . $s['suc_Sucursal'] . '</option>';
+                                                } ?>
+                                            </select>
+                                        </div>
+                                        <input type="text" class="form-control" id="suc" value="<?= isset($sucursal) ? $sucursal : "0" ?>" hidden>
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control" id="suc" value="<?= isset($sucursal) ? $sucursal : "0" ?>" hidden>
-                            </div>
+                                <div class="form-group mb-0 justify-content-end row text-right mb-4">
+                                    <div class="col-9">
+                                        <button type="submit" class="btn btn-success btn-round">Consultar</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-group mb-0 justify-content-end row">
-                            <div class="col-9">
-                                <button type="submit" class="btn btn-success waves-effect waves-light">Consultar</button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,8 +151,10 @@ $arrayPreguntas = array(
                                         <h4>
                                             <b id="prom"></b>
 
-                                            <a href="<?= base_url("PDF/reporteClimaLaboral/" . $f1 . "/" . $f2."/".$sucursal) ?>" class="btn btn-warning show-pdf" style="color: white" data-title="Resultados evaluación Clima Laboral"><b class="zmdi zmdi-local-printshop"></b> Imprimir resultados</a>
                                         </h4>
+                                        <div class="col-md-12 text-center">
+                                            <a href="<?= base_url("PDF/reporteClimaLaboral/" . $f1 . "/" . $f2 . "/" . $sucursal) ?>" class="btn btn-warning btn-round show-pdf" style="color: white" data-title="Resultados evaluación Clima Laboral"><b class="zmdi zmdi-local-printshop"></b> Imprimir resultados</a>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -413,6 +421,12 @@ $arrayPreguntas = array(
 
 <script>
     $(document).ready(function() {
+        $('.select2').select2({
+            //dropdownParent: $('#modalExpediente .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
         $("#date-range").datepicker({
             daysOfWeekDisabled: [0],
             format: "yyyy-mm-dd",

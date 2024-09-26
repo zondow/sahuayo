@@ -151,20 +151,24 @@ function load_chosen(&$data)
     $data['scripts'][] = base_url('assets/plugins/chosen2/docsupport/init.js');
 }
 
-function load_lightbox(&$data){
+function load_lightbox(&$data)
+{
     $data['styles'][] = base_url('assets/libs/lightbox/css/lightbox.css');
     $data['scripts'][] = base_url('assets/libs/lightbox/js/lightbox.js');
 }
 
-function load_ckeditor(&$data){
+function load_ckeditor(&$data)
+{
     $data['scripts'][] = base_url('assets/plugins/ckeditor/ckeditor.js');
 }
 
-function load_filestyle(&$data){
+function load_filestyle(&$data)
+{
     $data['scripts'][] = base_url("assets/js/pages/bootstrap-filestyle.min.js");
 }
 
-function load_modalPdf(&$data){
+function load_modalPdf(&$data)
+{
     $data['scripts'][] = base_url("assets/js/modalPdf.js");
 }
 
@@ -178,20 +182,40 @@ function load_daterangepicker(&$data)
     $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
 }
 
-function load_timepicker(&$data){
+function load_timepicker(&$data)
+{
     $data['styles'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.css');
     $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
 }
 
-function load_bootstrapdatetimepicker(&$data){
+function load_bootstrapdatetimepicker(&$data)
+{
     $data['styles'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css');
     $data['scripts'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js');
 }
 
-function load_spinkit(&$data){
+function load_spinkit(&$data)
+{
     $data['styles'][] = base_url('assets/libs/spinkit/spinkit.css');
 }
 
-function load_modalConfirmation(&$data){
+function load_modalConfirmation(&$data)
+{
     $data['scripts'][] = base_url('assets/js/modalConfirmation.js');
+}
+
+function load_barrating(&$data)
+{
+    $data['styles'][] = base_url('assets/libs/barrating/cropper.min.css');
+    $data['styles'][] = base_url('assets/libs/barrating/bars-movie.css');
+    $data['scripts'][] = base_url('assets/libs/barrating/jquery.barrating.min.js');
+    $data['scripts'][] = base_url('assets/libs/barrating/cropper.min.js');
+}
+
+function load_jquery_knob(&$data){
+    $data['scripts'][] = base_url('assets/libs/jquery-knob/jquery.knob.min.js');
+}
+
+function load_chart_js(&$data){
+    $data['scripts'][] = base_url('assets/libs/chart-js/Chart.bundle.min.js');
 }

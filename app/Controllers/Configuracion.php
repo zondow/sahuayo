@@ -50,7 +50,7 @@ class Configuracion extends BaseController
             array("titulo" => 'Configuración de días inhabiles', "link" => base_url('Configuracion/diasInhabiles'), 'class' => 'active')
         );
 
-        load_plugins(['moment', 'fullcalendar','select2'], $data);
+        load_plugins(['moment', 'fullcalendar', 'select2'], $data);
 
         //Custom Styles
         //Custom Scripts
@@ -131,7 +131,7 @@ class Configuracion extends BaseController
 
         $data['expedientes'] = $this->ConfiguracionModel->getExpedientes();
 
-        load_plugins(array('datatables_buttons','select2'), $data);
+        load_plugins(array('datatables_buttons', 'select2'), $data);
 
         //Styles
         $data['styles'][] = base_url('assets/css/tables-custom.css');
@@ -220,7 +220,7 @@ class Configuracion extends BaseController
         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => '#', "class" => "");
         $data['breadcrumb'][] = array("titulo" => 'Catálogo de checklist', "link" => base_url('Configuracion/configChecklistIngresoEgreso'), "class" => "active");
 
-        load_plugins([ 'sweetalert2', 'datatables_buttons', 'select2'], $data);
+        load_plugins(['sweetalert2', 'datatables_buttons', 'select2'], $data);
 
         //Custom Styles
         //Custom Scripts
@@ -277,7 +277,7 @@ class Configuracion extends BaseController
         $rolID = (int)encryptDecrypt('decrypt', $post['rol_RolID']);
         unset($post['rol_RolID']);
         $permisos = json_encode($post);
-        $res = update('rol',array('rol_Permisos' => $permisos), array('rol_RolID' => $rolID));
+        $res = update('rol', array('rol_Permisos' => $permisos), array('rol_RolID' => $rolID));
         if ($res) {
             insertLog($this, session('id'), 'Actualizar', 'rol', $rolID);
             $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Datos actualizados correctamente!'));
@@ -494,7 +494,7 @@ class Configuracion extends BaseController
                 'bd' => 'diainhabil',
                 "end" => $d['dia_Fecha'],
                 'eliminar' => 'si',
-                "backgroundColor" => "#2a7c7d",
+                "backgroundColor" => ($d['dia_MedioDia'] == 2) ? "#FFE59A" : "#2a7c7d",
             );
         }
         echo json_encode(array("events" => $data_events));
@@ -563,6 +563,7 @@ class Configuracion extends BaseController
         if ($post['dia_MedioDia'] == 1) {
             $post['dia_Motivo'] = $post['dia_Motivo'] . '(Media Jornada)';
         }
+
         $data = array(
             "dia_Fecha" => $post['dia_Fecha'],
             "dia_Motivo" => $post['dia_Motivo'],
@@ -845,23 +846,23 @@ class Configuracion extends BaseController
             "cat_Requerido" => $post['requerido'],
         );
 
-        $response = update('catalogochecklist', $checklist,array("cat_CatalogoID" => $catalogoID));
+        $response = update('catalogochecklist', $checklist, array("cat_CatalogoID" => $catalogoID));
         $data['code'] = $response ? 1 : 0;
 
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     } //ajax_updateCheklist
-    
+
     //Lia->Update estatus checklist
     public function ajax_changeEstatusChecklist()
     {
         $checklistID = (int)post("id");
         $estatus = (int)post("status");
-        $response = update('catalogochecklist',array("cat_Estatus" => $estatus), array("cat_CatalogoID" => $checklistID));
+        $response = update('catalogochecklist', array("cat_Estatus" => $estatus), array("cat_CatalogoID" => $checklistID));
         $data['code'] = $response ? 1 : 0;
 
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     } //ajax_changeEstatusChecklist
-    
+
     //Lia->Get checklist by id
     public function ajax_getCheklist()
     {

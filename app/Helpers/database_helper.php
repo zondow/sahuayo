@@ -25,3 +25,11 @@ function delete($table, $where = null){
 function insert_batch($table,$data){
     return db()->table($table)->insertBatch($data);
 }
+
+function consultar_dato($table,$dato_a_consultar,$where){
+    return db()->query("SELECT $dato_a_consultar FROM $table WHERE $where Limit 1")->getRowArray();
+}
+
+function consultar_datos($table,$datos_a_consultar,$where){
+    return db()->query("SELECT $datos_a_consultar FROM $table WHERE $where")->getResultArray();
+}

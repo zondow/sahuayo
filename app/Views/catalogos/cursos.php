@@ -2,7 +2,7 @@
 
 <div class="row mb-3">
     <?php
-    if (revisarPermisos('Agregar', $this)) { ?>
+    if (revisarPermisos('Agregar', 'cursos')) { ?>
         <div class="col-md-12 text-right">
             <a href="#" class="btn btn-success btn-round modalCursos"><i class="zmdi zmdi-plus"></i> Agregar </a>
         </div>
@@ -28,7 +28,7 @@
                         $style = '';
                         $estatus = '';    
 
-                        if (revisarPermisos('Baja', $this)) {
+                        if (revisarPermisos('Baja', 'cursos')) {
                             if ($curso['cur_Estatus'] == 1) {
                                 $estatus = '<a class="btn btn-icon btn-icon-mini btn-round btn-primary btnActivo" title="Click para cambiar estatus a inactivo" href="' . base_url("Catalogos/estatusCurso/0/" . encryptDecrypt('encrypt',$curso['cur_CursoID'])) . '" ><i class="zmdi zmdi-check-circle pt-2"></i></a>';
                             } else {
@@ -44,7 +44,7 @@
                                 <td><?= $curso['cur_Horas'] ?></td>
                                 <td>
                                     <?php
-                                        if (revisarPermisos('Editar', $this)) {
+                                        if (revisarPermisos('Editar', 'cursos')) {
                                             echo '<a type = "button" class="btn btn-icon  btn-icon-mini btn-round btn-info editarCurso " data-id = "' . encryptDecrypt('encrypt',$curso['cur_CursoID']) . '" style = "color:#FFFFFF" ><i class="zmdi zmdi-edit pt-2" ></i > </a >';
                                         }
                                         echo $estatus ;

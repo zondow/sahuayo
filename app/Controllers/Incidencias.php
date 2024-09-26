@@ -567,6 +567,43 @@ class Incidencias extends BaseController
         echo view('htdocs/footer');
     } //end actasAdministrativas
 
+    //Lia->Reporte de conteo de horas y dias de vacaciones
+    public function reporteHorasVacacionesEmpleados()
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Vacaciones y Horas extra';
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Reporte de vacaciones y horas extra', "link" => base_url('Incidencias/reporteHorasVacacionesEmpleados'), "class" => "active");
+
+        load_plugins(['sweetalert2','datatables_buttons'],$data);
+
+        $data['scripts'][] = base_url('assets/js/incidencias/reporteVacacionesHoras.js');
+
+        //Vistas
+        echo view('htdocs/header', $data);
+        echo view('incidencias/reportevacacioneshoras', $data);
+        echo view('htdocs/footer', $data);
+    } //end reporteHorasVacacionesEmpleados
+
+    public function reportePeriodo()
+    {
+         //Validar sessión
+         validarSesion(self::LOGIN_TYPE);
+         $data['title'] = 'Reporte de vacaciones por periodo';
+         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+         $data['breadcrumb'][] = array("titulo" => 'Vacaciones por periodo', "link" => base_url('Incidencias/reportePeriodo'), "class" => "active");
+
+         load_datatables_buttons($data);
+
+         $data['scripts'][] = base_url('assets/js/incidencias/reporteVacacionesPeriodo.js');
+
+         //Vistas
+         echo view('htdocs/header.php', $data);
+         echo view('incidencias/reporteVacacionesPeriodo', $data);
+         echo view('htdocs/footer.php', $data);
+    }
+
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
      |  ____| |  | | \ | |/ ____|_   _/ __ \| \ | |  ____|/ ____|
@@ -1976,4 +2013,34 @@ class Incidencias extends BaseController
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     } //end eliminarActa
 
+    //Diego-> obtener vacaciones y horas extra empleados
+    public function ajax_getReporteVacacionesHorasEmpleados()
+    {
+        $empleados = $this->BaseModel->getEmpleados();
+        $dataReporte = array();
+        foreach ($empleados as $empleado) {
+            $empleado['vacaciones'] = diasPendientes($empleado['emp_EmpleadoID']);
+            $empleado['ingreso'] = longDate($empleado['emp_FechaIngreso'],' de ');
+            $empleado['sucursal'] = $empleado['suc_Sucursal'];
+            $empleado['horas'] = $this->BaseModel->getHorasExtra($empleado['emp_EmpleadoID']);
+            $empleado['horasAdministrativas'] = $this->BaseModel->getHorasAdministrativas($empleado['emp_EmpleadoID']);
+            array_push($dataReporte, $empleado);
+        }
+        $data['data'] = $dataReporte;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    } //end ajax_getReporteVacacionesHorasEmpleados
+    
+    public function ajax_getReporteVacacionesPeriodo(){
+        $vacacionesEmp = db()->query("SELECT E.emp_Numero, E.emp_Nombre, GROUP_CONCAT(DISTINCT CONCAT_WS(' al ', V.vac_FechaInicio, V.vac_FechaFin) ORDER BY V.vac_FechaInicio SEPARATOR ', ') AS 'fechas', SUM(V.vac_Disfrutar) AS 'dias_totales', V.vac_Periodo
+        FROM vacacion V
+        JOIN empleado E ON E.emp_EmpleadoID = V.vac_EmpleadoID
+        WHERE V.vac_Estatus NOT IN ('RECHAZADO', 'DECLINADO') AND V.vac_Estado = 1
+        GROUP BY E.emp_Numero, E.emp_Nombre, V.vac_Periodo")->getResultArray();
+        $dataReporte=array();
+        foreach($vacacionesEmp as $ve){
+            array_push($dataReporte,$ve);
+        }
+        $data['data'] = $dataReporte;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
 }//end controller

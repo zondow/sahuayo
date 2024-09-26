@@ -21,6 +21,7 @@
             { "data": "sucursal"},
             { "data": "vacaciones"},
             { "data": "horas"},
+            { "data": "horasAdministrativas"}
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -32,7 +33,7 @@
         buttons: [
             {
                 extend: 'excelHtml5',
-                title: 'Reporte de vacaciones',
+                title: 'Reporte de vacaciones y horas extra',
                 text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
                 className: "btn l-slategray btn-round",
@@ -43,7 +44,7 @@
             },
             {
                 extend: 'pdfHtml5',
-                title: 'Reporte de vacaciones',
+                title: 'Reporte de vacaciones y horas extra',
                 text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
                 className: "btn l-slategray btn-round",

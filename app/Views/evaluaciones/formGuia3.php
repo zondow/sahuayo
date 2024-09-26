@@ -110,18 +110,18 @@ if(empty($evaluacion)){ ?>
             <div class="card-body">
                 <div class="m-4">
                     <br>
-                    <h1 class="text-dark text-center"><strong>ENCUESTA DE FACTORES DE RIESGO PSICOSOCIAL EN EL TRABAJO NOM-035-STPS-2018</strong></h1>
+                    <h3 class="text-dark text-center"><strong class="text-info">ENCUESTA DE FACTORES DE RIESGO PSICOSOCIAL EN EL TRABAJO NOM-035-STPS-2018</strong></h3>
                     <br>
                     <div class="card-footer ">
                         <br/>
-                        <div class="col-md-12" >
-                            <h4>Instrucciones y consideraciones:</h4>
+                        <div class="header">
+                            <h2><strong>Instrucciones y consideraciones:</strong></h2>
                         </div>
                         <br/>
                         <div class="col-12">
                             <p>
                                 La presente encuesta es totalmente confidencial, puede estar seguro de que la información que se obtenga a partir de sus respuestas será usada de la manera más profesional y responsable posible.  Para esta encuesta no existen respuestas correctas o incorrectas, conteste de la manera más honesta que le sea posible.
-                                A continuación, se presentan una serie de afirmaciones con las que usted puede o no estar de acuerdo. Para responder, debe indicar con una x la opción que le parece más correcta para cada afirmación.
+                                A continuación, se presentan una serie de afirmaciones con las que usted puede o no estar de acuerdo. Para responder, debe indicar con una &nbsp;&nbsp;<span class="font-16" style="color: #eb5b2d">&#10007</span> &nbsp; la opción que le parece más correcta para cada afirmación.
                             </p>
                         </div>
                     </div>
@@ -137,9 +137,10 @@ if(empty($evaluacion)){ ?>
                                         <form class="needs-validation mb-5" role="form" action="<?=base_url("Evaluaciones/addGuia3")?>" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
                                             <input type="hidden" id="fechaActual" name="fechaActual" value="<?= date('Y-m-d') ?>">
                                             <input type="hidden" id="evaluado" name="evaluado" value="<?= $evaluadoID ?>">
-
-                                            <div class="text-right mt-2 mb-2">
-                                                <label style="font-size: 16px">Fecha: <?= longDate(date('Y-m-d'),' de ') ?></label>
+                                            <div class="text-right ">
+                                                <div class="header">
+                                                    <h2><strong>Fecha: <?= longDate(date('Y-m-d'), ' de ') ?></strong></h2>
+                                                </div>
                                             </div>
                                             <div class="mb-4">
                                                 <label>
@@ -171,7 +172,8 @@ if(empty($evaluacion)){ ?>
 
                                             <div class="mb-4">
                                                 <hr>
-                                                <h4 class="mt-3"><?=$tema1?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema1?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_A" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -212,7 +214,8 @@ if(empty($evaluacion)){ ?>
                                                 </div>
                                                 <br>
 
-                                                <h4 class="mt-3"><?=$tema2?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema2?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_B" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -254,7 +257,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema3?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema3?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -296,7 +300,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema4?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema4?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -337,7 +342,8 @@ if(empty($evaluacion)){ ?>
                                                 </div>
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema5?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema5?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -379,7 +385,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema6?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema6?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -421,7 +428,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema7?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema7?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -463,7 +471,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema8?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema8?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -505,7 +514,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema9?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema9?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -546,7 +556,8 @@ if(empty($evaluacion)){ ?>
                                                 </div>
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema10?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema10?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -587,7 +598,8 @@ if(empty($evaluacion)){ ?>
                                                 </div>
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema11?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema11?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -629,7 +641,8 @@ if(empty($evaluacion)){ ?>
 
 
                                                 <br>
-                                                <h4 class="mt-3"><?=$tema12?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema12?></strong></h2></div>
                                                 <div style="overflow: auto;">
                                                     <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                         <thead>
@@ -671,9 +684,11 @@ if(empty($evaluacion)){ ?>
 
                                             </div>
                                             <hr>
-                                            <h4 class="mt-3"><?=$tema13?></h4>
+                                            <div class="header">
+                                                        <h2><strong><?=$tema13?></strong></h2></div>
                                             <div class="mb-4">
-                                                <h4 class="mt-3"><?=$tema14?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema14?></strong></h2></div>
                                                 <div class="form-row text-center">
                                                     <div class="form-group col-6">
                                                         <div class="custom-control custom-radio" >
@@ -732,7 +747,8 @@ if(empty($evaluacion)){ ?>
 
                                             <div class="mb-4">
                                                 <hr>
-                                                <h4 class="mt-3"><?=$tema15?></h4>
+                                                <div class="header">
+                                                        <h2><strong><?=$tema15?></strong></h2></div>
                                                 <div class="form-row text-center">
                                                     <div class="form-group col-6">
                                                         <div class="custom-control custom-radio" >
@@ -789,7 +805,7 @@ if(empty($evaluacion)){ ?>
                                             </div>
                                             <div class="col-md-12 text-right">
                                                 <br>
-                                                <button type="submit" class="btn btn-success"><b class="iconsminds-yes"></b> Guardar Evaluación</button> <br>
+                                                <button type="submit" class="btn btn-round btn-success"><b class="iconsminds-yes"></b> Guardar Evaluación</button> <br>
                                             </div>
                                         </form>
                                     </div>
@@ -804,16 +820,13 @@ if(empty($evaluacion)){ ?>
 </div>
 </div>
 <?php }else{ ?>
-    <div class="container-fluid" >
-        <div class="row">
-            <div class="col-12 survey-app p-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="alert alert-dark rounded text-center" role="alert">
-                            <img src="<?=base_url("assets/images/thigo/3.png")?>" alt="" height="100">
-                            <br>
-                            <p class="lead" style="text-align: center;vertical-align: center;padding-bottom: 4px">¡Gracias!<br>Su evaluación ha sido enviada.</p>
-                        </div>
+    <div class="content card">
+            <div class="row card-body">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" style="margin-top: 9%;margin-bottom: 9%">
+                    <div class="text-center">
+                        <div id="lottie-animation-check" style="width: 300px; height: 250px;"></div>
+                        <p class="lead" style="text-align: center;vertical-align: center;padding-bottom: 4px"><strong>¡Gracias!<br>Su evaluación ha sido enviada.</strong></p>
                     </div>
                 </div>
             </div>
@@ -822,7 +835,13 @@ if(empty($evaluacion)){ ?>
 <?php } ?>
 <script>
 $(document).ready(function(e){
-
+    lottie.loadAnimation({
+        container: document.getElementById('lottie-animation-check'), // El contenedor donde se mostrará la animación
+        renderer: 'svg', // Tipo de renderizado, puede ser "svg", "canvas" o "html"
+        loop: true, // Si la animación debe reproducirse en bucle
+        autoplay: true, // Si la animación debe empezar automáticamente
+        path: "<?= base_url('/assets/images/evaluaciones/check.json') ?>", // Ruta del archivo JSON de la animación envuelta en comillas        
+    });
     $("#tablaGDiv").hide();
     $("#tablaJDiv").hide();
 

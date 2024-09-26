@@ -18,7 +18,7 @@ class Personal extends BaseController
          \/   |_____|_____/   |_/_/    \_\_____/
     */
 
-    
+
     //Lia-> catalogo de colaboradores
     public function empleados()
     {
@@ -39,10 +39,10 @@ class Personal extends BaseController
         $data['roles'] = $this->PersonalModel->getRoles();
         $data['colaboradoresbaja'] = $this->PersonalModel->getBajas();
         $data['estados'] = $this->PersonalModel->getEstados();
-        $data['sucursales'] =$this->PersonalModel->getSucursales();
+        $data['sucursales'] = $this->PersonalModel->getSucursales();
 
         //Load plugins
-        load_plugins(['datepicker','select2','datatables_buttons','sweetalert2','modalConfirmation','modalPdf'],$data);
+        load_plugins(['datepicker', 'select2', 'datatables_buttons', 'sweetalert2', 'modalConfirmation', 'modalPdf'], $data);
 
         //Custom script
         $data['scripts'][] = base_url('assets/js/personal/empleadosActivos.js');
@@ -73,12 +73,12 @@ class Personal extends BaseController
             array("titulo" => 'Baja de personal', "link" => base_url('Personal/bajaEmpleados'), "class" => "active"),
         );
 
-        
+
         $data['colaboradores'] = $this->PersonalModel->getBajas();
         $data['colaboradoresbaja'] = $this->PersonalModel->getBajas();
 
         //load plugins
-        load_plugins(['datepicker','select2','datatables_buttons','sweetalert2','modalConfirmation','modalPdf'],$data);
+        load_plugins(['datepicker', 'select2', 'datatables_buttons', 'sweetalert2', 'modalConfirmation', 'modalPdf'], $data);
 
         //Custom script
         $data['scripts'][] = base_url('assets/js/personal/empleadosBaja.js');
@@ -101,17 +101,17 @@ class Personal extends BaseController
         $data['breadcrumb'] = array(
             array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
             array("titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados'), "class" => "active"),
-            array("titulo" => 'Onboarding (Checklist entrada)', "link" => base_url('Personal/onboarding/'.$empleadoID), "class" => "active"),
+            array("titulo" => 'Onboarding (Checklist entrada)', "link" => base_url('Personal/onboarding/' . $empleadoID), "class" => "active"),
         );
 
         $model = new PersonalModel();
         $data['colaborador'] = $model->getInfoColaboradorByID($empleadoID);
-        $data['colaborador']['emp_EmpleadoID']=encryptDecrypt('encrypt',$data['colaborador']['emp_EmpleadoID']);
-        $data['colaborador']['pue_Nombre']=$this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=".encryptDecrypt('decrypt',$data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
-        $data['checklist']=$model->getChecklist('Ingreso');
-        $data['empleadoID']=$empleadoID;
-        $data['total']=$this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Ingreso' AND cat_Requerido=1")->getRowArray()['total'];
-        $data['totalCheck']=$model->getTotalCheck('Ingreso',encryptDecrypt('decrypt',$empleadoID));
+        $data['colaborador']['emp_EmpleadoID'] = encryptDecrypt('encrypt', $data['colaborador']['emp_EmpleadoID']);
+        $data['colaborador']['pue_Nombre'] = $this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=" . encryptDecrypt('decrypt', $data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
+        $data['checklist'] = $model->getChecklist('Ingreso');
+        $data['empleadoID'] = $empleadoID;
+        $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Ingreso' AND cat_Requerido=1")->getRowArray()['total'];
+        $data['totalCheck'] = $model->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $empleadoID));
         //$data['cartas']=$model->getCartasResguardoColaboradorByID(encryptDecrypt('decrypt',$empleadoID));
 
         //Styles
@@ -235,13 +235,8 @@ class Personal extends BaseController
         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
         $data['breadcrumb'][] = array("titulo" => 'Recibos de nómina ', "link" => base_url('Personal/recibosNomina'), "class" => "active");
 
-        $data['styles'][] = base_url("assets/plugins/jstree/css/style.min.css");
-        $data['styles'][] = base_url("assets/plugins/sweetalert2/dist/sweetalert2.css");
-        $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
+        load_plugins(['jstree', 'sweetalert2', 'datepicker'], $data);
 
-        $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
-        $data['scripts'][] = base_url("assets/plugins/sweetalert2/dist/sweetalert2.min.js");
-        $data['scripts'][] = base_url("assets/plugins/jstree/jstree.min.js");
         $data['scripts'][] = base_url("assets/js/personal/recibosNomina.js");
 
         //Vistas
@@ -251,35 +246,25 @@ class Personal extends BaseController
     } //end recibosNomina
 
     //Diego-> reporte quinquenio
-    public function reporteQuinquenio(){
+    public function reporteQuinquenio()
+    {
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
         $data['title'] = 'Reporte de quinquenios';
         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
         $data['breadcrumb'][] = array("titulo" => 'Reporte de quinquenios', "link" => base_url('Personal/reporteQuinquenio'), "class" => "active");
 
-        //Styles
-        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
-        $data['styles'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/css/buttons.bootstrap4.css');
-        $data['styles'][] = base_url('assets/css/tables-custom.css');
+        load_plugins(['datatables_buttons'],$data);
 
+        //Styles
         //Scripts
-        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/dataTables.buttons.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.bootstrap4.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/JSZip-2.5.0/jszip.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/pdfmake.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/pdfmake-0.1.36/vfs_fonts.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.html5.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/Buttons-1.6.2/js/buttons.colVis.js');
         $data['scripts'][] = base_url('assets/js/personal/reportequinquenios.js');
 
         //Vistas
         echo view('htdocs/header', $data);
         echo view('personal/reportequinquenios', $data);
         echo view('htdocs/footer', $data);
-    }//end reporteQuinquenio
+    } //end reporteQuinquenio
 
     //Nat -> Formulario agregar baja empleado
     public function formBajaEmpleado($empleadoID = null)
@@ -475,17 +460,17 @@ class Personal extends BaseController
         $data['breadcrumb'] = array(
             array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
             array("titulo" => 'Bajas', "link" => base_url('Personal/bajaEmpleados'), "class" => "active"),
-            array("titulo" => 'Offboarding (Checklist salida)', "link" => base_url('Personal/offboarding/'.$empleadoID), "class" => "active"),
+            array("titulo" => 'Offboarding (Checklist salida)', "link" => base_url('Personal/offboarding/' . $empleadoID), "class" => "active"),
         );
 
         $model = new PersonalModel();
         $data['colaborador'] = $model->getInfoColaboradorByID($empleadoID);
-        $data['colaborador']['emp_EmpleadoID']=encryptDecrypt('encrypt',$data['colaborador']['emp_EmpleadoID']);
-        $data['colaborador']['pue_Nombre']=$this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=".encryptDecrypt('decrypt',$data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
-        $data['checklist']=$model->getChecklist('Egreso');
-        $data['empleadoID']=$empleadoID;
-        $data['total']=$this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Egreso' AND cat_Requerido=1")->getRowArray()['total'];
-        $data['totalCheck']=$model->getTotalCheckSalida('Egreso',encryptDecrypt('decrypt',$empleadoID));
+        $data['colaborador']['emp_EmpleadoID'] = encryptDecrypt('encrypt', $data['colaborador']['emp_EmpleadoID']);
+        $data['colaborador']['pue_Nombre'] = $this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=" . encryptDecrypt('decrypt', $data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
+        $data['checklist'] = $model->getChecklist('Egreso');
+        $data['empleadoID'] = $empleadoID;
+        $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Egreso' AND cat_Requerido=1")->getRowArray()['total'];
+        $data['totalCheck'] = $model->getTotalCheckSalida('Egreso', encryptDecrypt('decrypt', $empleadoID));
 
         //Styles
         $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
@@ -497,7 +482,7 @@ class Personal extends BaseController
         echo view('htdocs/header', $data);
         echo view('personal/offboarding', $data);
         echo view('htdocs/footer', $data);
-    }//end offboarding
+    } //end offboarding
 
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
@@ -509,28 +494,30 @@ class Personal extends BaseController
     */
 
     //Diego-> guardar onboarding
-    public function saveOnboarding(){
+    public function saveOnboarding()
+    {
         $post = $this->request->getPost();
-        $empleadoID=encryptDecrypt('decrypt',$post['col']);
+        $empleadoID = encryptDecrypt('decrypt', $post['col']);
         unset($post['col']);
-        if($post){
+        if ($post) {
             $id = json_encode($post['check']);
-        }else{
+        } else {
             $id = '';
-        }        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=".$empleadoID)->getRowArray();
+        }
+        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=" . $empleadoID)->getRowArray();
         $builder = $this->db->table('checklistempleado');
-        if($registro!==NULL){
-            $builder->update(array('che_CatalogoChecklistID' => $id), array('che_ChecklistEmpleadoID' =>$registro['che_ChecklistEmpleadoID']));
+        if ($registro !== NULL) {
+            $builder->update(array('che_CatalogoChecklistID' => $id), array('che_ChecklistEmpleadoID' => $registro['che_ChecklistEmpleadoID']));
             $result = $registro['che_ChecklistEmpleadoID'];
-            $tipo='Actualizar';
-        }else{
+            $tipo = 'Actualizar';
+        } else {
             $data = array(
-                "che_EmpleadoID"=>$empleadoID,
-                "che_CatalogoChecklistID"=>$id
+                "che_EmpleadoID" => $empleadoID,
+                "che_CatalogoChecklistID" => $id
             );
             $builder->insert($data);
             $result = $this->db->insertID();
-            $tipo='Insertar';
+            $tipo = 'Insertar';
         }
         if ($result) {
             insertLog($this, session('id'), $tipo, 'onboarding', $result);
@@ -539,28 +526,29 @@ class Personal extends BaseController
             $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
         }
         return redirect()->to($_SERVER['HTTP_REFERER']);
-    }//end saveOboarding
+    } //end saveOboarding
 
     //Diego-> save offboarding
-    public function saveOffboarding(){
+    public function saveOffboarding()
+    {
         $post = $this->request->getPost();
-        $empleadoID=encryptDecrypt('decrypt',$post['col']);
+        $empleadoID = encryptDecrypt('decrypt', $post['col']);
         unset($post['col']);
         $id = json_encode($post['check']);
-        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=".$empleadoID)->getRowArray();
+        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=" . $empleadoID)->getRowArray();
         $builder = $this->db->table('checklistempleado');
-        if($registro!==NULL){
-            $builder->update(array('che_CatalogoChecklistSalidaID' => $id), array('che_ChecklistEmpleadoID' =>$registro['che_ChecklistEmpleadoID']));
+        if ($registro !== NULL) {
+            $builder->update(array('che_CatalogoChecklistSalidaID' => $id), array('che_ChecklistEmpleadoID' => $registro['che_ChecklistEmpleadoID']));
             $result = $registro['che_ChecklistEmpleadoID'];
-            $tipo='Actualizar';
-        }else{
+            $tipo = 'Actualizar';
+        } else {
             $data = array(
-                "che_EmpleadoID"=>$empleadoID,
-                "che_CatalogoChecklistSalidaID"=>$id
+                "che_EmpleadoID" => $empleadoID,
+                "che_CatalogoChecklistSalidaID" => $id
             );
             $builder->insert($data);
             $result = $this->db->insertID();
-            $tipo='Insertar';
+            $tipo = 'Insertar';
         }
         if ($result) {
             insertLog($this, session('id'), $tipo, 'offboarding', $result);
@@ -569,7 +557,7 @@ class Personal extends BaseController
             $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
         }
         return redirect()->to($_SERVER['HTTP_REFERER']);
-    }//end saveoffboarding
+    } //end saveoffboarding
 
     /*
                    _         __   __
@@ -595,7 +583,7 @@ class Personal extends BaseController
         $colaboradores = $this->PersonalModel->getBajas();
         $data['data'] = $colaboradores;
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//end ajax_getEmpleadosBaja
+    } //end ajax_getEmpleadosBaja
 
     //Lia- agrega o edita la info de un colaborador
     function ajax_saveColaborador()
@@ -613,7 +601,7 @@ class Personal extends BaseController
         $post['emp_PuestoID'] = encryptDecrypt('decrypt', $post['emp_PuestoID']);
         $post['emp_HorarioID'] = encryptDecrypt('decrypt', $post['emp_HorarioID']);
         $post['emp_Rol'] = encryptDecrypt('decrypt', $post['emp_Rol']);
-        $post['emp_SucursalID'] = encryptDecrypt('decrypt',$post['emp_SucursalID']);
+        $post['emp_SucursalID'] = encryptDecrypt('decrypt', $post['emp_SucursalID']);
         $numero = $post['emp_Numero'];
 
         if ($empleadoID > 0) {
@@ -651,7 +639,7 @@ class Personal extends BaseController
         }
 
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//End ajax_saveColaborador
+    } //End ajax_saveColaborador
 
     //->Lia obtener informacion del colaborador
     function ajax_getInfoColaborador($colaboradorID)
@@ -724,59 +712,56 @@ class Personal extends BaseController
         }
     } //end ajax_regresarEmpleados
 
-    //Diego->ajax subir recibo nomina
+    // Diego->ajax subir recibo nomina
     public function ajaxSubirRecibosNomina()
     {
-        $data['code'] = 0;
-        $guardado = 0;
-        $existe = 0;
+        $data = ['code' => 0];
+        $guardado = $existe = 0;
         $year = post('year');
         $quincena = post('quincena');
 
-        if (isset($_FILES['fileZip'])) {
-            $total_files = count($_FILES['fileZip']['name']);
-            for ($key = 0; $key < $total_files; $key++) {
-                $nombre_archivo = $_FILES['fileZip']['name'][$key];
-                $ext = pathinfo($nombre_archivo, PATHINFO_EXTENSION);
-                $nEmpleado = explode('_', $nombre_archivo);
-                $nEmpleado = (int)$nEmpleado[5];
+        if (!isset($_FILES['fileZip'])) {
+            echo json_encode($data, JSON_UNESCAPED_SLASHES);
+            return;
+        }
 
-                $sql = "SELECT emp_EmpleadoID FROM empleado WHERE emp_Numero=? AND emp_Estatus=1";
-                $empleadoID = $this->db->query($sql, array($nEmpleado))->getRowArray()['emp_EmpleadoID'] ?? null;
-                if ($empleadoID) {
-                    $empleadoID = encryptDecrypt('encrypt', $empleadoID);
+        foreach ($_FILES['fileZip']['name'] as $key => $nombre_archivo) {
+            $ext = pathinfo($nombre_archivo, PATHINFO_EXTENSION);
+            $nEmpleado = (int) explode('_', $nombre_archivo)[5];
+            $empleadoID = consultar_dato('empleado','empleado',"emp_Numero = $nEmpleado AND emp_Estatus=1") ?? null;
 
-                    //lugar donde se guarda el zip
-                    $directorio = FCPATH . "/assets/uploads/recibosnomina/" . $year . "/" . $empleadoID . "/";
+            if (!$empleadoID) continue;
 
-                    if (!file_exists($directorio)) mkdir($directorio, 0777, true);
-                    $files = preg_grep('/^([^.])/', scandir($directorio));
+            $empleadoIDEnc = encryptDecrypt('encrypt', $empleadoID);
+            $directorio = FCPATH . "/assets/uploads/recibosnomina/$year/$empleadoIDEnc/";
 
-                    if (!in_array($quincena . ".zip", $files)) { //Si no existe
-                        $ruta = $directorio . $quincena . '.' . $ext;
-                        move_uploaded_file($_FILES['fileZip']['tmp_name'][$key], $ruta);
-                        $guardado++;
-                        $notificacion = array(
-                            "not_EmpleadoID" => encryptDecrypt('decrypt', $empleadoID),
-                            "not_Titulo" => 'Nuevo recibo de nomina',
-                            "not_Descripcion" => 'Se ha subido un nuevo recibo de nomina',
-                            "not_EmpleadoIDCreo" => session('id'),
-                            "not_FechaRegistro" => date('Y-m-d H:i:s'),
-                            "not_URL" => 'Usuario/miPerfil'
-                        );
-                        $builder = db()->table('notificacion');
-                        $builder->insert($notificacion);
-                    } else {
-                        $existe++;
-                    }
-                }
+            if (!file_exists($directorio)) mkdir($directorio, 0777, true);
+
+            $ruta = $directorio . "$quincena.zip";
+            if (!file_exists($ruta)) {
+                move_uploaded_file($_FILES['fileZip']['tmp_name'][$key], $ruta);
+                $guardado++;
+
+                $notificacion = [
+                    "not_EmpleadoID" => encryptDecrypt('decrypt', $empleadoIDEnc),
+                    "not_Titulo" => 'Nuevo recibo de nomina',
+                    "not_Descripcion" => 'Se ha subido un nuevo recibo de nomina',
+                    "not_EmpleadoIDCreo" => session('id'),
+                    "not_FechaRegistro" => date('Y-m-d H:i:s'),
+                    "not_URL" => 'Usuario/miPerfil',
+                    'not_Icono' => 'zmdi zmdi-money-box',
+                    'not_Color' => 'bg-blue',
+                ];
+                insert('notificacion',$notificacion);
+            } else {
+                $existe++;
             }
         }
-        if ($guardado > 0) $data['code'] = 1;
-        else if ($existe > 0) $data['code'] = 2;
 
+        $data['code'] = $guardado > 0 ? 1 : ($existe > 0 ? 2 : 0);
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    } //end ajaxSubirRecibosNomina
+    }
+
 
     //Diego->obtener recibos nomina
     public function ajax_GetRecibosNomina()
@@ -789,7 +774,8 @@ class Personal extends BaseController
             $empleadosxanio = preg_grep('/^([^.])/', scandir($url . '/' . $anio));
             $children = array();
             foreach ($empleadosxanio as $emp) {
-                $empleado = db()->query("SELECT emp_Nombre,emp_Numero FROM empleado WHERE emp_EmpleadoID=" . (int)encryptDecrypt('decrypt', $emp))->getRowArray();
+                $empleado = (int)encryptDecrypt('decrypt', $emp);
+                $empleado = consultar_dato('empleado','emp_Nombre,emp_Numero',"emp_EmpleadoID = $empleado");
                 $nombre = $empleado['emp_Nombre'];
                 $num = $empleado['emp_Numero'];
                 $children2 = array();
@@ -799,7 +785,7 @@ class Personal extends BaseController
                     $itemp = array(
                         "id" => $anio . $num . $periodo,
                         "text" => $anio . $num . $periodo,
-                        "icon" => "mdi mdi-zip-box ",
+                        "icon" => "zmdi zmdi-file",
                         "state" => array(
                             "opened" => false,
                             "disabled" => false,
@@ -839,30 +825,29 @@ class Personal extends BaseController
     } //end ajax_GetRecibosNomina
 
     //Diego-> obtener reporte quinquenio
-    public function ajax_getReporteQuinquenio(){
-        $model = new PersonalModel();
-        $empleados = $model->getEmpleadosQuinquenio();
-
-        $dataReporte=array();
-        foreach($empleados as $empleado){
-            $fecha=strtotime($empleado['emp_FechaIngreso']);
-            $fechaIngreso=date("m-d", $fecha);
+    public function ajax_getReporteQuinquenio()
+    {
+        $empleados = $this->BaseModel->getEmpleados();
+        $dataReporte = array();
+        foreach ($empleados as $empleado) {
+            $fecha = strtotime($empleado['emp_FechaIngreso']);
+            $fechaIngreso = date("m-d", $fecha);
             $anio = date("Y", $fecha);
-            $antiguedadAnos = date('Y')-$anio;
-            $txtAntiguedad= $antiguedadAnos . ' años';
+            $antiguedadAnos = date('Y') - $anio;
+            $txtAntiguedad = $antiguedadAnos . ' años';
 
-            if ($antiguedadAnos % 5 == 0 && $antiguedadAnos>0) {
-                $empleado['antiguedad']=$txtAntiguedad;
-                $empleado['fechaQuinquenio']=date("Y").'-'.$fechaIngreso;
-                $empleado['prima']=primaantiguedad($empleado['emp_FechaIngreso']).' dias de salario nóminal.';
-                array_push($dataReporte,$empleado);
+            if ($antiguedadAnos % 5 == 0 && $antiguedadAnos > 0) {
+                $empleado['antiguedad'] = $txtAntiguedad;
+                $empleado['fechaQuinquenio'] = date("Y") . '-' . $fechaIngreso;
+                $empleado['prima'] = primaantiguedad($empleado['emp_FechaIngreso']) . ' dias de salario nóminal.';
+                array_push($dataReporte, $empleado);
             }
         }
         $data['data'] = $dataReporte;
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//end ajax_getReporteQuinquenio
+    } //end ajax_getReporteQuinquenio
 
-   
+
 
     public function ajaxCambiarEstadoEmpleado()
     {
@@ -875,7 +860,7 @@ class Personal extends BaseController
 
         $data['code'] = $response ? 1 : 0;
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//End ajaxCambiarEstadoEmpleado
+    } //End ajaxCambiarEstadoEmpleado
 
     //Diego -> traer municipio por estado
     public function ajax_getCiudadByEstado()
@@ -884,16 +869,16 @@ class Personal extends BaseController
         $ciudad_seleccionada = (int)$post['ciudad'];
         $result = $this->db->query("SELECT * FROM ciudad WHERE ciu_idEstado = " . (int)$post['estado'] . " ORDER BY ciu_nombre ASC")->getResultArray();
         $data = array();
-        foreach($result as $r){
+        foreach ($result as $r) {
             $r['selected'] = ($r['id_ciudad'] == $ciudad_seleccionada) ? true : false;
-            array_push($data,$r);
+            array_push($data, $r);
         }
         if ($data) {
             echo json_encode(array("response" => "success", "result" => $data));
         } else {
             echo json_encode(array("response" => "error", "msg" => 'Ocurrio un error. Intentelo nuevamente'));
         }
-    }//End ajax_getCiudadByEstado
+    } //End ajax_getCiudadByEstado
 
     //Fer - modficar fecha de baja de un colaborador
     function ajax_saveFechaBaja()
@@ -917,27 +902,27 @@ class Personal extends BaseController
         }
 
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }//End ajax_saveFechaBaja
+    } //End ajax_saveFechaBaja
 
-    
 
-    
+
+
 
     //Lia->guarda y envia los datos de acceso
     public function ajax_generarDatosAcceso()
     {
         $post = $this->request->getPost();
-        $pass = $this->db->query("SELECT emp_Password,emp_Nombre,emp_Username FROM empleado WHERE emp_EmpleadoID=" . encryptDecrypt('decrypt',$post['idColabA']))->getRowArray();
+        $pass = $this->db->query("SELECT emp_Password,emp_Nombre,emp_Username FROM empleado WHERE emp_EmpleadoID=" . encryptDecrypt('decrypt', $post['idColabA']))->getRowArray();
 
-        if ($pass['emp_Password'] === $post['emp_Passworde']){
+        if ($pass['emp_Password'] === $post['emp_Passworde']) {
             $password = $pass['emp_Password'];
-        }else{
+        } else {
             $password = encryptKey($post['emp_Passworde']);
         }
 
-        if(!empty($pass['emp_Username'])){
-            $user=$pass['emp_Username'];
-        }else{
+        if (!empty($pass['emp_Username'])) {
+            $user = $pass['emp_Username'];
+        } else {
             $user = crearUsernameByEmail($post['emp_Correo'], $this);
         }
 
@@ -948,7 +933,7 @@ class Personal extends BaseController
             'emp_Username' => $user,
         );
         $builder = db()->table("empleado");
-        $result = $builder->update($colaboradorData, array('emp_EmpleadoID' => encryptDecrypt('decrypt',$post['idColabA'])));
+        $result = $builder->update($colaboradorData, array('emp_EmpleadoID' => encryptDecrypt('decrypt', $post['idColabA'])));
         if ($result) {
             $data = array(
                 'password' => $post['emp_Passworde'],
@@ -956,34 +941,35 @@ class Personal extends BaseController
                 'nombre' => $pass['emp_Nombre'],
             );
             sendMail($post['emp_Correo'], 'Bienvenido (a) a Thigo ' . getSetting('nombre_empresa', $this), $data, "Colaborador");
-            $array=array("response" => "success");
+            $array = array("response" => "success");
         } else {
-            $array=array("response" => "error");
+            $array = array("response" => "error");
         }
 
         echo json_encode($array);
     }
 
-    public function ajaxEnviarNotiNuevoIngreso(){
+    public function ajaxEnviarNotiNuevoIngreso()
+    {
         $post = $this->request->getPost();
-        $idEmpleado= encryptDecrypt('decrypt',$post['empleadoID']);
+        $idEmpleado = encryptDecrypt('decrypt', $post['empleadoID']);
 
         $data['code'] = 0;
 
         $this->db->transStart();
 
-        $sql="SELECT emp_Nombre,pue_Nombre,dep_Nombre,emp_FechaIngreso FROM empleado
+        $sql = "SELECT emp_Nombre,pue_Nombre,dep_Nombre,emp_FechaIngreso FROM empleado
                 JOIN puesto ON pue_PuestoID=emp_PuestoID
                 JOIN departamento ON dep_DepartamentoID=emp_DepartamentoID
             WHERE emp_EmpleadoID=?";
-        $empleado=$this->db->query($sql,array($idEmpleado))->getRowArray();
+        $empleado = $this->db->query($sql, array($idEmpleado))->getRowArray();
 
-        $check=$this->db->query("SELECT * FROM catalogochecklist WHERE cat_Estatus=1")->getResultArray();
-        $arrayResponsables=array();
-        foreach($check as $ch){
-            $responsables=json_decode($ch['cat_ResponsableID']);
-            foreach($responsables as $responsable){
-                array_push($arrayResponsables,$responsable);
+        $check = $this->db->query("SELECT * FROM catalogochecklist WHERE cat_Estatus=1")->getResultArray();
+        $arrayResponsables = array();
+        foreach ($check as $ch) {
+            $responsables = json_decode($ch['cat_ResponsableID']);
+            foreach ($responsables as $responsable) {
+                array_push($arrayResponsables, $responsable);
             }
         }
     }
@@ -1017,6 +1003,4 @@ class Personal extends BaseController
         } //if
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
-
-
 }

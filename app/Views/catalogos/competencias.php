@@ -1,7 +1,7 @@
 
 <div class="row">
     <div class="col-md-12 text-right">
-        <?php if(revisarPermisos('Agregar',$this)){ ?>
+        <?php if(revisarPermisos('Agregar','competencias')){ ?>
         <a href="#" class="btn btn-round btn-success mt-2 mb-4 modal-competencias">
             <i class="zmdi zmdi-plus"></i>
             Agregar
@@ -32,7 +32,7 @@
                             $estatus = '';
 
                             // Manejo del estatus de la competencia si se tienen permisos
-                            if (revisarPermisos('Baja', $this)) {
+                            if (revisarPermisos('Baja', 'competencias')) {
                                 $compStatus =(int)$cLocales['com_Estatus'];
                                 
                                 if ($compStatus === 1) {
@@ -52,10 +52,10 @@
                                 echo '<td class="w-15"><label class="badge badge-secondary">'.$cLocales['com_Tipo'].'</label></td>';
                             }
                             echo '<td class="text-center ">';
-                            if(revisarPermisos('Editar',$this)) {
+                            if(revisarPermisos('Editar','competencias')) {
                                 echo '<a href="#" class="btn btn-info btn-icon  btn-icon-mini btn-round modal-competencias" data-id="' . $cLocales['com_CompetenciaID'] . '"><i class="zmdi zmdi-edit pt-2 "></i></a>';
                             }
-                            /*if(revisarPermisos('Claves',$this)) {
+                            /*if(revisarPermisos('Claves','competencias')) {
                                 echo '<a href="#" class="btn btn-dark btn-icon  btn-icon-mini btn-round  veraclave" title="Acciones clave" data-id="' . $cLocales['com_CompetenciaID'] . '"><i class="zmdi zmdi-check-square"></i></a>';
                             }*/
                                 echo $estatus ;

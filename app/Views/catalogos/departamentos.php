@@ -5,10 +5,10 @@ $db = \Config\Database::connect();
 <div class="content pt-0">
     <div class="row mb-3">
         <div class="col-md-12 text-right">
-            <?php if (revisarPermisos('Agregar', $this)) { ?>
+            <?php if (revisarPermisos('Agregar', 'departamentos')) { ?>
                 <button type="button" data-toggle="modal" data-target="#addDepartamento" class="btn btn-success btn-round"> <i class="zmdi zmdi-plus"></i> Agregar </button>
             <?php } ?>
-            <?php if (revisarPermisos('Exportar', $this)) { ?>
+            <?php if (revisarPermisos('Exportar', 'departamentos')) { ?>
                 <a href="<?= base_url('Excel/generarExcelDepartamentos'); ?>" class="btn btn-warning btn-round"><i class="zmdi zmdi-cloud-download"></i> Exportar</a>
             <?php } ?>
         </div>
@@ -44,7 +44,7 @@ $db = \Config\Database::connect();
                                     $puestos = $db->query("SELECT DISTINCT(emp_PuestoID) AS puestos FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=$departamentoID")->getResultArray();
                                     $colaboradores = $db->query("SELECT emp_Nombre, emp_EmpleadoID FROM empleado WHERE emp_Estatus=1 AND emp_DepartamentoID=$departamentoID ORDER BY emp_Nombre ASC LIMIT 5")->getResultArray();
 
-                                    if (revisarPermisos('Baja', $this)) {
+                                    if (revisarPermisos('Baja', 'departamentos')) {
                                         $depStatus = (int)$departamento['dep_Estatus'];
                                         $encryptedID = encryptDecrypt('encrypt', $departamentoID);
 
@@ -82,7 +82,7 @@ $db = \Config\Database::connect();
                                             <?= round(($noColaboradores['total'] / $totalColaboradores['total']) * 100, 2) ?>%
                                         </td>
                                         <td>
-                                            <?php if (revisarPermisos('Editar', $this)) { ?>
+                                            <?php if (revisarPermisos('Editar', 'departamentos')) { ?>
                                                 <a role="button" class="btn btn-icon  btn-icon-mini btn-round  btn-info editar" id="departamentoID" data-id="<?= $encryptedID ?>" href="#" title="Da clic para editar"><i class="zmdi zmdi-edit pt-2"></i></a>
                                             <?php } ?>
                                             <?= $estatus ?>

@@ -112,7 +112,7 @@
                                         </div>
                                     <?php } ?>
                                 </div>
-                                <?php if (revisarPermisos('Agregar', $this)) { ?>
+                                <?php if (revisarPermisos('Agregar', 'prestaciones')) { ?>
                                     <button type="submit" class="btn btn-success btn-round float-md-right"> Guardar</button>
                                 <?php } ?>
                             </form>
@@ -143,7 +143,7 @@
                                 </div>
                             <?php } ?>
                         </div>
-                        <?php if (revisarPermisos('Agregar', $this)) { ?>
+                        <?php if (revisarPermisos('Agregar', 'prestaciones')) { ?>
                             <button type="submit" class="btn btn-success btn-round float-md-right"> Guardar</button>
                         <?php } ?>
                     </form>

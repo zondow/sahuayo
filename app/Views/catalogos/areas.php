@@ -2,7 +2,7 @@
 <div class="content pt-0">
     <div class="row mb-3">
         <div class="col-md-12 mt-2 text-right">
-            <?php if (revisarPermisos('Agregar', $this)) { ?>
+            <?php if (revisarPermisos('Agregar', 'areas')) { ?>
                 <button type="button" id="addArea" class="btn btn-success btn-round"> <i class="zmdi zmdi-plus"></i> Agregar </button>
             <?php } ?>
         </div>

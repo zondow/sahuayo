@@ -240,8 +240,7 @@ $(document).ready(function () {
     function acciones(data,type,row){
         let id = row['id'];
         let output = '';
-            output+= '<td><a type="button" href="'+BASE_URL+'Evaluaciones/resultadoEvaluadoGuia2/'+id+'/'+FechaInicio+'/'+FechaFin+'" style="color: #FFFFFF" class="btn btn-block waves-effect waves-light btn-info btn-sm "> <i class=" mdi mdi-file-document-box-check-outline' +
-                '                                                     "></i> Ver Resultados</a></td>';
+            output += '<td><button type="button" onclick="window.location.href=\''+BASE_URL+'Evaluaciones/resultadoEvaluadoGuia2/'+id+'/'+FechaInicio+'/'+FechaFin+'\'" style="color: #FFFFFF" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down"> <i class="zmdi zmdi-eye"></i></button></td>';
         return output;
     }//accionesHorario
 

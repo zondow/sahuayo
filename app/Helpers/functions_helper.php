@@ -2159,6 +2159,18 @@ function addMenuOption($funcion, $controlador, $nombre)
     return '';
 }
 
+function addMenuOptionSingle($funcion, $controlador, $nombre,$icono)
+{
+    $permisos = json_decode(session('permisos'), true);
+    if (isset($permisos[$funcion])) {
+        if (in_array("Ver", $permisos[$funcion])) {
+            return '<li><a href="' . base_url($controlador . '/' . $funcion) . '"><i class="'.$icono.'"></i><span>' . $nombre . '</span></a></li>';
+
+        }
+    }
+    return '';
+}
+
 function diferenciaTiempo($fechaInicio,$fechaFin){
     $start_date = new DateTime(date($fechaInicio));
     $since_start = $start_date->diff(new DateTime(date($fechaFin)));

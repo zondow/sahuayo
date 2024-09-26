@@ -6,18 +6,18 @@ if (empty($evaluacion)) { ?>
                 <div class="card-body">
                     <div class="m-4">
                         <br>
-                        <h1 class="text-dark text-center"><strong>ENCUESTA DE FACTORES DE RIESGO PSICOSOCIAL EN EL TRABAJO NOM-035-STPS-2018</strong></h1>
+                        <h3 class="text-dark text-center"><strong class="text-info">ENCUESTA DE FACTORES DE RIESGO PSICOSOCIAL EN EL TRABAJO NOM-035-STPS-2018</strong></h3>
                         <br>
                         <div class="card-footer ">
                             <br />
-                            <div class="col-md-12">
-                                <h4>Instrucciones y consideraciones:</h4>
+                            <div class="header">
+                                <h2><strong>Instrucciones y consideraciones:</strong></h2>
                             </div>
                             <br />
                             <div class="col-12">
                                 <p>
                                     La presente encuesta es totalmente confidencial, puede estar seguro de que la información que se obtenga a partir de sus respuestas será usada de la manera más profesional y responsable posible. Para esta encuesta no existen respuestas correctas o incorrectas, conteste de la manera más honesta que le sea posible.
-                                    A continuación, se presentan una serie de afirmaciones con las que usted puede o no estar de acuerdo. Para responder, debe indicar con una x la opción que le parece más correcta para cada afirmación.
+                                    A continuación, se presentan una serie de afirmaciones con las que usted puede o no estar de acuerdo. Para responder, debe indicar con una &nbsp;&nbsp;<span class="font-16" style="color: #eb5b2d">&#10007</span> &nbsp; la opción que le parece más correcta para cada afirmación.
                                 </p>
                             </div>
                         </div>
@@ -33,9 +33,10 @@ if (empty($evaluacion)) { ?>
                                             <form class="needs-validation mb-5" role="form" action="<?= base_url("Evaluaciones/addGuia2") ?>" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
                                                 <input type="hidden" id="fechaActual" name="fechaActual" value="<?= date('Y-m-d') ?>">
                                                 <input type="hidden" id="evaluado" name="evaluado" value="<?= $evaluadoID ?>">
-
-                                                <div class="text-right mt-2 mb-2">
-                                                    <label style="font-size: 16px">Fecha: <?= longDate(date('Y-m-d'), ' de ') ?></label>
+                                                <div class="text-right ">
+                                                    <div class="header">
+                                                        <h2><strong>Fecha: <?= longDate(date('Y-m-d'), ' de ') ?></strong></h2>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-4">
                                                     <label>
@@ -65,7 +66,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">A) Para responder las preguntas siguientes considere las condiciones de su centro de trabajo, así como la cantidad y ritmo de trabajo.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>A) Para responder las preguntas siguientes considere las condiciones de su centro de trabajo, así como la cantidad y ritmo de trabajo.</strong></h2>
+                                                    </div>
                                                     <div style="overflow: auto;">
                                                         <table id="tbl_A" class="data-table responsive nowrap table-bordered table-hover">
                                                             <thead>
@@ -167,7 +170,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">B) Las preguntas siguientes están relacionadas con las actividades que realiza en su trabajo y las responsabilidades que tiene.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>B) Las preguntas siguientes están relacionadas con las actividades que realiza en su trabajo y las responsabilidades que tiene.</strong></h2>
+                                                    </div>
                                                     <div style="overflow: auto;">
                                                         <table id="tbl_B" class="data-table responsive nowrap table-bordered table-hover">
                                                             <thead>
@@ -224,7 +229,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">C) Las preguntas siguientes están relacionadas con el tiempo destinado a su trabajo y sus responsabilidades familiares.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>C) Las preguntas siguientes están relacionadas con el tiempo destinado a su trabajo y sus responsabilidades familiares.</strong></h2>
+                                                    </div>
                                                     <div style="overflow: auto;">
                                                         <table id="tbl_C" class="data-table responsive nowrap table-bordered table-hover">
                                                             <thead>
@@ -281,7 +288,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">D) Las preguntas siguientes están relacionadas con las decisiones que puede tomar en su trabajo.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>D) Las preguntas siguientes están relacionadas con las decisiones que puede tomar en su trabajo.</strong></h2>
+                                                    </div>
                                                     <div style="overflow: auto;">
                                                         <table id="tbl_D" class="data-table responsive nowrap table-bordered table-hover">
                                                             <thead>
@@ -347,7 +356,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">E) Las preguntas siguientes están relacionadas con la capacitación e información que recibe sobre su trabajo.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>E) Las preguntas siguientes están relacionadas con la capacitación e información que recibe sobre su trabajo.</strong></h2>
+                                                    </div>
                                                     <div style="overflow: auto;">
                                                         <table id="tbl_E" class="data-table responsive nowrap table-bordered table-hover">
                                                             <thead>
@@ -413,7 +424,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">F) Las preguntas siguientes se refieren a las relaciones con sus compañeros de trabajo y su jefe.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>F) Las preguntas siguientes se refieren a las relaciones con sus compañeros de trabajo y su jefe.</strong></h2>
+                                                    </div>
                                                     <div style="overflow: auto;">
                                                         <table id="tbl_F" class="data-table responsive nowrap table-bordered table-hover">
                                                             <thead>
@@ -551,7 +564,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">G) Las preguntas siguientes están relacionadas con la atención a clientes y usuarios.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>G) Las preguntas siguientes están relacionadas con la atención a clientes y usuarios.</strong></h2>
+                                                    </div>
                                                     <label>
                                                         En mi trabajo debo brindar servicio a clientes o usuarios:
                                                     </label>
@@ -617,7 +632,9 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="mb-4">
                                                     <hr>
-                                                    <h4 class="mt-3">H) Las siguientes preguntas están relacionadas con las actitudes de los trabajadores que supervisa.</h4>
+                                                    <div class="header">
+                                                        <h2><strong>H) Las siguientes preguntas están relacionadas con las actitudes de los trabajadores que supervisa.</strong></h2>
+                                                    </div>
                                                     <label>
                                                         Soy jefe de otros trabajadores:
                                                     </label>
@@ -683,7 +700,7 @@ if (empty($evaluacion)) { ?>
                                                 </div>
                                                 <div class="col-md-12 text-right">
                                                     <br>
-                                                    <button type="submit" class="btn btn-success"><b class="iconsminds-yes"></b> Guardar Evaluación</button> <br>
+                                                    <button type="submit" class="btn btn-round btn-success"><b class="iconsminds-yes"></b> Guardar Evaluación</button> <br>
                                                 </div>
                                             </form>
                                         </div>
@@ -698,22 +715,12 @@ if (empty($evaluacion)) { ?>
     </div>
 <?php } else {
     echo '
-        <div class="content card-box">
-            <div class="row">
+        <div class="content card">
+            <div class="row card-body">
                 <div class="col-md-4"></div>
                 <div class="col-md-4" style="margin-top: 9%;margin-bottom: 9%">
                     <div class="text-center">
-                        <svg id="Layer_1" class="svg-computer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 424.2 424.2">
-                            <style>
-                                .st0{fill:none;stroke:rgba(122,125,127,0.72);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-                            </style>
-                            <g id="Layer_2">
-                                <path class="st0" d="M339.7 289h-323c-2.8 0-5-2.2-5-5V55.5c0-2.8 2.2-5 5-5h323c2.8 0 5 2.2 5 5V284c0 2.7-2.2 5-5 5z"></path>
-                                <path class="st0" d="M26.1 64.9h304.6v189.6H26.1zM137.9 288.5l-3.2 33.5h92.6l-4.4-33M56.1 332.6h244.5l24.3 41.1H34.5zM340.7 373.7s-.6-29.8 35.9-30.2c36.5-.4 35.9 30.2 35.9 30.2h-71.8z"></path>
-                                <path class="st0" d="M114.2 82.8v153.3h147V82.8zM261.2 91.1h-147"></path>
-                                <path class="st0" d="M124.5 105.7h61.8v38.7h-61.8zM196.6 170.2H249v51.7h-52.4zM196.6 105.7H249M196.6 118.6H249M196.6 131.5H249M196.6 144.4H249M124.5 157.3H249M124.5 170.2h62.2M124.5 183.2h62.2M124.5 196.1h62.2M124.5 209h62.2M124.5 221.9h62.2"></path>
-                            </g>
-                        </svg>
+                        <div id="lottie-animation-no-disponible" style="width: 300px; height: 250px;"></div>
                         <h4 style="color: #001689">Esta evaluación ya fue realizada. </h4>
                     </div>
                 </div>
@@ -724,6 +731,13 @@ if (empty($evaluacion)) { ?>
 
 <script>
     $(document).ready(function(e) {
+        lottie.loadAnimation({
+            container: document.getElementById('lottie-animation-no-disponible'), // El contenedor donde se mostrará la animación
+            renderer: 'svg', // Tipo de renderizado, puede ser "svg", "canvas" o "html"
+            loop: true, // Si la animación debe reproducirse en bucle
+            autoplay: true, // Si la animación debe empezar automáticamente
+            path: "<?= base_url('/assets/images/evaluaciones/no_disponible.json') ?>", // Ruta del archivo JSON de la animación envuelta en comillas        
+        });
 
         $("#tablaGDiv").hide();
         $("#tablaJDiv").hide();

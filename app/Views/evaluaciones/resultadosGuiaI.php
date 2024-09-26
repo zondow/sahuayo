@@ -1,28 +1,30 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box">
-            <div class="row" style="padding-bottom: 1%">
-                <div class="col-md-12 text-left">
-                    <label>* Selecciona la sucursal</label>
-                    <select class="form-control select2-single" name="sucursal" id="sucursal" required>
-                        <?php foreach ($sucursales as $sucursal) { ?>
-                            <option value="<?= encryptDecrypt('encrypt', $sucursal['suc_SucursalID']) ?>"><?= $sucursal['suc_Sucursal'] ?></option>
-                        <?php } ?>
-                        <option value="<?= encryptDecrypt('encrypt', '0') ?>">TODAS</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row" style="padding-bottom: 4%">
-                <div class="col-md-12 text-left">
-                    <label>* Selecciona el periodo</label>
-                    <div class="input-daterange input-group" id="date-range">
-                        <input type="text" class="form-control" id="fInicio" name="fInicio" placeholder="Seleccione inicio " required>
-                        <input type="text" class="form-control" id="fFin" name="fFin" placeholder=" Seleccione fin " required>
+        <div class="card">
+            <div class="card-body">
+                <div class="row" style="padding-bottom: 1%">
+                    <div class="col-md-12 text-left">
+                        <label>* Selecciona la sucursal</label>
+                        <select class="select2" name="sucursal" id="sucursal" required>
+                            <?php foreach ($sucursales as $sucursal) { ?>
+                                <option value="<?= encryptDecrypt('encrypt', $sucursal['suc_SucursalID']) ?>"><?= $sucursal['suc_Sucursal'] ?></option>
+                            <?php } ?>
+                            <option value="<?= encryptDecrypt('encrypt', '0') ?>">TODAS</option>
+                        </select>
                     </div>
-                    <br>
-                    <div class="text-right">
-                        <button id="btn" name="btn" type="button" class="btn btn-success">Buscar</button>
+                </div>
+                <div class="row" style="padding-bottom: 4%">
+                    <div class="col-md-12 text-left">
+                        <label>* Selecciona el periodo</label>
+                        <div class="input-daterange input-group" id="date-range">
+                            <input type="text" class="form-control" id="fInicio" name="fInicio" placeholder="Seleccione inicio " required>
+                            <input type="text" class="form-control" id="fFin" name="fFin" placeholder=" Seleccione fin " required>
+                        </div>
+                        <br>
+                        <div class="text-right">
+                            <button id="btn" name="btn" type="button" class="btn btn-round btn-success">Buscar</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,8 +47,7 @@
                 </div>
 
                 <div class="file-man-title">
-                    <h5 class="mb-0 " style="overflow: hidden">Evaluaciones aplicadas Guia I
-                    </h5>
+                    <h5 class="mb-0 " style="overflow: hidden;color:#00acc1!important">Evaluaciones aplicadas Guia I</h5>
                 </div>
             </div>
         </div>
@@ -71,3 +72,13 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            //dropdownParent: $('#modalDiaInhabil .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
+    });
+</script>

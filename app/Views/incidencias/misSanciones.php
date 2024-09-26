@@ -42,8 +42,8 @@
 
                                     echo "<tr>
                                         <td>" . ++$count . "</td>
-                                        <td>{$acta['act_FechaRealizo']}</td>
-                                        <td>{$acta['act_FechaRegistro']}</td>
+                                        <td>".longDate($acta['act_FechaRealizo'], ' de ')."</td>
+                                        <td>".longDate($acta['act_FechaRegistro'], ' de ')."</td>
                                         <td>{$acta['act_Observaciones']}</td>
                                         <td>{$tipo}</td>
                                         <td>{$archivo}</td>

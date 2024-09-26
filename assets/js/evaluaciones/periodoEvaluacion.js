@@ -30,7 +30,7 @@ $(document).ready(function (e) {
                     tblPeriodos.ajax.reload();
                     modalPeriodo.modal('toggle');
                     Swal.fire({
-                        type: 'success',
+                        icon: 'success',
                         title: data.msg,
                         text: 'El perido de evaluación se registro correctamente y ' +
                             'se notifico a los colaboradores.',
@@ -107,11 +107,11 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "eva_EvaluacionID", render: function (data, type, row) { return acciones(data, type, row) } },
             { "data": "eva_Tipo" },
             { "data": "eva_FechaInicio" },
             { "data": "eva_FechaFin" },
             { "data": "estado" },
+            { "data": "eva_EvaluacionID", render: function (data, type, row) { return acciones(data, type, row) } },
         ],
         responsive: true,
         stateSave: false,
@@ -178,8 +178,8 @@ $(document).ready(function (e) {
         if (revisarPermisos('Baja', 'periodoEvaluacion'))
             if (row['eva_Estatus'] === 1) {
                 output += '<button type="button" data-id="' + row['eva_EvaluacionID'] + '"' +
-                    'class="btn btn-danger waves-effect btnEliminarPeriodo">' +
-                    '<i class="fa fa-trash "></i></button>';
+                    'class="btn btn-danger  btn-icon btn-icon-mini btn-round hidden-sm-down btnEliminarPeriodo">' +
+                    '<i class="zmdi zmdi-delete"></i></button>';
             }
         return output;
     }
@@ -195,9 +195,6 @@ $(document).ready(function (e) {
             allowToastClose: true,
         });
     }//showNotification
-
-
-    $(".select2").select2();
 
     $("#date-range").datepicker({
         daysOfWeekDisabled: [0],

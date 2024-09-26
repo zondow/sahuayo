@@ -1,7 +1,7 @@
 
 <div class="row  mb-3 text-right">
     <?php
-    if(revisarPermisos('Agregar',$this)) {?>
+    if(revisarPermisos('Agregar','instructores')) {?>
     <div class=" col-md-12 " >
         <a href="#" class="btn btn-success btn-round modalInst" ><i class="zmdi zmdi-plus"></i> Agregar </a>
 
@@ -28,7 +28,7 @@
                     <?php foreach ($instructores as $instructor) {
                         $style = '';
                         $estatus = '';
-                        if(revisarPermisos('Baja',$this)) {
+                        if(revisarPermisos('Baja','instructores')) {
                             if ($instructor['ins_Estatus'] == 1) {
                                 $estatus = '<a class="btn btn-icon btn-icon-mini btn-round btn-primary btnActivo" title="Click para cambiar estatus a inactivo" href="' . base_url("Catalogos/estatusInstructor/0/" . encryptDecrypt('encrypt',$instructor['ins_InstructorID']) ) . '"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
                             } else {
@@ -48,7 +48,7 @@
                             ?>
                             <td>
                                 <?php
-                                    if(revisarPermisos('Editar',$this)) {
+                                    if(revisarPermisos('Editar','instructores')) {
                                         echo '<a type = "button" class="btn btn-icon btn-icon-mini btn-round btn-info editarInstructor" data-id = "'.$instructor['ins_InstructorID'].'" style = "color:#FFFFFF" ><i class="zmdi zmdi-edit pt-2" ></i > </a >';
                                     }
                                     echo $estatus

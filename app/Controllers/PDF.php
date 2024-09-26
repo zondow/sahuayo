@@ -3191,7 +3191,7 @@ class PDF extends BaseController
 
         $pdf->SetFont('Arial', 'B', 12);
         //Nombre de la empresa
-        $empresaNombre = 'Alianza Cajas Populares ';
+        $empresaNombre = 'Alianza Cajas Populares Sahuayo';
         if ($sucursalNombre) {
             $empresaNombre .= '(Sucursal ' . $sucursalNombre . ')';
         }

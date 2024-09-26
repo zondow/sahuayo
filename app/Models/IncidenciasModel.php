@@ -301,31 +301,13 @@ class IncidenciasModel extends Model
         return $this->db->query("SELECT * FROM actaadministrativa WHERE act_ActaAdministrativaID=?",[(int)$actaID])->getRowArray();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Lia -> trae los empleados de su empresa
-    public function getEmpleados()
-    {
-        return $this->db->query("SELECT emp_EmpleadoID, emp_Nombre, emp_FechaIngreso, emp_Numero, suc_Sucursal FROM empleado JOIN sucursal ON emp_SucursalID=suc_SucursalID WHERE emp_Estatus = 1 ORDER BY emp_Nombre ASC ")->getResultArray();
-    } //end getEmpleados
-
-
-
-
-
+    public function getReporteVacacionesEmpleado(){
+        return db()->query("SELECT E.emp_Numero, E.emp_Nombre, GROUP_CONCAT(DISTINCT CONCAT_WS(' al ', V.vac_FechaInicio, V.vac_FechaFin) ORDER BY V.vac_FechaInicio SEPARATOR ', ') AS 'fechas', SUM(V.vac_Disfrutar) AS 'dias_totales', V.vac_Periodo
+        FROM vacacion V
+        JOIN empleado E ON E.emp_EmpleadoID = V.vac_EmpleadoID
+        WHERE V.vac_Estatus NOT IN ('RECHAZADO', 'DECLINADO') AND V.vac_Estado = 1
+        GROUP BY E.emp_Numero, E.emp_Nombre, V.vac_Periodo")->getResultArray();
+    }
 
 
     //Guarda los reportes de reportes de horas extra
@@ -397,7 +379,5 @@ class IncidenciasModel extends Model
 
         return ($consulta) ? $consulta->getResultArray() : null;
     } //end getReportesHorasExtras
-
-
 
 }

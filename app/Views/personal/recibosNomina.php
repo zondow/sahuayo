@@ -8,29 +8,33 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box">
-            <h4 class="header-title">Importar recibos de nómina</h4>
-            <form id="formRecibos" method="post" enctype="multipart/form-data">
-                <div class="row">
-                    <div class="form-group col-md-6" style="padding-bottom: 1%">
-                        <label>
-                            * Año:
-                        </label>
-                        <input name="year" id="year" class="form-control datepicker" placeholder="Seleccione ">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title">Importar recibos de nómina</h4>
+                <form id="formRecibos" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="form-group col-md-6" style="padding-bottom: 1%">
+                            <label>
+                                * Año:
+                            </label>
+                            <input name="year" id="year" class="form-control datepicker" placeholder="Seleccione ">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="quincena">* Quincena </label>
+                            <input type="text" class="form-control numeric" name="quincena" id="quincena" placeholder="Número de la quincena " required>
+                        </div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="quincena">* Quincena </label>
-                        <input type="text" class="form-control numeric" name="quincena" id="quincena" placeholder="Número de la quincena " required>
+                    <div class="form-group ">
+                        <div class="file-loading">
+                            <input id="fileZip" name="fileZip[]" type="file" class="file" multiple>
+                        </div>
                     </div>
+                </form>
+                <div class="text-right col-md-12">
+                    <a href="#" id="btnSubirRecibos" class="btn btn-success btn-round">Guardar</a>
                 </div>
-                <div class="form-group ">
-                    <div class="file-loading">
-                        <input id="fileZip" name="fileZip[]" type="file" class="file" multiple>
-                    </div>
-                </div>
-            </form>
-            <a href="#" id="btnSubirRecibos" class="btn btn-light">Guardar</a>
-        </div> <!-- end card-box -->
+            </div> <!-- end card-box -->
+        </div>
     </div> <!-- end col-->
 </div>
 
@@ -38,9 +42,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box">
-            <h4 class="header-title">Quincenas importadas</h4>
-            <div id="checklistEgreso"></div>
+        <div class="card">
+            <div class="card-box">
+                <h4 class="header-title">Quincenas importadas</h4>
+                <div id="checklistEgreso"></div>
+            </div>
         </div>
     </div>
 </div>

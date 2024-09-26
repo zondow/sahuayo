@@ -10,13 +10,10 @@ $(document).ready(function(e) {
             "processing": true,
         },
         columns: [
-            {
-                "data": "acciones", render: function (data, type, row) {
-                    return acciones(data, type, row)
-                }
-            },
+            
             { "data": "com_Asunto", render: function (data, type, row) {return vistoAsunto(data, type, row)}},
             { "data": "com_Fecha", render: function (data, type, row) {return vistoFecha(data, type, row)}},
+            { "data": "acciones", render: function (data, type, row) {return acciones(data, type, row)}},
         ],
         columnDefs: [
             {targets: 0, className: 'text-center'},
@@ -52,9 +49,9 @@ $(document).ready(function(e) {
 
     function acciones(data, type, row) {
         let button = '';
-        button += ' <a type="button" class="btn btn-warning waves-effect waves-light verComunicado" title="Ver comunicado" data-id="' + row['com_ComunicadoID'] + '" data-not="' + row['not_NotiComunicadoID'] + '" style="color:#FFFFFF"><i class="fa fa-eye"></i> </a>';
+        button += ' <button type="button" class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down verComunicado" title="Ver comunicado" data-id="' + row['com_ComunicadoID'] + '" data-not="' + row['com_ComunicadoID'] + '" style="color:#FFFFFF"><i class="zmdi zmdi-email-open"></i> </button>';
 
-        if(row['not_Enterado'] == 0) button += ' <a type="button" class="btn btn-success waves-effect waves-light enteradoComunicado" title="Marcar como enterado" data-id="' + row['not_NotiComunicadoID'] + '" style="color:#FFFFFF"><i class="zmdi zmdi-check"></i> </a>';
+        if(row['not_Enterado'] == 0) button += ' <button type="button" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down enteradoComunicado" title="Marcar como enterado" data-id="' + row['com_ComunicadoID'] + '" style="color:#FFFFFF"><i class="zmdi zmdi-check"></i> </button>';
         return button;
     }
 
@@ -77,10 +74,9 @@ $(document).ready(function(e) {
         evt.preventDefault();
 
         let comunicadoID=$(this).data('id');
-        let notificacionID=$(this).data('not');
-        let fd  = {"comunicadoID":comunicadoID,'notificacionID':notificacionID};
+        let fd  = {"comunicadoID":comunicadoID};
         $.ajax({
-            url: BASE_URL + "Comunicados/ajax_verComunicado",
+            url: BASE_URL + "Comunicados/ajax_verComunicadoColaborador",
             type: "POST",
             data: fd,
             success: function(data){

@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="ml-auto d-flex align-items-center">
                         <div class="mr-2">
-                            <?php if (revisarPermisos('Agregar', $this)) { ?>
+                            <?php if (revisarPermisos('Agregar', 'guardias')) { ?>
                                 <button id="addGuardia" class="btn btn-success btn-round">
                                     <i class="zmdi zmdi-plus"></i> Agregar
                                 </button>

@@ -41,6 +41,7 @@
                             <option value="" hidden>Seleccione</option>
                             <option value="0">Día completo</option>
                             <option value="1">Mediodía</option>
+                            <option value="2">Fecha Importante</option>
                         </select>
                     </div>
                     <br>
@@ -80,7 +81,7 @@
             <div class="modal-footer row">
                 <div class="col-md-12 text-right">
                     <button type="button" class="btn btn-round btn-light waves-effect " data-dismiss="modal">Cancelar</button>
-                    <?php if (revisarPermisos('Eliminar', $this)) { ?>
+                    <?php if (revisarPermisos('Eliminar', 'diasInhabiles')) { ?>
                         <div id="botonEliminar" name="botonEliminar">
                             <button type="button" id="deleteDiaIn" name="deleteDiaIn" class="btn btn-round btn-success waves-effect waves-light">Eliminar</button>
                         </div>

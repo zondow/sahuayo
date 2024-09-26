@@ -115,3 +115,36 @@ foreach ($result as $row) {
         ?>
     </ul>
 </li>
+<?php
+if (showMenu($incidencias)) :?>
+    <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Reportes</span> </a>
+        <ul class="ml-menu">
+            <?php
+            echo addMenuOption('reporteHorasVacacionesEmpleados','Incidencias', 'Vacaciones y Horas extra');
+            echo addMenuOption('reportePeriodo','Incidencias', 'Vacaciones (Periodo)');
+            ?>  
+        </ul>
+    </li>
+<?php endif; ?>
+<li class="header">Evaluaciones</li>
+<?php echo addMenuOptionSingle('periodoEvaluacion','Evaluaciones', 'Periodo de Evaluación','zmdi zmdi-time-restore'); ?>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-thumb-up-down"></i><span>Clima laboral</span> </a>
+    <ul class="ml-menu">
+        <li><a href="<?= base_url("Evaluaciones/evaluacionClimaLaboral") ?>">Realizar evalución</a></li>
+        <?php echo addMenuOption('resultadosClimaLaboral','Evaluaciones', 'Resultados') ?>
+    </ul>
+</li>
+<li><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-account-box"></i><span>NOM 035</span></a>
+    <ul class="ml-menu">
+        <li><a href="<?= base_url("Evaluaciones/nom035") ?>">Realizar evaluación</a></li>
+        <?php echo addMenuOption('resultadosGuiaI', 'Evaluaciones', 'Resultados de la guia I') ?>
+        <?php echo addMenuOption('resultadosGuiaII', 'Evaluaciones', 'Resultados de la guia II') ?>
+        <?php echo addMenuOption('resultadosGuiaIII', 'Evaluaciones', 'Resultados de la guia III') ?>
+
+    </ul>
+</li>
+<li class="header">Bienestar Laboral</li>
+<?php echo addMenuOptionSingle('comunicados','Comunicados','Gestión de comunicados','zmdi zmdi-edit'); ?>
+<li> <a href="<?= base_url("Comunicados/misComunicados") ?>"><i class="zmdi zmdi-email"></i><span>Mis comunicados</span></a></li>
+
+
