@@ -115,7 +115,7 @@ $(document).ready(function (e) {
                 button += '            <li><a href="' + BASE_URL + 'Personal/contrato/' + row['emp_EmpleadoID'] + '">Contrato</a></li>';
             }
             if (revisarPermisos('Onboarding', 'empleados')) {
-                button += '            <li><a href="' + BASE_URL + 'Personal/onboarding/' + row['emp_EmpleadoID'] + '">Onboarding (entrada)</a></li>';
+                button += '            <li><a class="onboarding" data-id="' + row['emp_EmpleadoID'] + '" href="#">Onboarding (entrada)</a></li>';
             }
             if (revisarPermisos('Expediente', 'empleados')) {
                 button += '            <li><a href="' + BASE_URL + 'Personal/expediente/' + row['emp_EmpleadoID'] + '/usuario">Expediente</a></li>';
@@ -138,7 +138,7 @@ $(document).ready(function (e) {
     }
 
     function foto(data,type,row) {
-        let foto ='<img src="' + row['emp_Foto'] + '" class="rounded-circle avatar" alt="">';
+        let foto ='<img src="' + row['emp_Foto'] + '" class="rounded-circle avatar" data-lightbox="' + row['emp_Foto'] + '" data-title="" alt="">';
         return foto;
     }
 
@@ -211,7 +211,7 @@ $(document).ready(function (e) {
         $("#modalFotoColaborador").modal("show");
     });
 
-    //Subir convocatoria
+    //Subir foto
     var bntGuardarFoto= $("#bntGuardarFoto");
     var frmFotoColaborador = $("#frmFotoColaborador");
 
@@ -237,7 +237,7 @@ $(document).ready(function (e) {
                 beforeSend: function () {
                     Swal.fire({
                         title: 'Guardando fotografía.',
-                        text: 'Por favor espere mientras guardamos la foto del empleado.',
+                        text: 'Por favor espere mientras se guarda la foto del colaborador.',
                         timer: 20000,
                         onBeforeOpen: () => {
                             Swal.showLoading()

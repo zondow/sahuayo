@@ -90,7 +90,7 @@ class PersonalModel extends Model
         $data['emp_HorarioID']=encryptDecrypt('encrypt',$data['emp_HorarioID']);
         $data['emp_Rol']=encryptDecrypt('encrypt',$data['emp_Rol']);
         $data['emp_SucursalID']=encryptDecrypt('encrypt',$data['emp_SucursalID']);
-        $data['emp_Municipio']=strtoupper(eliminar_acentos($data['emp_Municipio']));
+        
         return $data;
     }
 
@@ -190,7 +190,7 @@ class PersonalModel extends Model
         return $n;
     }//end getTotalChecklist
 
-    //HUGO -> Obtiene informacion del empleado
+    //Lia -> Obtiene informacion del empleado
     public function getColaboradorByID($empleadoID){
         $sql = "SELECT *
                 FROM empleado E
@@ -200,7 +200,7 @@ class PersonalModel extends Model
         return $this->db->query($sql,array(encryptDecrypt('decrypt',$empleadoID)))->getRowArray();
     }//getColaboradorByID
 
-    //HUGO -> Datos generales de entrevista de salida
+    //Lia -> Datos generales de entrevista de salida
     public function getDatosBajaEntrevista($bajaID){
         $sql = "SELECT
                   BA.baj_BajaEmpleadoID AS 'bajaID',
@@ -246,5 +246,17 @@ class PersonalModel extends Model
         }
         return $n;
     }//end getTotalChecklistSalida
+    public function getChecklistByEmpleado($empleadoID)
+    {
+        $responsable = json_encode([$empleadoID]);
+        return $this->db->query("SELECT GROUP_CONCAT(cat_Nombre SEPARATOR ', ') AS nombres FROM catalogochecklist WHERE JSON_CONTAINS(cat_ResponsableID, ?) AND cat_Estatus = 1", [$responsable])->getRowArray()['nombres'];
+    }
+    
+    public function getInfoEmpleadoByID($empleadoID){
+        return $empleado=$this->db->query("SELECT emp_EmpleadoID,emp_Nombre,pue_Nombre,dep_Nombre,emp_FechaIngreso,emp_Correo FROM empleado
+                LEFT JOIN puesto ON pue_PuestoID=emp_PuestoID
+                LEFT JOIN departamento ON dep_DepartamentoID=emp_DepartamentoID
+            WHERE emp_EmpleadoID=?",array($empleadoID))->getRowArray();
+    }
 
 }//end PersonalModel

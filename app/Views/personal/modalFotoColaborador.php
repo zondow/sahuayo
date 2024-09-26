@@ -26,8 +26,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                <button  type="button" id="bntGuardarFoto"  class="btn btn-success " >Guardar</button>
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-dark btn-round" data-dismiss="modal">Cancelar</button>
+                    <button  type="button" id="bntGuardarFoto"  class="btn btn-success btn-round" >Guardar</button>
+                </div>
             </div>
         </div>
     </div>

@@ -8,6 +8,7 @@ $(document).ready(function (e) {
         $("#spiner").hide();
     });
 
+ 
     $('body').on('click', '#btnGuardarEnviarAcceso', function(evt) {
         evt.preventDefault();
         $formulario = $("#formDatosAcceso");
@@ -24,24 +25,35 @@ $(document).ready(function (e) {
             contentType: false,
             dataType: "json",
             beforeSend: function () {
-                $("#btnGuardarEnviarAcceso").hide();
-                $("#spiner").show();
+                swal.fire({
+                    title: 'Enviando los accesos al colaborador.',
+                    text: 'Por favor espere mientras se envian el correo correspondiente.',
+                    timer: 20000,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                        timerInterval = setInterval(() => {
+                            Swal.getContent().querySelector('strong')
+                                .textContent = Swal.getTimerLeft();
+                        }, 1000);
+                    },
+                    onClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                });         
             }
         }).done(function (data){
             //location.reload()
             if(data.response === "success"){
 
-                $.toast({
-                    text: "Se envio un correo con los datos de acceso del colaborador.",
-                    icon: "success",
-                    loader: true,
-                    loaderBg: '#c6c372',
-                    position: 'top-right',
-                    allowToastClose : true,
+                swal.fire({
+                    title: "¡Se envio un correo con los datos de acceso del colaborador.!",
+                    text: "",
+                    icon: 'success',
+                }).then(() => {
+                    setTimeout(function (e) {
+                        location.reload();
+                    });
                 });
-                setTimeout(function (e) {
-                    location.reload();
-                }, 1200);
             } else {
                 $.toast({
                     text: "Ha ocurrido un error",
@@ -69,7 +81,7 @@ function ajaxInfoAccesoColaborador(colaboradorID){
 
         if(data.response === "success"){
             $("#emp_Correo").val(data.result.emp_Correo);
-            $("#emp_Passworde").val(data.result.emp_Password);
+            //$("#emp_Passworde").val(data.result.emp_Password);
             $("#idColabA").val(data.result.emp_EmpleadoID);
             $("#username").val(data.result.emp_Username);
         }
