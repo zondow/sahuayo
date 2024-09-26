@@ -65,7 +65,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label for="categoria">* Categoria</label>
-                            <select id="categoria" class="chosen-select" name="categoria">
+                            <select id="categoria" class="select2" name="categoria">
                                 <option hidden value="">Seleccione</option>
                                 <option value="Externos">Externos</option>
                                 <option value="Internos">Internos</option>
@@ -88,3 +88,13 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            dropdownParent: $('#modalExpediente .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
+    });
+</script>

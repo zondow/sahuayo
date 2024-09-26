@@ -118,9 +118,9 @@ $(document).ready(function (e) {
                 {
                     extend: 'excelHtml5',
                     title: 'Lista de participantes',
-                    text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                    text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                     titleAttr: "Exportar a excel",
-                    className: "btn l-slategray",
+                    className: "btn l-slategray btn-round",
                     autoFilter: true,
                     exportOptions: {
                         columns: ':visible'
@@ -129,9 +129,9 @@ $(document).ready(function (e) {
                 {
                     extend: 'pdfHtml5',
                     title: 'Lista de participantes',
-                    text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                    text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                     titleAttr: "Exportar a PDF",
-                    className: "btn l-slategray",
+                    className: "btn l-slategray btn-round",
                     orientation: 'landscape',
                     pageSize: 'LETTER',
                     exportOptions: {
@@ -141,7 +141,7 @@ $(document).ready(function (e) {
                 {
                     extend: 'colvis',
                     text: 'Columnas',
-                    className: "btn l-slategray",
+                    className: "btn l-slategray btn-round",
                 }
             ],
             language: {
@@ -186,7 +186,7 @@ $(document).ready(function (e) {
         var participanteID = $(this).data("id");
         Swal.fire({
             title: '<strong>Eliminar participante</strong>',
-            type: 'question',
+            icon: 'question',
             text: '¿Esta seguro que desea quitar el participante de la lista?',
             showCancelButton:true,
             closeOnConfirm: false,
@@ -312,7 +312,7 @@ $(document).ready(function (e) {
                     Swal.fire({
                         title: "¡Archivos guardados exitosamente!",
                         text: "",
-                        type: 'success',
+                        icon: 'success',
                     }).then(() => {
 
                         location.reload();
@@ -459,7 +459,7 @@ $(document).ready(function (e) {
                 $("#btnSaveAsistencia").html('<span class="fa fa-save"></span> Guardar');
                 if (data.code === 1){
                     Swal.fire({
-                        type: 'success',
+                        icon: 'success',
                         title: '',
                         text: 'Registro de asistencia guardado correctamente.',
                         showConfirmButton: true,
@@ -529,7 +529,7 @@ $(document).ready(function (e) {
                     swal.fire({
                         title: "¡Convocatoria guardada exitosamente!",
                         text: "",
-                        type: 'success',
+                        icon: 'success',
                     }).then(() => {
 
                         location.reload();

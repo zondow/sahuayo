@@ -152,8 +152,15 @@ class Access extends BaseController
                                 $account['loginType'] = TRUE;
                                 $this->session->set($account);
                                 $this->session->set($account['permisos']);
+                                $redirect_url = session()->get('redirect_url');
+                                session()->remove('redirect_url'); // Eliminar la URL de redirección
 
-                                return redirect()->to(base_url('Access/index'));
+                                if ($redirect_url) {
+                                    $redirect_url = str_replace('index.php/', '', $redirect_url);
+                                    return redirect()->to($redirect_url); // Redirigir a la página original
+                                } else {
+                                    return redirect()->to(base_url('Access/index')); // Redirigir al index
+                                }
                             } else {
                                 // Save new login attempt
                                 $accessModel->saveLoginAttempt($account['id'], $account['type'], 0);
@@ -186,36 +193,35 @@ class Access extends BaseController
     } //logOut
 
 
-    public function enviarAccesosMasivos(){
+    public function enviarAccesosMasivos()
+    {
 
         $subject = 'Bienvenido a THIGO';
 
-        $enviado=0; //Cambia a 0 cuando se envien correos
+        $enviado = 0; //Cambia a 0 cuando se envien correos
         $sql = "SELECT emp_Correo,emp_Nombre,emp_Username,pass FROM empleado WHERE emp_Estatus=1 AND emp_Estado='Activo'";
         $empleados = $this->db->query($sql)->getResultArray();
 
-        foreach ($empleados as $empleado){
+        foreach ($empleados as $empleado) {
 
-            if($empleado['emp_Correo'] !== ''){
+            if ($empleado['emp_Correo'] !== '') {
                 $data = array(
                     "nombre" => $empleado['emp_Nombre'],
                     "usuario" => $empleado['emp_Username'],
                     "pass" => $empleado['pass'],
                 );
-                if(sendMail($empleado['emp_Correo'], $subject, $data, "AccesosMasivos")){
+                if (sendMail($empleado['emp_Correo'], $subject, $data, "AccesosMasivos")) {
                     $enviado++;
                 }
-
             }
         }
-        if($enviado>0){
-           echo 'Enviado '.$enviado;
+        if ($enviado > 0) {
+            echo 'Enviado ' . $enviado;
         }
     }
 
-    function pass(){
+    function pass()
+    {
         echo encryptKey(1);
     }
-
-
 }

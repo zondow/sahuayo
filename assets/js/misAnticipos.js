@@ -43,9 +43,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Mis Anticipos',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -54,9 +54,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Mis Anticipos',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -66,7 +66,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -86,7 +86,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
@@ -144,7 +144,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Eliminar anticipo',
             text: '¿Esta seguro que desea eliminar el anticipo?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -186,13 +186,13 @@ $(document).ready(function (e) {
 
         var btnImprimir = ' <a href="' + urlImprimir +'"'+
             'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Solicitud de anticipo">'+
-            '<i class="dripicons-print"></i>&nbsp; Imprimir anticipo</a>';
+            '<i class="zmdi zmdi-local-printshop"></i>&nbsp; Imprimir anticipo</a>';
 
         var btnImprimirPagare = '';
         if(row.ant_Estado == 'AUTORIZADO_DIRECCION') {
             btnImprimirPagare = ' <a href="' + urlImprimirPagare + '"' +
                 'class="btn btn-warning btn-block waves-light waves-effect show-pdf" data-title="Pagaré">' +
-                '<i class="dripicons-print"></i>&nbsp; Imprimir pagaré</a>';
+                '<i class="zmdi zmdi-local-printshop"></i>&nbsp; Imprimir pagaré</a>';
         }
 
         var btnFiles = ' <button type="button" data-anticipo="'+data+'" data-estatus="'+row.ant_Estado+'" '+
@@ -202,7 +202,7 @@ $(document).ready(function (e) {
         var btnEliminar = '';
         if(row.ant_Estado == 'PENDIENTE') {
             btnEliminar = '<button type="button" class="btn btn-danger btn-block waves-light waves-effect btnEliminarAnticipo" ' +
-                'data-anticipo="'+data+'"><i class="dripicons-trash"></i>&nbsp; Eliminar</button>';
+                'data-anticipo="'+data+'"><i class="zmdi zmdi-delete"></i>&nbsp; Eliminar</button>';
 
         }//if
         return btnImprimir + btnImprimirPagare +btnFiles + btnEliminar;
@@ -285,7 +285,7 @@ $(document).ready(function (e) {
                 modalAddAnticipo.modal('toggle');
                 clear();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Anticipo registrado!',
                     text: 'El anticipo se guardó correctamente',
                     showConfirmButton: false,
@@ -310,11 +310,11 @@ $(document).ready(function (e) {
             dataType: 'json',
             data: {anticipoID:anticipoID}
         }).done(function(data){
-            button.html('<i class="dripicons-trash"></i>&nbsp; Eliminar');
+            button.html('<i class="zmdi zmdi-delete"></i>&nbsp; Eliminar');
             if (data.code === 1){
                 tblAnticipos.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Anticipo eliminado!',
                     text: 'El anticipo se eliminó correctamente',
                     showConfirmButton: false,
@@ -326,7 +326,7 @@ $(document).ready(function (e) {
         }).fail(function(data){
             showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
         }).always(function(e){
-            button.html('<i class="dripicons-trash"></i>&nbsp; Eliminar');
+            button.html('<i class="zmdi zmdi-delete"></i>&nbsp; Eliminar');
         });//ajax
 
     }//ajax_aplicarPermiso

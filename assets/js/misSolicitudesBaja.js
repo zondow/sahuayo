@@ -36,9 +36,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Mis solicitudes de baja',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -47,9 +47,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Mis solicitudes de baja',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -59,7 +59,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -79,7 +79,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
@@ -94,7 +94,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Eliminar solicitud de baja',
             text: '¿Esta seguro que desea eliminar la solicitud?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -110,7 +110,7 @@ $(document).ready(function (e) {
         var btnEliminar = '';
         if(row.baj_Estado == 'PENDIENTE') {
             btnEliminar = '<button type="button" class="btn btn-danger btn-block waves-light waves-effect btnEliminarBaja" ' +
-                'data-baja="'+data+'"><i class="dripicons-trash"></i>&nbsp; Eliminar</button>';
+                'data-baja="'+data+'"><i class="zmdi zmdi-delete"></i>&nbsp; Eliminar</button>';
         }//if
 
         var entrevista = parseInt(row.entrevista);
@@ -151,11 +151,11 @@ $(document).ready(function (e) {
             dataType: 'json',
             data: {bajaID:bajaID}
         }).done(function(data){
-            button.html('<i class="dripicons-trash"></i>&nbsp; Eliminar');
+            button.html('<i class="zmdi zmdi-delete"></i>&nbsp; Eliminar');
             if (data.code === 1){
                 tblMisBajas.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud eliminada!',
                     text: 'La solicitud de baja se eliminó correctamente',
                     showConfirmButton: false,
@@ -167,7 +167,7 @@ $(document).ready(function (e) {
         }).fail(function(data){
             showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
         }).always(function(e){
-            button.html('<i class="dripicons-trash"></i>&nbsp; Eliminar');
+            button.html('<i class="zmdi zmdi-delete"></i>&nbsp; Eliminar');
         });//ajax
 
     }//eliminarBaja

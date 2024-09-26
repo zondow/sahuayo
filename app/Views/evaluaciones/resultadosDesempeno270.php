@@ -60,7 +60,7 @@
                             html += '<tr>';
                             html += '<td> ' +
                                 '<a href="' + BASE_URL + "Evaluaciones/resultadoDesempeno270/" + value.evad_PeriodoID + "/" + value.evad_EmpleadoID + "/" + 1 + '" class="btn btn-success btn-block waves-light waves-effect"> ' +
-                                '<i class="dripicons-print"></i>&nbsp; Ver resultados ' +
+                                '<i class="zmdi zmdi-local-printshop"></i>&nbsp; Ver resultados ' +
                                 '</a> ' +
                                 '</td>';
                             html += '<td><b>' + value.eva_FechaRegistro + '</b></td>';
@@ -106,8 +106,8 @@
             $("#tPeriodos").DataTable({
                 language: {
                     paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
+                        previous: "<i class='zmdi zmdi-caret-left'>",
+                        next: "<i class='zmdi zmdi-caret-right'>"
                     },
                     "sProcessing": "Procesando...",
                     "sLengthMenu": "Mostrar _MENU_ registros",

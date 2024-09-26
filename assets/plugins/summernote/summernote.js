@@ -5780,7 +5780,7 @@
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
           return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
+                          '<i class="zmdi zmdi-check"></i> ' + v +
                         '</a></li>';
         }, '');
 

@@ -6,7 +6,7 @@ foreach ($result as $row) {
 ?>
 <li class="header">Inicio</li>
 <li class="active"> <a href="<?= base_url("Usuario/index") ?>"><i class="zmdi zmdi-home"></i><span>Dashboard</span></a></li>
-<?php if (showMenu($configuracion)) { ?>
+<?php if (showMenu($configuracion)) : ?>
     <li class="header">Configuracion y Catalogos</li>
     <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-settings"></i><span>Configuración</span> </a>
         <ul class="ml-menu">
@@ -22,7 +22,8 @@ foreach ($result as $row) {
 
         </ul>
     </li>
-<?php } ?>
+<?php endif; 
+    if(showMenu($catalogos)):?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
     <ul class="ml-menu">
         <?php
@@ -38,6 +39,7 @@ foreach ($result as $row) {
         ?>
     </ul>
 </li>
+<?php endif; ?>
 <li class="header">Personal</li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-accounts"></i><span>Colaboradores</span> </a>
     <ul class="ml-menu">
@@ -69,30 +71,47 @@ foreach ($result as $row) {
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-pin-assistant"></i><span>Asistencia</span> </a>
     <ul class="ml-menu">
-        <li><a href="sign-in.html">Sign In</a> </li>
-        <li><a href="sign-up.html">Sign Up</a> </li>
-        <li><a href="forgot-password.html">Forgot Password</a> </li>
-        <li><a href="404.html">Page 404</a> </li>
-        <li><a href="500.html">Page 500</a> </li>
-        <li><a href="page-offline.html">Page Offline</a> </li>
-        <li><a href="locked.html">Locked Screen</a> </li>
+    <?= addMenuOption('reporteAsistencia','Incidencias','Reporte de asistencia');?>
     </ul>
 </li>
+<?php if(in_array(session('id'),[7,19,41,50,105])): ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-time-countdown"></i><span>Horas Extra</span> </a>
     <ul class="ml-menu">
-        <li><a href="blank.html">Blank Page</a> </li>
-        <li> <a href="image-gallery.html">Image Gallery</a> </li>
-        <li><a href="profile.html">Profile</a></li>
-        <li><a href="timeline.html">Timeline</a></li>
-        <li><a href="pricing.html">Pricing</a></li>
-        <li><a href="invoices.html">Invoices</a></li>
-        <li><a href="search-results.html">Search Results</a></li>
+        <li><a href="<?= base_url("Incidencias/controlHorasExtra") ?>">Control de mis horas extra</a></li>
+        <?php
+        if (isJefe($this)) : ?> <li><a href="<?= base_url("Incidencias/horasExtraMisEmpleados") ?>">Autorizar Horas Extra</a></li> <?php endif;
+        echo addMenuOption('aplicarReporteHoras','Incidencias','Aplicar Horas Extra');
+        ?>
     </ul>
 </li>
+<?php endif; ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-car"></i><span>Salidas</span> </a>
     <ul class="ml-menu">
-        <li> <a href="google.html">Google Map</a> </li>
-        <li> <a href="yandex.html">YandexMap</a> </li>
-        <li> <a href="jvectormap.html">jVectorMap</a> </li>
+        <li><a href="<?= base_url("Incidencias/reporteSalidas") ?>">Mis salidas</a></li>
+        <?php if (isJefe($this)) { ?>
+            <li><a href="<?= base_url("Incidencias/informeSalidasMisEmpleados") ?>">Autorizar salidas</a></li>
+        <?php }
+        echo addMenuOption('aplicarInformeSalidas','Incidencias', 'Aplicar salidas');
+        ?>
+    </ul>
+</li>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-hospital-alt"></i><span>Incapacidades</span> </a>
+    <ul class="ml-menu">
+    <li><a href="<?= base_url("Incidencias/misIncapacidades") ?>">Mis incapacidades</a></li>
+        <?php if (isJefe($this)) { ?>
+            <li><a href="<?= base_url("Incidencias/incapacidadesMisEmpleados")?>">Incapacidades de Colaboradores</a></li>
+        <?php }
+        echo addMenuOption('incapacidad','Incidencias', 'Revisar Incapacidades');
+        ?>
+    </ul>
+</li>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-card-alert"></i><span>Sanciones</span> </a>
+    <ul class="ml-menu">
+    <li><a href="<?= base_url("Incidencias/misSanciones") ?>">Mis sanciones</a></li>
+        <?php if (isJefe($this)) { ?>
+            <li><a href="<?= base_url("Incidencias/sancionesMisEmpleados") ?>">Sanciones de Colaboradores</a></li>
+        <?php }
+        echo addMenuOption('sanciones','Incidencias', 'Crear sanciones');
+        ?>
     </ul>
 </li>

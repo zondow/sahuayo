@@ -1936,16 +1936,15 @@ class PDF extends BaseController
             switch($dias[$i]['socap']){
                 case 0: $socap = 'FEDERACION';break;
                 case 10001: $socap = 'OTRO';break;
-                //default: $socap = $this->db->query("SELECT coo_Sucursal FROM cooperativa WHERE coo_CooperativaID=" . (int)$dias[$i]['socap'])->getRowArray()['coo_Sucursal']; break;
                 default: $socap = $this->db->query("SELECT suc_Sucursal FROM sucursal WHERE suc_SucursalID=" . (int)$dias[$i]['socap'])->getRowArray()['suc_Sucursal']; break;
             }
 
             $pdf->SetXY(23, $y);
             $pdf->MultiCell(35, 10, utf8_decode($socap), 0, 'C');
             $pdf->SetXY(58, $y);
-            $pdf->Cell(27, 21, shortDate($dias[$i]['fecha']), 0, 0, 'C');
+            $pdf->Cell(27, 10, shortDate($dias[$i]['fecha']), 0, 0, 'C');
             $pdf->SetXY(85, $y);
-            $pdf->MultiCell(59, 21, utf8_decode($dias[$i]['objetivo']), 0, 'C');
+            $pdf->MultiCell(59, 5, utf8_decode($dias[$i]['objetivo']), 0, 'C');
             $pdf->SetXY(145, $y);
             $pdf->MultiCell(58, 5, utf8_decode($dias[$i]['logros']), 0, 'J');
             $y += 20;
@@ -1972,7 +1971,7 @@ class PDF extends BaseController
             $builder = db()->table("empleado");
             $jefe = $builder->getWhere(array("emp_Numero" => $informe['emp_Jefe']))->getRowArray()['emp_Nombre'];
             $pdf->SetXY(37, 135);
-            $pdf->MultiCell(58, 5, utf8_decode($jefe), 1, 'C');
+            $pdf->MultiCell(58, 5, utf8_decode($jefe), 0, 'C');
         }
 
         //Firma CH

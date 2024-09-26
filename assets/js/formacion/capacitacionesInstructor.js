@@ -7,9 +7,9 @@ $(document).ready(function(e) {
             {
                 extend: 'excelHtml5',
                 title: 'Capacitaciones',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -18,9 +18,9 @@ $(document).ready(function(e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Capacitaciones',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -30,7 +30,7 @@ $(document).ready(function(e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language:
@@ -54,8 +54,8 @@ $(document).ready(function(e) {
                 "oPaginate": {
                     "sFirst":    "Primero",
                     "sLast":     "Último",
-                    "sPrevious":     "<i class='mdi mdi-chevron-left'>",
-                    "sNext": "<i class='mdi mdi-chevron-right'>"
+                    "sPrevious":     "<i class='zmdi zmdi-caret-left'>",
+                    "sNext": "<i class='zmdi zmdi-caret-right'>"
                 },
             },
         drawCallback:function(){

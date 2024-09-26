@@ -4,8 +4,8 @@ $(document).ready(function (e) {
         language:
         {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             "sProcessing": "Procesando...",
             "sLengthMenu": "Mostrar _MENU_ registros",
@@ -22,7 +22,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst": "Primero",
                 "sLast": "Último",
-                "sNext": "<i class='mdi mdi-chevron-right'>",
+                "sNext": "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
@@ -213,7 +213,7 @@ $(document).ready(function (e) {
         }).done(function (data) {
             if (data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: data.mensaje,
                     text: data.mensaje,
                     showConfirmButton: false,
@@ -299,7 +299,7 @@ $(document).ready(function (e) {
             //$("body").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Seleccionando...');
             if (data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: data.mensaje,
                     text: data.mensaje,
                     showConfirmButton: false,
@@ -344,7 +344,7 @@ $(document).ready(function (e) {
         }).done(function (data) {
             if (data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: data.mensaje,
                     text: data.mensaje,
                     showConfirmButton: false,
@@ -385,7 +385,7 @@ $(document).ready(function (e) {
         }).done(function (data) {
             if (data.code === 1) {
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: data.mensaje,
                     text: data.mensaje,
                     showConfirmButton: false,

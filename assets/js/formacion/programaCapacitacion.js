@@ -31,9 +31,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Matriz de capacitación',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -42,9 +42,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Matriz de capacitación',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -54,14 +54,14 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language:
         {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             "sProcessing": "Procesando...",
             "sLengthMenu": "Mostrar _MENU_ registros",
@@ -79,7 +79,7 @@ $(document).ready(function (e) {
                 "sFirst": "Primero",
                 "sLast": "Último",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>",
-                "sNext": "<i class='mdi mdi-chevron-right'>"
+                "sNext": "<i class='zmdi zmdi-caret-right'>"
             },
         },
         drawCallback: function () {
@@ -321,7 +321,7 @@ $(document).ready(function (e) {
 
         Swal.fire({
             title: '<strong>Confirmación</strong>',
-            type: 'question',
+            icon: 'question',
             text: '¿Esta seguro que desea publicar la convocatoria?',
             showCancelButton: true,
             closeOnConfirm: false,
@@ -362,7 +362,7 @@ $(document).ready(function (e) {
                 swal.fire({
                     title: "¡Convocatoria enviada exitosamente!",
                     text: "",
-                    type: 'success',
+                    icon: 'success',
                 }).then(() => {
 
                     location.reload();
@@ -423,7 +423,7 @@ $(document).ready(function (e) {
 
         Swal.fire({
             title: '<strong>Confirmación</strong>',
-            type: 'question',
+            icon: 'question',
             text: '¿Esta seguro que desea finalizar la capacitacion?',
             showCancelButton: true,
             closeOnConfirm: false,
@@ -447,7 +447,7 @@ $(document).ready(function (e) {
                 swal.fire({
                     title: "¡Capacitacion Finalizada!",
                     text: "",
-                    type: 'success',
+                    icon: 'success',
                 }).then(() => {
                     location.reload();
                 });

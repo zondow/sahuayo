@@ -15,7 +15,7 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "per_PermisoID",render: function(data,type,row){return accionesPermisosAplicar(data,type,row)}},
+            { "data": "num"},
             { "data": "emp_Nombre"},
             { "data": "suc_Sucursal"},
             { "data": "tipoPermiso"},
@@ -25,7 +25,8 @@ $(document).ready(function (e) {
             { "data": "per_DiasSolicitados"},
             { "data": "per_TipoPermiso"},
             { "data": "per_Justificacion"},
-            { "data": "per_Estado",render: function (data,type,row) {return estatusPermisoAplicar(data)}}
+            { "data": "per_Estado",render: function (data,type,row) {return estatusPermisoAplicar(data)}},
+            { "data": "per_PermisoID",render: function(data,type,row){return accionesPermisosAplicar(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -39,9 +40,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Permisos aplicados',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -50,9 +51,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Permisos aplicados',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -62,7 +63,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -97,7 +98,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Aplicar solicitud',
             text: '¿Esta seguro que desea aplicar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -113,7 +114,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Rechazar solicitud',
             text: '¿Esta seguro que desea rechazar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -129,7 +130,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Declinar solicitud',
             text: '¿Esta seguro que desea declinar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -145,23 +146,23 @@ $(document).ready(function (e) {
     function accionesPermisosAplicar(data,type,row){
         var urlImprimir = BASE_URL+'PDF/imprimirPermiso/'+data;
 
-        var btnImprimir = ' <a href="' + urlImprimir +'"'+
-            'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Solicitud de permiso" title="Formato de solicitud">'+
-            '<i class="dripicons-print"></i></a>';
+        var btnImprimir = ' <button href="' + urlImprimir +'"'+
+            'class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down waves-light waves-effect show-pdf" data-title="Solicitud de permiso" title="Formato de solicitud">'+
+            '<i class="zmdi zmdi-local-printshop"></i></button>';
 
 
         var autorizaciones = '';
         var estatus = row.per_Estado;
         if(estatus == 'AUTORIZADO_JEFE'){
-            autorizaciones = '<a href="#" data-permiso="'+data+'" class="btn btn-success btn-block btnAplicarPermiso" title="Aplicar">' +
-            '<i class="fa fa-check"></i></a>';
-            autorizaciones += '<a href="#" data-permiso="'+data+'" class="btn btn-danger btn-block btnRechazarPermiso" title="Rechazar">' +
-                '<i class="fa fa-times "></i></a>';
+            autorizaciones = '<button href="#" data-permiso="'+data+'" class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down btnAplicarPermiso" title="Aplicar">' +
+            '<i class="zmdi zmdi-check"></i></button>';
+            autorizaciones += '<button href="#" data-permiso="'+data+'" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down btnRechazarPermiso" title="Rechazar">' +
+                '<i class="zmdi zmdi-close"></i></button>';
         }
 
         if(row.per_Estado == 'AUTORIZADO_RH'){
-            autorizaciones += '<a href="#" data-permiso="'+data+'" class="btn btn-dark btn-block btnDeclinarPermiso" title="Declinar">' +
-                '<i class="mdi mdi-diameter-variant "></i></a>';
+            autorizaciones += '<button href="#" data-permiso="'+data+'" class="btn btn-dark btn-icon btn-icon-mini btn-round hidden-sm-down btnDeclinarPermiso" title="Declinar">' +
+                '<i class="zmdi zmdi-minus-circle"></i></button>';
         }
 
         return btnImprimir + autorizaciones;
@@ -183,7 +184,6 @@ $(document).ready(function (e) {
     }//estatusPermisoAutorizar
 
     function ajax_aplicarPermiso(permisoID,button){
-        button.html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Aplicando...');
 
         $.ajax({
             url: BASE_URL+'Incidencias/ajax_aplicarPermiso',
@@ -192,7 +192,6 @@ $(document).ready(function (e) {
             dataType: 'json',
             data: {permisoID:permisoID}
         }).done(function(data){
-            button.html('<i class="fe-check-circle"></i>&nbsp; Aplicar');
             if (data.code === 1){
                 tblPermisos.ajax.reload();
                 Swal.fire({
@@ -208,13 +207,11 @@ $(document).ready(function (e) {
         }).fail(function(data){
             showNotification("error","Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.","top");
         }).always(function(e){
-            button.html('<i class="fe-check-circle"></i>&nbsp; Aplicar');
         });//ajax
 
     }//ajax_aplicarPermiso
 
     function ajax_rechazarPermiso(permisoID,button){
-        button.html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Rechazando...');
 
         $.ajax({
             url: BASE_URL+'Incidencias/ajax_rechazarPermiso',
@@ -243,7 +240,6 @@ $(document).ready(function (e) {
     }//ajax_rechazarPermiso
 
     function ajax_DeclinarPermiso(permisoID,obs){
-        $("#btnDeclinarPermiso").html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Declinando...');
 
         if(obs !== ""){
             $.ajax({

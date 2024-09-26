@@ -22,7 +22,7 @@
                                         <?php $urlcv = CVCandidato($candidato['can_SolicitudPersonalID'], $candidato['can_CandidatoID']); ?>
                                         <tr>
                                         <td>
-                                                        <div style="width: 50%;"> <a type="button" href="<?= $urlcv[0] ?>" class="btn btn-info waves-effect waves-light show-pdf btn-block mb-1" data-title="CV de <?= strtoupper($candidato['can_Nombre']) ?>" style="color:#FFFFFF;" title="Ver CV"><i class="dripicons-print" style="font-size: 12px"></i></a></div>
+                                                        <div style="width: 50%;"> <a type="button" href="<?= $urlcv[0] ?>" class="btn btn-info waves-effect waves-light show-pdf btn-block mb-1" data-title="CV de <?= strtoupper($candidato['can_Nombre']) ?>" style="color:#FFFFFF;" title="Ver CV"><i class="zmdi zmdi-local-printshop" style="font-size: 12px"></i></a></div>
                                                         <div style="width: 50%;"> <a type="button" class="btn btn-dark waves-effect waves-light observacionesBtn btn-block mb-1" data-id="<?= encryptDecrypt('encrypt', $candidato['can_CandidatoID']) ?>" style="color:#FFFFFF;" title="Agregar Observaciones"><i class=" dripicons-blog" style="font-size: 12px"></i></a></div>
                                                         <div style="width: 50%;"> <a type="button" class="btn btn-success waves-effect waves-light cambioSolicitudBtn btn-block" data-id="<?= encryptDecrypt('encrypt', $candidato['can_CandidatoID']) ?>" style="color:#FFFFFF;" title="Agregar a nueva solicitud"><i class=" dripicons-plus" style="font-size: 12px"></i></a></div>
                                                     </td>

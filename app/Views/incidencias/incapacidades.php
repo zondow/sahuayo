@@ -1,110 +1,87 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
-<style>
-    .btn-secondary {
-        background-color: #f8e018 !important;
-        border: #f8e018 !important;
-        color: #fff !important;
-    }
-
-    .btn-light {
-        background-color: #e3eaef !important;
-        border: #e3eaef !important;
-        color: #313a46 !important;
-    }
-</style>
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box">
-            <!-- end row -->
-
-            <div class="col-md-12">
-                <div class="mb-2  ">
-                    <button class="btn btn-success waves-effect waves-light mb-4" type="button" data-toggle="modal" data-target="#modalAddIncapacidad"><b class="dripicons-plus"></b> Registrar incapacidad</button>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-round btn-success waves-effect waves-light mb-4" type="button" data-toggle="modal" data-target="#modalAddIncapacidad">
+                        <b class="dripicons-plus"></b> Registrar incapacidad
+                    </button>
                 </div>
-            </div>
+                <div class="table-responsive">
+                    <table id="datatableIncapacidades" class="table mt-4 table-hover m-0 table-centered tickets-list table-actions-bar">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Folio</th>
+                                <th>Tipo</th>
+                                <th>Fecha de registro</th>
+                                <th>Colaborador</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th>Días</th>
+                                <th>Descripción</th>
+                                <th>Estatus</th>
+                                <th>Justificación</th>
+                                <th width="5%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($incapacidades)) {
+                                $count = 0;
+                                foreach ($incapacidades as $incapacidad) {
+                                    $dir = base_url() . "/assets/uploads/incapacidades/" . $incapacidad['inc_EmpleadoID'] . "/" . $incapacidad['inc_Archivo'];
+                                    $ext = pathinfo($incapacidad['inc_Archivo'], PATHINFO_EXTENSION);
 
-            <div class="table-responsive">
-                <table id="datatableIncapacidades" class="table mt-4 table-hover m-0 table-centered tickets-list table-actions-bar ">
-                    <thead>
-                        <tr>
-                            <th width="5%">Acciones</th>
-                            <th>#</th>
-                            <th>Folio</th>
-                            <th>Tipo</th>
-                            <th>Fecha de registro</th>
-                            <th>Inicio</th>
-                            <th>Fin</th>
-                            <th>Días</th>
-                            <th>Descripción</th>
-                            <th>Estatus</th>
-                            <th>Justificación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (!empty($incapacidades)) {
-                            $count = 0;
-                            foreach ($incapacidades as $incapacidad) {
-                                $dir = base_url() . "/assets/uploads/incapacidades/" . $incapacidad['inc_EmpleadoID'] . "/" . $incapacidad['inc_Archivo'];
-                                if (substr($incapacidad['inc_Archivo'], -3) == "pdf") {
-                                    $archivo = '<a href="' . $dir . '" class="btn btn-info waves-light btn-block waves-effect show-pdf" data-title="Imprimir comprobante incapacidad" style="color: white" title="Imprimir comprobante" ><i class="dripicons-print"></i></a>';
-                                } else if (substr($incapacidad['inc_Archivo'], -3) == "jpg") {
-                                    $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver incapacidad" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir comprobante"><i class="dripicons-print"></i></a>';
-                                } else if (substr($incapacidad['inc_Archivo'], -3) == "png") {
-                                    $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver incapacidad" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir comprobante" ><i class="dripicons-print"></i></a>';
-                                } else if (substr($incapacidad['inc_Archivo'], -4) == "jpeg") {
-                                    $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver incapacidad" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir comprobante"><i class="dripicons-print"></i></a>';
-                                } else $archivo = '';
+                                    // Definir acciones para archivos
+                                    $archivo = '';
+                                    if (in_array($ext, ['pdf', 'jpg', 'png', 'jpeg'])) {
+                                        $archivo = '<button href="' . $dir . '" class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down ' . ($ext === 'pdf' ? 'show-pdf' : '') . '" ' . ($ext !== 'pdf' ? 'onclick="verImagen(\'' . $dir . '\', \'' . $ext . '\')"' : '') . ' style="color: white" title="Imprimir comprobante" data-title="Ver incapacidad">
+                                                        <i class="zmdi zmdi-local-printshop"></i>
+                                                    </button>';
+                                    }
 
-                        ?>
-                                <tr>
-                                    <td>
-                                        <?php
-                                        if ($incapacidad['inc_Estatus'] == 'Pendiente') {
-                                            if ((int)session("id") == (int)$incapacidad['inc_EmpleadoID']) { ?>
-                                                <a href="#" data-id="<?= encryptDecrypt('encrypt', $incapacidad['inc_IncapacidadID']) ?>" class="btn btn-warning btn-block waves-light btn-small waves-effect borrarIncapacidad" style="color: white" title="Eliminar"><i class="dripicons-trash"></i></a>
-                                        <?php   }
-                                        }
-                                        ?>
-                                        <?= $archivo ?>
-                                    </td>
-                                    <td><?= $count += 1 ?></td>
-                                    <td><?= $incapacidad['inc_Folio'] ?></td>
-                                    <td><?= $incapacidad['inc_Tipo'] ?></td>
-                                    <td><?= $incapacidad['inc_FechaRegistro'] ?></td>
-                                    <?php if (revisarPermisos('Autorizar', $this)) { ?>
-                                        <td><?= $incapacidad['emp_Nombre'] ?></td>
-                                    <?php } ?>
-                                    <td><?= $incapacidad['inc_FechaInicio'] ?></td>
-                                    <td><?= $incapacidad['inc_FechaFin'] ?></td>
-                                    <td><?= $incapacidad['inc_Dias'] ?></td>
-                                    <td><?= $incapacidad['inc_Motivos'] ?></td>
-                                    <?php
-                                    if ($incapacidad['inc_Estatus'] == 'Pendiente') {
-                                        $badgeColor = 'badge badge-info';
-                                        $titulo = 'PENDIENTE DE REVISIÓN';
-                                    } elseif ($incapacidad['inc_Estatus'] === 'Autorizada') {
-                                        $badgeColor = 'badge badge-success';
-                                        $titulo = 'AUTORIZADA';
-                                    } elseif ($incapacidad['inc_Estatus'] === 'Rechazada') {
-                                        $badgeColor = 'badge badge-danger';
-                                        $titulo = 'RECHAZADA';
-                                    } ?>
-                                    <td>
-                                        <span class="<?= $badgeColor ?>"><?= $titulo ?></span>
-                                    </td>
-                                    <td><?= $incapacidad['inc_Justificacion'] ?></td>
-
-                                </tr>
-                        <?php }
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                                    // Definir estatus y estilos de badge
+                                    $statusMap = [
+                                        'Pendiente' => ['badge-info', 'PENDIENTE DE REVISIÓN'],
+                                        'Autorizada' => ['badge-success', 'AUTORIZADA'],
+                                        'Rechazada' => ['badge-danger', 'RECHAZADA']
+                                    ];
+                                    list($badgeColor, $titulo) = $statusMap[$incapacidad['inc_Estatus']] ?? ['', ''];
+                            ?>
+                                    <tr>
+                                        <td><?= ++$count ?></td>
+                                        <td><?= $incapacidad['inc_Folio'] ?></td>
+                                        <td><?= $incapacidad['inc_Tipo'] ?></td>
+                                        <td><?= shortDate($incapacidad['inc_FechaRegistro'], ' de ') ?></td>
+                                        <?php if (revisarPermisos('Autorizar', 'incapacidad')) { ?>
+                                            <td><?= $incapacidad['emp_Nombre'] ?></td>
+                                        <?php } ?>
+                                        <td><?= shortDate($incapacidad['inc_FechaInicio'], ' de ') ?></td>
+                                        <td><?= shortDate($incapacidad['inc_FechaFin'], ' de ') ?></td>
+                                        <td><?= $incapacidad['inc_Dias'] ?></td>
+                                        <td><?= $incapacidad['inc_Motivos'] ?></td>
+                                        <td><span class="badge <?= $badgeColor ?>"><?= $titulo ?></span></td>
+                                        <td><?= $incapacidad['inc_Justificacion'] ?></td>
+                                        <td>
+                                            <?php if ($incapacidad['inc_Estatus'] == 'Pendiente' && (int)session("id") === (int)$incapacidad['inc_EmpleadoID']) { ?>
+                                                <button href="#" data-id="<?= encryptDecrypt('encrypt', $incapacidad['inc_IncapacidadID']) ?>" class="btn btn-danger btn-icon btn-icon-mini btn-round hidden-sm-down borrarIncapacidad" style="color: white" title="Eliminar">
+                                                    <i class="zmdi zmdi-delete"></i>
+                                                </button>
+                                            <?php } ?>
+                                            <?= $archivo ?>
+                                        </td>
+                                    </tr>
+                            <?php }
+                            } ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <!--------------- Modal  ----------------->
 <div id="modalAddIncapacidad" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -130,7 +107,7 @@
                     </div>
                     <div class="form-group">
                         <label for="tipoEnfermedad" class="col-form-label">*Tipo de incapacidad</label>
-                        <select name="tipoEnfermedad" id="tipoEnfermedad" class="form-control " data-placeholder="Seleccione" required>
+                        <select name="tipoEnfermedad" id="tipoEnfermedad" class="select2" data-placeholder="Seleccione" required>
                             <option value="" hidden>Seleccione</option>
                             <option value="ENFERMEDAD GENERAL">Enfermedad general</option>
                             <option value="RIESGO TRABAJO">Enfermedad por riesgo de trabajo</option>
@@ -147,11 +124,41 @@
                         <input type="file" class="input-filestyle" id="archivo" name="archivo" accept="image/png, image/jpeg, .pdf" required="required">
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer text-right">
                     <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">Guardar</button>
+                    <button type="submit" class="btn btn-success waves-effect waves-light">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Ver imagen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid" alt="Imagen">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            dropdownParent: $('#modalAddIncapacidad .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
+    });
+</script>

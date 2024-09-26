@@ -36,9 +36,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Mis solicitudes de baja',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -47,9 +47,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Mis solicitudes de baja',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -59,7 +59,7 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
@@ -79,7 +79,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst":    "Primero",
                 "sLast":     "Último",
-                "sNext":    "<i class='mdi mdi-chevron-right'>",
+                "sNext":    "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
@@ -94,7 +94,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Rechazar baja',
             text: '¿Esta seguro que desea rechazar la solicitud?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -110,7 +110,7 @@ $(document).ready(function (e) {
         Swal.fire({
             title: 'Autorizar baja',
             text: '¿Esta seguro que desea autorizar la solicitud?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
@@ -128,10 +128,10 @@ $(document).ready(function (e) {
 
         if(row.baj_Estado == 'PENDIENTE') {
             btnRechazar = '<button type="button" class="btn btn-danger btn-block waves-light waves-effect btnRechazarBaja" ' +
-                'data-baja="' + data + '"><i class="fa fa-times"></i>&nbsp; Rechazar</button>';
+                'data-baja="' + data + '"><i class="zmdi zmdi-close"></i>&nbsp; Rechazar</button>';
 
             btnAutorizar = '<button type="button" class="btn btn-success btn-block waves-light waves-effect btnAutorizarBaja" ' +
-                'data-baja="' + data + '"><i class="fa fa-check"></i>&nbsp; Autorizar</button>';
+                'data-baja="' + data + '"><i class="zmdi zmdi-check"></i>&nbsp; Autorizar</button>';
         }//if
 
         if(isNaN(entrevista) || entrevista == 0){
@@ -173,7 +173,7 @@ $(document).ready(function (e) {
             if (data.code === 1){
                 tblBajas.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud rechazada!',
                     text: 'La solicitud de baja se rechazó correctamente',
                     showConfirmButton: false,
@@ -201,7 +201,7 @@ $(document).ready(function (e) {
             if (data.code === 1){
                 tblBajas.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud autorizada!',
                     text: 'La solicitud de baja se autorizó correctamente',
                     showConfirmButton: false,

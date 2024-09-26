@@ -104,7 +104,7 @@
 
                                                     if ($participantes > 0) { ?>
                                                         <a href="#" class="btn btn-success mb-1 btn-block waves-light waves-effect btnEnviarConvocatoriaCap" data-id="<?= $capacitacion['cap_CapacitacionID'] ?>" type="button" title="Enviar convocatoria" style="color:#fff">
-                                                            <i class="mdi mdi-send"></i>
+                                                            <i class="zmdi zmdi-mail-send"></i>
                                                         </a>
 
                                                 <?php }

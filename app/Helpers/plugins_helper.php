@@ -5,7 +5,7 @@ defined('WRITEPATH') or exit('No direct script access allowed');
 function load_plugins($plugins, &$data)
 {
     foreach ($plugins as $plugin) {
-        $function_name = 'load_' . $plugin;
+        $function_name = 'load_' . trim(strtolower($plugin));
         if (function_exists($function_name)) {
             call_user_func_array($function_name, array(&$data));
         }
@@ -176,6 +176,16 @@ function load_daterangepicker(&$data)
     $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
     $data['scripts'][] = base_url('assets/libs/bootstrap-daterangepicker/daterangepicker.js');
     $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
+}
+
+function load_timepicker(&$data){
+    $data['styles'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.css');
+    $data['scripts'][] = base_url('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js');
+}
+
+function load_bootstrapdatetimepicker(&$data){
+    $data['styles'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css');
+    $data['scripts'][] = base_url('assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js');
 }
 
 function load_spinkit(&$data){

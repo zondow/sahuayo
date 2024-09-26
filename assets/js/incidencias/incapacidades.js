@@ -25,9 +25,9 @@ $(document).ready(function (e) {
             {
                 extend: 'excelHtml5',
                 title: 'Incapacidades',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -36,9 +36,9 @@ $(document).ready(function (e) {
             {
                 extend: 'pdfHtml5',
                 title: 'Incapacidades',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -48,13 +48,13 @@ $(document).ready(function (e) {
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
@@ -68,7 +68,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst": "Primero",
                 "sLast": "Último",
-                "sNext": "<i class='mdi mdi-chevron-right'>",
+                "sNext": "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
@@ -125,3 +125,11 @@ $(document).ready(function (e) {
         });//ajax
     }
 });
+function verImagen(url, ext) {
+    if (['jpg', 'jpeg', 'png', 'peg'].includes(ext)) {
+        // Cambiar la fuente de la imagen en el modal
+        $("#modalImage").attr("src", url);
+        // Mostrar el modal
+        $("#imageModal").modal('show');
+    }
+}

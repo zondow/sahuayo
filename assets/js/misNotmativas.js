@@ -27,8 +27,8 @@ $(document).ready(function (e) {
         stateSave: false,
         language: {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
@@ -42,7 +42,7 @@ $(document).ready(function (e) {
             "oPaginate": {
                 "sFirst": "Primero",
                 "sLast": "Último",
-                "sNext": "<i class='mdi mdi-chevron-right'>",
+                "sNext": "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
@@ -55,7 +55,7 @@ $(document).ready(function (e) {
         let button = '';
         button += ' <a type="button" class="btn btn-secondary waves-effect waves-light cambiosPolitica" title="Historial de cambios" data-id="' + row['id'] + '" style="color:#FFFFFF"><i class=" fas fa-history"></i> </a><br>';
         if (row['enterado'] == 0)
-            button += ' <a type="button" class="btn btn-success waves-effect waves-light enteradoPolitica" title="Marcar como enterado" data-id="' + row['idNoti'] + '" style="color:#FFFFFF"><i class="fa fa-check"></i> </a>';
+            button += ' <a type="button" class="btn btn-success waves-effect waves-light enteradoPolitica" title="Marcar como enterado" data-id="' + row['idNoti'] + '" style="color:#FFFFFF"><i class="zmdi zmdi-check"></i> </a>';
         return button;
     }
 

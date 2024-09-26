@@ -107,13 +107,13 @@
                                         } else {
                                             echo '<a href="' . base_url("PDF/imprimirEntrevistaSalida/" . $entrevistaSalida['ent_EntrevistaSalidaID']) . '"
                                                         class="btn btn-blue btn-block waves-light waves-effect show-pdf" data-title="Entrevista de salida">
-                                                        <i class="dripicons-print"></i>&nbsp; Imprimir entrevista de salida
+                                                        <i class="zmdi zmdi-local-printshop"></i>&nbsp; Imprimir entrevista de salida
                                                       </a>';
                                         }
 
                                         echo '<a href="' . base_url("PDF/imprimirHojaLiberacion/" .  $colaboradorbaja['baj_BajaEmpleadoID']) . '"
                                                         class="btn btn-primary btn-block waves-light waves-effect show-pdf" data-title="Hoja de liberación">
-                                                        <i class="dripicons-print"></i>&nbsp; Imprimir hoja de liberación
+                                                        <i class="zmdi zmdi-local-printshop"></i>&nbsp; Imprimir hoja de liberación
                                                     </a>';
                                         ?>
 

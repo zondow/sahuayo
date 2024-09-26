@@ -25,13 +25,14 @@
             "serverSide": true
         },
         columns: [
-            { "data": "per_PermisoID", render: function (data, type, row) { return accionesPermisosEmpleado(data, type, row) } },
+            { "data": "num" },
             { "data": "tipoPermiso" },
             { "data": "per_FechaInicio" },
             { "data": "per_FechaFin" },
             { "data": "per_DiasSolicitados" },
             { "data": "per_Motivos" },
-            { "data": "per_Estado", render: function (data, type, row) { return estatusPermisoEmpleado(data) } }
+            { "data": "per_Estado", render: function (data, type, row) { return estatusPermisoEmpleado(data) } },
+            { "data": "per_PermisoID", render: function (data, type, row) { return accionesPermisosEmpleado(data, type, row) } },
         ],
         columnDefs: [
             { targets: 0, className: 'text-center' },
@@ -45,9 +46,9 @@
             {
                 extend: 'excelHtml5',
                 title: 'Mis permisos',
-                text: '<i class="fa fa-file-excel-o"></i>&nbsp;Excel',
+                text: '<i class="zmdi zmdi-collection-text"></i>&nbsp;Excel',
                 titleAttr: "Exportar a excel",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 autoFilter: true,
                 exportOptions: {
                     columns: ':visible'
@@ -56,9 +57,9 @@
             {
                 extend: 'pdfHtml5',
                 title: 'Mis permisos',
-                text: '<i class="fa fa-file-pdf-o"></i>&nbsp;PDF',
+                text: '<i class="zmdi zmdi-collection-pdf"></i>&nbsp;PDF',
                 titleAttr: "Exportar a PDF",
-                className: "btn l-slategray",
+                className: "btn l-slategray btn-round",
                 orientation: 'landscape',
                 pageSize: 'LETTER',
                 exportOptions: {
@@ -68,13 +69,13 @@
             {
                 extend: 'colvis',
                 text: 'Columnas',
-                className: "btn btn-light",
+                className: "btn l-slategray btn-round",
             }
         ],
         language: {
             paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>"
+                previous: "<i class='zmdi zmdi-caret-left'>",
+                next: "<i class='zmdi zmdi-caret-right'>"
             },
             search: "_INPUT_",
             searchPlaceholder: "Buscar...",
@@ -88,12 +89,12 @@
             "oPaginate": {
                 "sFirst": "Primero",
                 "sLast": "Último",
-                "sNext": "<i class='mdi mdi-chevron-right'>",
+                "sNext": "<i class='zmdi zmdi-caret-right'>",
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
 
         },
-        "order": [[2, "asc"]],
+        "order": [[0, "desc"]],
         "processing": false
     });
 
@@ -121,16 +122,9 @@
             if (txtFechaInicio.val() != "" || txtFechaFin.val() != "") {
                 if (txtTipoPermiso.val() === "1" || txtTipoPermiso.val() === "3") {
                     fechaTipoPermiso(txtTipoPermiso.val(), txtFechaInicio.val());
-                } else if (txtTipoPermiso.val() === "7") {
+                } else if (txtTipoPermiso.val() === "7" || txtTipoPermiso.val() === "8" || txtTipoPermiso.val() === "9") {
                     if ($("#txtHoraI").val() != "" && $("#txtHoraF").val() != "") {
-                        var timeStart = new Date($("#txtFechaInicio").val() + " " + $("#txtHoraI").val()).getHours();
-                        var timeEnd = new Date($("#txtFechaFin").val() + " " + $("#txtHoraF").val()).getHours();
-                        var hourDiff = timeEnd - timeStart;
-                        if (hourDiff <= $("#totalHoras").val()) {
-                            guardarPermiso();
-                        } else {
-                            showNotification("warning", "El rango de tiempo que elegiste excede tus horas", "top");
-                        }
+                        guardarPermiso();
                     } else {
                         showNotification("warning", "El rango de tiempo que elegiste esta vacio", "top");
                     }
@@ -147,6 +141,13 @@
 
     function guardarPermiso() {
         btnRegistarPermiso.html('<i class="fas fa-spinner fa-pulse"></i>&nbsp; Guardando...');
+        // Rehabilitar temporalmente txtFechaFin si está deshabilitado
+        const txtFechaFin = $("#txtFechaFin");
+        const isDisabled = txtFechaFin.prop('disabled');
+
+        if (isDisabled) {
+            txtFechaFin.prop('disabled', false);
+        }
         $.ajax({
             url: BASE_URL + "Incidencias/ajax_crearPermiso",
             type: "POST",
@@ -159,12 +160,14 @@
                 $("#txtTipoPermiso").val(0).trigger('change');
                 tblPermisos.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Permiso registrado!',
                     text: 'La solicitud de permiso se creo y envio a revisón correctamente',
                     showConfirmButton: false,
                     timer: 2000
-                })
+                }).then(function() {
+                    location.reload(); // Recargar la página
+                });
             }
             else if (data.code === 2)
                 showNotification("error", data.msg, "top");
@@ -181,7 +184,7 @@
         Swal.fire({
             title: 'Eliminar solicitud',
             text: '¿Esta seguro que desea eliminar la solicitud de permiso?',
-            type: 'question',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar'
@@ -193,17 +196,17 @@
     });
 
     /**CONFGURACION***/
-    $(".datepicker").datepicker({
-        autoclose: !0,
-        daysOfWeekDisabled: [0],
-        todayHighlight: !0,
-        orientation: "bottom",
-        format: "yyyy-mm-dd",
-        daysOfWeek: ["D", "L", "M", "M", "J", "V", "S"],
-        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    });
 
-    $(".select2").select2();
+    $("#date-range").datepicker({
+        daysOfWeekDisabled: [0],
+        format: "yyyy-mm-dd",
+        toggleActive: !0,
+        todayHighlight: true,
+        autoclose: true,
+        //startDate: new Date(),
+    }).on('changeDate', function (e) {
+        $("#txtFechaFin").focus();
+    });
 
     function showNotification(tipo, msg) {
         $.toast({
@@ -219,16 +222,11 @@
     function accionesPermisosEmpleado(data, type, row) {
 
         var urlImprimir = BASE_URL + 'PDF/imprimirPermiso/' + data;
-        var btnImprimir = ' <a href="' + urlImprimir + '"' +
-            'class="btn btn-info btn-block waves-light waves-effect show-pdf" data-title="Solicitud de permiso">' +
-            '<i class="dripicons-print" title="Formato de solicitud"></i></a>';
+        var btnImprimir = '<button href="' + urlImprimir + '" class="btn btn-warning btn-icon btn-icon-mini btn-round hidden-sm-down show-pdf" data-title="Solicitud de permiso" title="Formato de solicitud"><i class="zmdi zmdi-local-printshop"></i></button>';
 
         var btnEliminar = '';
         if (row.per_Estado == 'PENDIENTE') {
-            btnEliminar = '<a href="#" class="btn btn-danger btn-block waves-light waves-effect btnEliminarPermiso" ' +
-                'data-action="eliminar esta solicitud de permiso" data-permiso="' + data + '">' +
-                '<i class="dripicons-trash" title="Eliminar"></i>&nbsp</a>';
-
+            btnEliminar = '<button href="#" data-permiso="' + data + '" class="btn btn-danger  btn-icon btn-icon-mini btn-round hidden-sm-down btnEliminarPermiso" title="Eliminar solicitud"><i class="zmdi zmdi-delete"></i></button>';
         }//if
 
         return btnImprimir + btnEliminar;
@@ -237,11 +235,11 @@
     function estatusPermisoEmpleado(data) {
         var html = data;
         switch (data) {
-            case 'PENDIENTE': html = '<span class="badge badge-dark p-1">PENDIENTE</span>'; break;
-            case 'AUTORIZADO_JEFE': html = '<span class="badge badge-success p-1">AUTORIZADO JEFE</span>'; break;
+            case 'PENDIENTE': html = '<span class="badge badge-info p-1">PENDIENTE</span>'; break;
+            case 'AUTORIZADO_JEFE': html = '<span class="badge badge-warning p-1">AUTORIZADO JEFE</span>'; break;
             case 'AUTORIZADO_GG': html = '<span class="badge badge-success p-1">AUTORIZADO GERENTE GENERAL</span>'; break;
             case 'AUTORIZADO_GO': html = '<span class="badge badge-success p-1">AUTORIZADO GERENTE OPERATIVO</span>'; break;
-            case 'AUTORIZADO_RH': html = '<span class="badge badge-info p-1">APLICADO</span>'; break;
+            case 'AUTORIZADO_RH': html = '<span class="badge badge-success p-1">APLICADO</span>'; break;
             case 'RECHAZADO_JEFE': html = '<span class="badge badge-danger p-1">RECHAZADO JEFE</span>'; break;
             case 'RECHAZADO_GG': html = '<span class="badge badge-danger p-1">RECHAZADO GERENTE GENERAL</span>'; break;
             case 'RECHAZADO_GO': html = '<span class="badge badge-danger p-1">RECHAZADO GERENTE OPERATIVO</span>'; break;
@@ -266,12 +264,14 @@
             if (data.code === 1) {
                 tblPermisos.ajax.reload();
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: '¡Solicitud eliminada!',
                     text: 'La solicitud de permiso se elimino correctamente',
                     showConfirmButton: false,
                     timer: 2000
-                })
+                }).then(function() {
+                    location.reload(); // Recargar la página
+                });
             } else {
                 showNotification("error", "Ocurrió un error de conexión. Por favor recargue la página e intente de nuevo.", "top");
             }//if-else
@@ -287,24 +287,52 @@
         format: "HH:mm",
         showMeridian: false,
         icons: {
-            up: 'fas fa-angle-up',
-            down: 'fas fa-angle-down',
+            up: 'zmdi zmdi-caret-up',
+            down: 'zmdi zmdi-caret-down',
         }
     });
 
+    $("#txtTipoPermiso").change(function () {
+        const valuesToShow = ["7", "8", "9"];
+        const shouldShow = valuesToShow.includes($("#txtTipoPermiso").val());
 
-    $("#txtTipoPermiso").change(function (evt) {
-        if ($("#txtTipoPermiso").val() === "7") {
-            $(".timepicker").prop('required', true);
-            $("#divMisHoras").show();
-            $("#divHoraSalida").show();
-            $("#divHoraRegreso").show();
+        $(".timepicker").prop('required', shouldShow);
+        $("#divMisHoras, #divHoraSalida, #divHoraRegreso").toggle(shouldShow);
+
+        // Deshabilitar o habilitar el campo txtFechaFin
+        $("#txtFechaFin").prop('disabled', shouldShow).prop('required', !shouldShow);
+
+        // Si deshabilitas txtFechaFin, puedes limpiar su valor
+        if (shouldShow) {
+            $("#txtFechaFin").val(''); // Opcional: Limpia el valor si el campo se deshabilita
+        }
+    });
+
+    $("#txtFechaInicio").change(function () {
+        const tipoPermiso = $("#txtTipoPermiso").val();
+        const fechaInicio = $(this).val();
+
+        if (tipoPermiso === "7" || tipoPermiso === "8") {
+            // Si es 7 u 8, txtFechaFin será el mismo día que txtFechaInicio
+            $("#txtFechaFin").val(fechaInicio);
+        } else if (tipoPermiso === "9" && fechaInicio) {
+            // Si es 9, calcula 6 meses a partir de txtFechaInicio
+            const fecha = new Date(fechaInicio);
+            fecha.setMonth(fecha.getMonth() + 6); // Sumar 6 meses
+            const anio = fecha.getFullYear();
+            const mes = ("0" + (fecha.getMonth() + 1)).slice(-2); // Agrega un 0 delante si es necesario
+            const dia = ("0" + fecha.getDate()).slice(-2); // Agrega un 0 delante si es necesario
+            const fechaFin = `${anio}-${mes}-${dia}`;
+
+            $("#txtFechaFin").val(fechaFin);
         } else {
-            $(".timepicker").prop('required', false);
-            $("#divMisHoras").hide();
-            $("#divHoraSalida").hide();
-            $("#divHoraRegreso").hide();
+            $("#txtFechaFin").val(""); // Limpia el valor si no aplica
         }
     });
+
+    $("#txtTipoPermiso").change(function () {
+        $("#txtFechaInicio").trigger("change"); // Re-ejecuta la lógica cuando cambia el tipo de permiso
+    });
+
 
 })(jQuery);

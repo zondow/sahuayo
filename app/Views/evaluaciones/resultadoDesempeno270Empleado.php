@@ -17,7 +17,7 @@
                         <?php
 
                         if (!is_null($resultados['funciones'])) {
-                            echo '<a href="' . base_url('PDF/resultadosEvaluacionDesemp/' . $empleado['emp_EmpleadoID'] . "/" . $periodoID) . '" id="printReporteDesemp" class="btn btn-secondary" target="_blank" ><i class="dripicons-print"></i> Imprimir resultados</a>';
+                            echo '<a href="' . base_url('PDF/resultadosEvaluacionDesemp/' . $empleado['emp_EmpleadoID'] . "/" . $periodoID) . '" id="printReporteDesemp" class="btn btn-secondary" target="_blank" ><i class="zmdi zmdi-local-printshop"></i> Imprimir resultados</a>';
                         }
                         ?>
                     </div>

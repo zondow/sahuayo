@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-12">
-                            <label for="rol_Nombre"><span class="red_label">*</span> Nombre</label>
+                            <label for="rol_Nombre">* Nombre</label>
                             <input class="form-control" id="rol_Nombre" name="rol_Nombre" required>
                         </div>
                     </div>

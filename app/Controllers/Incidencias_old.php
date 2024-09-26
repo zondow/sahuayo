@@ -35,7 +35,7 @@ class Incidencias extends BaseController
         );
         //Data
         $model = new IncidenciasModel();
-        $data['incapacidades'] = revisarPermisos('Autorizar', $this) ? $model->getIncapacidades() : $model->getIncapacidadesByEmpleado();
+        $data['incapacidades'] = revisarPermisos('Autorizar', 'incapacidad') ? $model->getIncapacidades() : $model->getIncapacidadesByEmpleado();
 
         //sweetalert2
         $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
@@ -1468,15 +1468,15 @@ class Incidencias extends BaseController
             $dir = base_url() . "/assets/uploads/actasadmin/" . $sancion['act_Documento'];
 
             if ($sancion['act_Tipo'] === 'Suspension') {
-                $archivo = '<a href="' . base_url('PDF/imprimirFormatoSuspencion/' . encryptDecrypt('encrypt', $sancion['act_ActaAdministrativaID'])) . '" class="btn btn-info waves-light btn-block waves-effect show-pdf" data-title="Imprimir formato de suspensión" style="color: white" title="Imprimir documento" ><i class="dripicons-print"></i></a>';
+                $archivo = '<a href="' . base_url('PDF/imprimirFormatoSuspencion/' . encryptDecrypt('encrypt', $sancion['act_ActaAdministrativaID'])) . '" class="btn btn-info waves-light btn-block waves-effect show-pdf" data-title="Imprimir formato de suspensión" style="color: white" title="Imprimir documento" ><i class="zmdi zmdi-local-printshop"></i></a>';
             } else if (substr($sancion['act_Documento'], -3) === "pdf") {
-                $archivo = '<a href="' . $dir . '" class="btn btn-info waves-light btn-block waves-effect show-pdf" data-title="Imprimir acta administrativa" style="color: white" title="Imprimir documento" ><i class="dripicons-print"></i></a>';
+                $archivo = '<a href="' . $dir . '" class="btn btn-info waves-light btn-block waves-effect show-pdf" data-title="Imprimir acta administrativa" style="color: white" title="Imprimir documento" ><i class="zmdi zmdi-local-printshop"></i></a>';
             } else if (substr($sancion['act_Documento'], -3) === "jpg") {
-                $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver acta administrativa" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir documento" ><i class="dripicons-print"></i></a>';
+                $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver acta administrativa" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir documento" ><i class="zmdi zmdi-local-printshop"></i></a>';
             } else if (substr($sancion['act_Documento'], -3) === "png") {
-                $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver acta administrativa" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir documento" ><i class="dripicons-print"></i></a>';
+                $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver acta administrativa" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir documento" ><i class="zmdi zmdi-local-printshop"></i></a>';
             } else if (substr($sancion['act_Documento'], -4) === "jpeg") {
-                $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver acta administrativa" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir documento" ><i class="dripicons-print"></i></a>';
+                $archivo = '<a href="' . $dir . '"  data-lightbox="roadtrip" data-title="Ver acta administrativa" class="btn btn-info btn-block waves-light  waves-effect " style="color: white" title="Imprimir documento" ><i class="zmdi zmdi-local-printshop"></i></a>';
             } else $archivo = '';
 
 
@@ -1495,7 +1495,7 @@ class Incidencias extends BaseController
                     $tipo = '<span class="badge badge-danger">Acta administrativa</span>';
                     break;
                 case 'Suspension':
-                    $tipo = '<span class="badge badge-purple">Suspención</span>';
+                    $tipo = '<span class="badge badge-purple">Suspensión</span>';
                     break;
             }
 
