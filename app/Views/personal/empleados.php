@@ -4,11 +4,11 @@
 <div class="content pt-0">
     <div class="row mb-3">
         <div class="col-md-12 mt-2 text-right">
-            <?php if (revisarPermisos('Agregar', $this)) { ?>
+            <?php if (revisarPermisos('Agregar','empleados')) { ?>
                 <a href="#" class="btn btn-success btn-round modal-colaborador"> <i class="zmdi zmdi-plus"></i> Agregar </a>
             <?php } ?>
             <?php 
-             if(revisarPermisos('Exportar',$this)){ ?>
+             if(revisarPermisos('Exportar','empleados')){ ?>
                 <a href="<?= base_url('Excel/generarExcelTodosEmpleados');?>" class="btn btn-info btn-round" ><i class="zmdi zmdi-cloud-download"></i> Exportar Todos</a>
             <?php } ?>
         </div>

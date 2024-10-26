@@ -36,7 +36,7 @@ function validarSesion_old($sesion)
         header($url);
         exit();
     }
-} 
+}
 // Verifica que la sesión sea correcta
 function validarSesion($sesion)
 {
@@ -672,6 +672,16 @@ function pushAndroid($device_id, $message)
         } //if count
     } //if perfilID
 } //function notificacionesAndroid*/
+
+//Encrypt corto
+function encrypt($string){
+    return encryptDecrypt('encrypt',$string);
+}
+
+//Decrypt corto
+function decrypt($string){
+    return encryptDecrypt('decrypt',$string);
+}
 
 //Encriptar / Desencriptar
 function encryptDecrypt($action, $string)
@@ -2159,30 +2169,41 @@ function addMenuOption($funcion, $controlador, $nombre)
     return '';
 }
 
-function addMenuOptionSingle($funcion, $controlador, $nombre,$icono)
+function addMenuOptionSingle($funcion, $controlador, $nombre, $icono)
 {
     $permisos = json_decode(session('permisos'), true);
     if (isset($permisos[$funcion])) {
         if (in_array("Ver", $permisos[$funcion])) {
-            return '<li><a href="' . base_url($controlador . '/' . $funcion) . '"><i class="'.$icono.'"></i><span>' . $nombre . '</span></a></li>';
-
+            return '<li><a href="' . base_url($controlador . '/' . $funcion) . '"><i class="' . $icono . '"></i><span>' . $nombre . '</span></a></li>';
         }
     }
     return '';
 }
 
-function diferenciaTiempo($fechaInicio,$fechaFin){
+function diferenciaTiempo($fechaInicio, $fechaFin)
+{
     $start_date = new DateTime(date($fechaInicio));
     $since_start = $start_date->diff(new DateTime(date($fechaFin)));
     $time = "";
-    $time.= (($since_start->m > 0 ? $since_start->m.' mes ' : $since_start->m == 1) ? $since_start->m.' meses ' : '');
-    $time.= (($since_start->d > 0 ? $since_start->d.' día ' : $since_start->d == 1) ? $since_start->d.' días ':'');
-    $time.= (($since_start->h > 0 ? $since_start->h.' horas ' : $since_start->h == 1) ? $since_start->h.' horas ':'');
-    $time.= (($since_start->i > 0 ? $since_start->i.' minuto ' : $since_start->i == 1) ? $since_start->i.' minutos ':'');
-    $time.= (($since_start->s > 0 ? $since_start->s.' segundos ' : $since_start->s == 1) ? $since_start->s.' segundos ':'');
+    $time .= (($since_start->m > 0 ? $since_start->m . ' mes ' : $since_start->m == 1) ? $since_start->m . ' meses ' : '');
+    $time .= (($since_start->d > 0 ? $since_start->d . ' día ' : $since_start->d == 1) ? $since_start->d . ' días ' : '');
+    $time .= (($since_start->h > 0 ? $since_start->h . ' horas ' : $since_start->h == 1) ? $since_start->h . ' horas ' : '');
+    $time .= (($since_start->i > 0 ? $since_start->i . ' minuto ' : $since_start->i == 1) ? $since_start->i . ' minutos ' : '');
+    $time .= (($since_start->s > 0 ? $since_start->s . ' segundos ' : $since_start->s == 1) ? $since_start->s . ' segundos ' : '');
     return $time;
 }
 
-function updatePermisos(){
-    return db()->query("SELECT rol_Permisos FROM empleado LEFT JOIN rol ON rol_RolID=emp_Rol WHERE emp_EmpleadoID = ?",[session('id')])->getRowArray()['rol_Permisos'];
+function updatePermisos()
+{
+    return db()->query("SELECT rol_Permisos FROM empleado LEFT JOIN rol ON rol_RolID=emp_Rol WHERE emp_EmpleadoID = ?", [session('id')])->getRowArray()['rol_Permisos'];
+}
+
+// Función auxiliar para generar opciones HTML
+function generateOptions($items, $valueField, $textField)
+{
+    $options = '<option value="0">Seleccionar</option>';
+    foreach ($items as $item) {
+        $options .= "<option value='{$item[$valueField]}'>{$item[$textField]}</option>";
+    }
+    return $options;
 }

@@ -42,7 +42,7 @@ class PDF extends BaseController
                 $perfilPuesto['puestosReporta'][$count]["puesto"] = $comite;
             }
         }
-       
+
         if ($perfilPuesto['puestosCoordina'] !== "null") {
             $perfilPuesto['puestosCoordina'] = $model->getPuestosCoordinaReporta(implode(",", json_decode($perfilPuesto['puestosCoordina'])));
         }
@@ -247,23 +247,24 @@ class PDF extends BaseController
         return  $html;
     } //plantillaPuesto
 
-  
-    public function plantillaPuesto($data){
+
+    public function plantillaPuesto($data)
+    {
         $fecha = $data['fechaCreacion'];
         $logo = base_url('assets/images/moneda.jpg');
-        
-        $reporta = $data['puestosReporta'] !== "null" ? implode(' ', array_map(fn($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosReporta'])) : "No hay información disponible";
-        $coordina = $data['puestosCoordina'] !== "null" ? implode(' ', array_map(fn($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosCoordina'])) : "No hay información disponible";
-        
+
+        $reporta = $data['puestosReporta'] !== "null" ? implode(' ', array_map(fn ($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosReporta'])) : "No hay información disponible";
+        $coordina = $data['puestosCoordina'] !== "null" ? implode(' ', array_map(fn ($item) => '<span class="rounded">&nbsp;' . $item['puesto'] . '&nbsp;</span>&nbsp;', $data['puestosCoordina'])) : "No hay información disponible";
+
         $funciones = json_decode($data['funciones'], true);
-        $fun = !empty($funciones) ? implode('<br>', array_map(fn($i) => '<li>' . trim($funciones['F' . $i]) . '</li>', range(1, count($funciones)))) : "No hay información disponible";
-        
-        $comp = !empty($data['competenciasPuesto']) ? implode('', array_map(function($i, $compue) {
+        $fun = !empty($funciones) ? implode('<br>', array_map(fn ($i) => '<li>' . trim($funciones['F' . $i]) . '</li>', range(1, count($funciones)))) : "No hay información disponible";
+
+        $comp = !empty($data['competenciasPuesto']) ? implode('', array_map(function ($i, $compue) {
             $claves = $this->db->query("SELECT * FROM clavecompetencia WHERE cla_CompetenciaID=" . $compue['com_CompetenciaID'])->getResultArray();
-            $clavesHtml = implode('', array_map(fn($clave) => '<li style="border-bottom: none; padding-left: 30px">' . trim($clave['cla_ClaveAccion']) . '</li>', $claves));
+            $clavesHtml = implode('', array_map(fn ($clave) => '<li style="border-bottom: none; padding-left: 30px">' . trim($clave['cla_ClaveAccion']) . '</li>', $claves));
             return '<li style="border-bottom: none;">' . $i . '.-  ' . trim($compue['com_Nombre']) . '</li>' . $clavesHtml;
         }, range(1, count($data['competenciasPuesto'])), $data['competenciasPuesto'])) : "No hay información disponible";
-        
+
         $html = '
         
         
@@ -350,7 +351,7 @@ class PDF extends BaseController
                 </table>
             </main>
         ';
-        
+
         return $html;
     }
 
@@ -370,7 +371,7 @@ class PDF extends BaseController
         $anio = date("Y", $fechaComoEntero);
 
         //if ((int)$anio > 2021) {
-            $config = getConfiguracion($this);
+        $config = getConfiguracion($this);
         /*} else {
             $config = getConfiguracion2021($this);
         }*/
@@ -385,14 +386,14 @@ class PDF extends BaseController
         //Periodo
         $pdf->SetFont('Arial', 'B', 9);
         $pdf->SetXY(110, 26);
-        $pdf->SetTextColor(255,0,0);
+        $pdf->SetTextColor(255, 0, 0);
         $pdf->Cell(20, 4, $vacacion['vac_Periodo'], 0, 0, 'C');
-        $pdf->SetTextColor(0,0,0);
+        $pdf->SetTextColor(0, 0, 0);
 
         //no periodo
         $pdf->SetXY(90, 25);
-        $pdf->SetFillColor(255,255,255);
-        $pdf->Cell(50, 5, '', 0, 0, 'C',1);
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->Cell(50, 5, '', 0, 0, 'C', 1);
 
         //Oficina
         $pdf->SetXY(150, 30);
@@ -412,10 +413,10 @@ class PDF extends BaseController
 
         //fecha ingreso
         $pdf->SetXY(40, 46);
-        $pdf->Cell(60, 3, longDate($vacacion['emp_FechaIngreso'],' de '), 0, 0, 'C');
+        $pdf->Cell(60, 3, longDate($vacacion['emp_FechaIngreso'], ' de '), 0, 0, 'C');
 
         //años de servicio
-        $aniosDif = diferenciaAnios($vacacion['emp_FechaIngreso'],$vacacion['vac_FechaInicio']);
+        $aniosDif = diferenciaAnios($vacacion['emp_FechaIngreso'], $vacacion['vac_FechaInicio']);
         $pdf->SetXY(176, 46);
         $pdf->Cell(18, 3, utf8_decode($aniosDif), 0, 0, 'C');
 
@@ -434,45 +435,45 @@ class PDF extends BaseController
 
         //periodo
         $pdf->SetXY(6, 56);
-        $pdf->SetFillColor(255,255,255);
-        $pdf->Cell(190, 5, '', 0, 0, 'C',1);
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->Cell(190, 5, '', 0, 0, 'C', 1);
 
         // inicio vacaciones
         $pdf->SetXY(70, 66);
-        $pdf->Cell(30, 3, explode('-',$vacacion['vac_FechaInicio'])[2], 0, 0, 'C');
+        $pdf->Cell(30, 3, explode('-', $vacacion['vac_FechaInicio'])[2], 0, 0, 'C');
         $pdf->SetX(110);
-        $pdf->Cell(30, 3, numMeses(explode('-',$vacacion['vac_FechaInicio'])[1]), 0, 0, 'C');
+        $pdf->Cell(30, 3, numMeses(explode('-', $vacacion['vac_FechaInicio'])[1]), 0, 0, 'C');
         $pdf->SetX(150);
-        $pdf->Cell(40, 3, explode('-',$vacacion['vac_FechaInicio'])[0], 0, 0, 'C');
+        $pdf->Cell(40, 3, explode('-', $vacacion['vac_FechaInicio'])[0], 0, 0, 'C');
 
         // fin vacaciones
         $pdf->SetXY(70, 71);
-        $pdf->Cell(30, 3, explode('-',$vacacion['vac_FechaFin'])[2], 0, 0, 'C');
+        $pdf->Cell(30, 3, explode('-', $vacacion['vac_FechaFin'])[2], 0, 0, 'C');
         $pdf->SetX(110);
-        $pdf->Cell(30, 3, numMeses(explode('-',$vacacion['vac_FechaFin'])[1]), 0, 0, 'C');
+        $pdf->Cell(30, 3, numMeses(explode('-', $vacacion['vac_FechaFin'])[1]), 0, 0, 'C');
         $pdf->SetX(150);
-        $pdf->Cell(40, 3, explode('-',$vacacion['vac_FechaFin'])[0], 0, 0, 'C');
+        $pdf->Cell(40, 3, explode('-', $vacacion['vac_FechaFin'])[0], 0, 0, 'C');
 
         //fecha presentarse
         $pdf->SetXY(101, 77);
-        $pdf->Cell(80, 3, longDate(fechaPresentarse($vacacion['vac_FechaFin'],$vacacion['vac_EmpleadoID']),' de '), 0, 0, 'C');
+        $pdf->Cell(80, 3, longDate(fechaPresentarse($vacacion['vac_FechaFin'], $vacacion['vac_EmpleadoID']), ' de '), 0, 0, 'C');
 
         //observaciones
         $pdf->SetXY(40, 82);
-        $pdf->MultiCell(160, 3, utf8_decode($vacacion['vac_Observaciones']),0, 'C');
+        $pdf->MultiCell(160, 3, utf8_decode($vacacion['vac_Observaciones']), 0, 'C');
 
         //Fecha de Registro
         $pdf->SetXY(111, 105);
-        $pdf->Cell(18, 3, explode('-',$vacacion['registro'])[2], 0, 0, 'C');
+        $pdf->Cell(18, 3, explode('-', $vacacion['registro'])[2], 0, 0, 'C');
         $pdf->SetX(133);
-        $pdf->Cell(40, 3, numMeses(explode('-',$vacacion['registro'])[1]), 0, 0, 'C');
+        $pdf->Cell(40, 3, numMeses(explode('-', $vacacion['registro'])[1]), 0, 0, 'C');
         $pdf->SetX(195);
-        $pdf->Cell(10, 3, explode('-',$vacacion['registro'])[0], 0, 0, 'C');
+        $pdf->Cell(10, 3, explode('-', $vacacion['registro'])[0], 0, 0, 'C');
 
         //Firma Solicitante
         $pdf->SetFont('Arial', 'B', 6);
         $pdf->SetXY(8, 115);
-        $pdf->Cell(45, 5, utf8_decode($vacacion['emp_Nombre']), 0,0, 'C');
+        $pdf->Cell(45, 5, utf8_decode($vacacion['emp_Nombre']), 0, 0, 'C');
         if ($vacacion['vac_Estatus'] === 'DECLINADO') {
             //Put the watermark
             $pdf->SetFont('Arial', 'B', 30);
@@ -1230,101 +1231,57 @@ class PDF extends BaseController
         $entrevistaID = (int)$entrevistaID;
         if (empty($entrevistaID)) {
             exit();
-        } //if
-        $model = new PdfModel();
-        $entrevista = $model->getEntrevistaSalida($entrevistaID);
+        }
 
-        //Create Document
+        $entrevista = $this->PdfModel->getEntrevistaSalida($entrevistaID);
         $pdf = new Fpdi();
-        $pdf->AddPage("P", "Letter");
-        $pdf->setSourceFile(FCPATH . "/assets/formatos/entrevistaSalida.pdf");
-        $template = $pdf->importPage(1);
-        $pdf->useTemplate($template, -1, 0, 220, 280);
-
         $pdf->SetFont('Arial', '', 12);
 
-        /**----------DATOS GENERALES---------**/
+        // Generar primera página
+        $this->configurarPaginaEntrevista($pdf, 1, [
+            ['x' => 50, 'y' => 47, 'texto' => $entrevista['empleado']],
+            ['x' => 50, 'y' => 54, 'texto' => $entrevista['ultimoPuesto'], 'multi' => true],
+            ['x' => 50, 'y' => 62, 'texto' => $entrevista['departamento']],
+            ['x' => 60, 'y' => 69, 'texto' => ($entrevista['fechaIngreso'] != '0000-00-00') ? longDate($entrevista['fechaIngreso'], ' de ') : ''],
+            ['x' => 140, 'y' => 69, 'texto' => longDate($entrevista['fecha'], ' de ')],
+            ['x' => 36, 'y' => 103, 'texto' => $entrevista['ent_Pregunta1'] ? implode(',', json_decode($entrevista['ent_Pregunta1'])) : '', 'multi' => true],
+            ['x' => 36, 'y' => 130, 'texto' => $entrevista['ent_Pregunta2'], 'multi' => true],
+            ['x' => 35, 'y' => 160, 'texto' => $entrevista['ent_Pregunta3_1'], 'multi' => true],
+            ['x' => 35, 'y' => 175, 'texto' => $entrevista['ent_Pregunta3_2'], 'multi' => true],
+            ['x' => 34, 'y' => 192, 'texto' => $entrevista['ent_ComentariosP3'], 'multi' => true],
+            ['x' => 40, 'y' => 222, 'texto' => $entrevista['ent_Pregunta4'], 'multi' => true],
+            ['x' => 40, 'y' => 242, 'texto' => $entrevista['ent_Pregunta5'], 'multi' => true],
+        ]);
 
-        //Empleado
-        $pdf->SetXY(50, 47);
-        $pdf->Cell(130, 4, utf8_decode($entrevista['empleado']), 0, 0, 'L');
+        // Generar segunda página
+        $this->configurarPaginaEntrevista($pdf, 2, [
+            ['x' => 40, 'y' => 55, 'texto' => $entrevista['ent_Pregunta6'], 'multi' => true],
+            ['x' => 40, 'y' => 80, 'texto' => $entrevista['ent_Pregunta7'], 'multi' => true],
+            ['x' => 40, 'y' => 100, 'texto' => $entrevista['ent_Pregunta8'], 'multi' => true],
+            ['x' => 40, 'y' => 125, 'texto' => $entrevista['ent_Pregunta9'], 'multi' => true],
+            ['x' => 40, 'y' => 143, 'texto' => $entrevista['ent_Pregunta10'], 'multi' => true],
+        ]);
 
-        //Puesto
-        $pdf->SetXY(50, 54);
-        $pdf->MultiCell(130, 4, utf8_decode($entrevista['ultimoPuesto']),  0, 'L');
-
-        //Departamento
-        $pdf->SetXY(50, 62);
-        $pdf->Cell(130, 4, utf8_decode($entrevista['departamento']), 0, 0, 'L');
-
-        $fechaIngtreso = ($entrevista['fechaIngreso'] != '0000-00-00') ? longDate($entrevista['fechaIngreso'], ' de ') : '';
-        $pdf->SetXY(60, 68);
-        $pdf->Cell(45, 4, utf8_decode($fechaIngtreso), 0, 0, 'C');
-
-        //Fecha entrevista
-        $fechaEnt = ($entrevista['fecha'] != '0000-00-00') ? longDate($entrevista['fecha'], ' de ') : '';
-        $pdf->SetXY(130, 68);
-        $pdf->Cell(68, 4, utf8_decode($fechaEnt), 0, 0, 'C');
-
-        //P1
-        $p1 = ($entrevista['ent_Pregunta1'] != null) ? json_decode($entrevista['ent_Pregunta1']) : '';
-        $pdf->SetXY(36, 103);
-        $pdf->MultiCell(160, 4, utf8_decode(($p1 !== "") ? implode(',', $p1) : ''), 0, 'L');
-
-        //P2
-        $pdf->SetXY(36, 130);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta2']), 0, 'L');
-
-        //P3_1
-        $pdf->SetXY(35, 160);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta3_1']), 0, 'L');
-
-        //P3_2
-        $pdf->SetXY(35, 175);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta3_2']), 0, 'L');
-
-        //Comentarios
-        $pdf->SetXY(34, 192);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_ComentariosP3']), 0, 'L');
-
-        //P4
-        $pdf->SetXY(40, 222);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta4']), 0, 'L');
-
-        //P5
-        $pdf->SetXY(40, 242);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta5']), 0, 'L');
-
-        //Hoja 2
-        $pdf->AddPage("P", "Letter");
-        $pdf->setSourceFile(FCPATH . "/assets/formatos/entrevistaSalida.pdf");
-        $template = $pdf->importPage(2);
-        $pdf->useTemplate($template, -1, 0, 220, 280);
-
-        //P6
-        $pdf->SetXY(40, 55);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta6']), 0, 'L');
-
-        //P7
-        $pdf->SetXY(40, 80);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta7']), 0, 'L');
-
-        //P8
-        $pdf->SetXY(40, 100);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta8']), 0, 'L');
-
-        //P9
-        $pdf->SetXY(40, 125);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta9']), 0, 'L');
-
-        //P10
-        $pdf->SetXY(40, 143);
-        $pdf->MultiCell(160, 4, utf8_decode($entrevista['ent_Pregunta10']), 0, 'L');
-
-        //Output
         $pdf->output('I', 'EntrevistaSalida-' . $entrevistaID . '.pdf');
         exit();
-    } //imprimirEntrevistaSalida
+    }
+
+    private function configurarPaginaEntrevista($pdf, $pagina, $campos)
+    {
+        $pdf->AddPage("P", "Letter");
+        $pdf->setSourceFile(FCPATH . "/assets/formatos/entrevistaSalida.pdf");
+        $template = $pdf->importPage($pagina);
+        $pdf->useTemplate($template, -1, 0, 220, 280);
+
+        foreach ($campos as $campo) {
+            $pdf->SetXY($campo['x'], $campo['y']);
+            if (!empty($campo['multi'])) {
+                $pdf->MultiCell(160, 4, utf8_decode($campo['texto']), 0, 'L');
+            } else {
+                $pdf->Cell(130, 4, utf8_decode($campo['texto']), 0, 0, 'L');
+            }
+        }
+    }
 
     //Nat -> Excribir x en la table y opcion correspondiente
     function setEntrevistaSalidaTableOption($estatus, $pdf, $y)
@@ -1933,10 +1890,16 @@ class PDF extends BaseController
         $count = 0;
         for ($i = 0; $i < count($dias); $i++) {
 
-            switch($dias[$i]['socap']){
-                case 0: $socap = 'FEDERACION';break;
-                case 10001: $socap = 'OTRO';break;
-                default: $socap = $this->db->query("SELECT suc_Sucursal FROM sucursal WHERE suc_SucursalID=" . (int)$dias[$i]['socap'])->getRowArray()['suc_Sucursal']; break;
+            switch ($dias[$i]['socap']) {
+                case 0:
+                    $socap = 'FEDERACION';
+                    break;
+                case 10001:
+                    $socap = 'OTRO';
+                    break;
+                default:
+                    $socap = $this->db->query("SELECT suc_Sucursal FROM sucursal WHERE suc_SucursalID=" . (int)$dias[$i]['socap'])->getRowArray()['suc_Sucursal'];
+                    break;
             }
 
             $pdf->SetXY(23, $y);
@@ -2099,7 +2062,7 @@ class PDF extends BaseController
         } //if estatus
     }
 
-    
+
     //Diego -> PDF reporte incidencias
     public function reporteIncidencias($empleadoID)
     {
@@ -2175,9 +2138,9 @@ class PDF extends BaseController
         $pdf->Image($fotoPerfil, 36, 32.9, 42, 42.3);
         $pdf->SetFont('Arial', '', 8);
 
-        $primerRegistro='';
-        if($empleado['ano']==date('Y')){
-            $primerRegistro = $this->db->query("SELECT MONTH(asi_Fecha) as 'mes' FROM asistencia WHERE asi_EmpleadoID=".$empleadoID." AND YEAR(asi_Fecha)=".date('Y')." ORDER BY asi_AsistenciaID ASC LIMIT 1")->getRowArray()['mes'];
+        $primerRegistro = '';
+        if ($empleado['ano'] == date('Y')) {
+            $primerRegistro = $this->db->query("SELECT MONTH(asi_Fecha) as 'mes' FROM asistencia WHERE asi_EmpleadoID=" . $empleadoID . " AND YEAR(asi_Fecha)=" . date('Y') . " ORDER BY asi_AsistenciaID ASC LIMIT 1")->getRowArray()['mes'];
         }
         /*if(date('Y')=='2023'){
             $primerRegistro=11;
@@ -2186,55 +2149,55 @@ class PDF extends BaseController
         //Calendario
         $x = 23.02;
         $y = 85.8;
-        $nMes=1;
-        if(!empty($primerRegistro)){
-            $nMes= $primerRegistro;
+        $nMes = 1;
+        if (!empty($primerRegistro)) {
+            $nMes = $primerRegistro;
         }
-        $ultimoMesRegistro = db()->query("SELECT MONTH(asi_Fecha) as 'asi_Fecha' FROM asistencia WHERE asi_EmpleadoID=? AND YEAR(asi_Fecha)=? ORDER BY asi_Fecha DESC LIMIT 1",array($empleadoID,date('Y')))->getRowArray()['asi_Fecha'] ?? 1;
-        for ($nMes ; $nMes <= (int)$ultimoMesRegistro; $nMes++) {
-            $meses = [ 1 => 31, 2 => date("L") ? 29 : 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 => 30, 10 => 31, 11 => 30, 12 => 31,];
+        $ultimoMesRegistro = db()->query("SELECT MONTH(asi_Fecha) as 'asi_Fecha' FROM asistencia WHERE asi_EmpleadoID=? AND YEAR(asi_Fecha)=? ORDER BY asi_Fecha DESC LIMIT 1", array($empleadoID, date('Y')))->getRowArray()['asi_Fecha'] ?? 1;
+        for ($nMes; $nMes <= (int)$ultimoMesRegistro; $nMes++) {
+            $meses = [1 => 31, 2 => date("L") ? 29 : 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 => 30, 10 => 31, 11 => 30, 12 => 31,];
             $nDia = $meses[$nMes];
-            for ($i=1; $i <= $nDia; $i++) {
-                $fecha=date('Y-m-d',strtotime(date('Y-'.$nMes.'-'.$i)));
-                if($fecha>=$empleado['emp_FechaIngreso'] && $fecha < date('Y-m-d')){
+            for ($i = 1; $i <= $nDia; $i++) {
+                $fecha = date('Y-m-d', strtotime(date('Y-' . $nMes . '-' . $i)));
+                if ($fecha >= $empleado['emp_FechaIngreso'] && $fecha < date('Y-m-d')) {
                     $diaNombre = get_nombre_dia($fecha);
                     //Horario
-                    $horario = $this->db->query("SELECT H.* FROM horario H JOIN empleado E on E.emp_HorarioID=H.hor_HorarioID WHERE E.emp_EmpleadoID=?",[$empleadoID])->getRowArray();
+                    $horario = $this->db->query("SELECT H.* FROM horario H JOIN empleado E on E.emp_HorarioID=H.hor_HorarioID WHERE E.emp_EmpleadoID=?", [$empleadoID])->getRowArray();
                     $tolerancia = "+" . $horario['hor_Tolerancia'] . " minutes";
-                    $guardia =$this->db->query("SELECT * FROM guardia WHERE gua_EmpleadoID=? AND ? BETWEEN gua_FechaInicio AND gua_FechaFin",[$empleadoID,$fecha])->getRowArray() ?? null;
-                    if($guardia){
-                        $horario= $this->db->query("SELECT * FROM horario WHERE hor_HorarioID=?",[$guardia['gua_HorarioID']])->getRowArray();
+                    $guardia = $this->db->query("SELECT * FROM guardia WHERE gua_EmpleadoID=? AND ? BETWEEN gua_FechaInicio AND gua_FechaFin", [$empleadoID, $fecha])->getRowArray() ?? null;
+                    if ($guardia) {
+                        $horario = $this->db->query("SELECT * FROM horario WHERE hor_HorarioID=?", [$guardia['gua_HorarioID']])->getRowArray();
                     }
-                    $checador = $this->db->query("SELECT asi_Hora FROM asistencia WHERE asi_EmpleadoID=? AND asi_Fecha=?",[$empleadoID,$fecha])->getRowArray();
-                    $fechaseparada = explode('-',$fecha);
-                    $asistencia=array(
+                    $checador = $this->db->query("SELECT asi_Hora FROM asistencia WHERE asi_EmpleadoID=? AND asi_Fecha=?", [$empleadoID, $fecha])->getRowArray();
+                    $fechaseparada = explode('-', $fecha);
+                    $asistencia = array(
                         "dia" => $fechaseparada[2],
                         "mes" => $fechaseparada[1],
                         "ano" => $fechaseparada[0],
-                        "fecha"=>$fecha,
+                        "fecha" => $fecha,
                         "horaEntrada" => '00:00',
-                        "justificacion"=>''
+                        "justificacion" => ''
                     );
-                    if($checador!==null){
-                        $asistencia['horaEntrada']= json_decode($checador['asi_Hora'])[0];
+                    if ($checador !== null) {
+                        $asistencia['horaEntrada'] = json_decode($checador['asi_Hora'])[0];
                         //$asistencia['justificacion']=$checador['asi_Justificacion'];
                     }
                     //Permisos
-                    $permisos = $this->db->query("SELECT per_TipoID FROM permiso P WHERE ? BETWEEN per_FechaInicio AND per_FechaFin AND P.per_EmpleadoID=? AND P.per_Estado = 'AUTORIZADO_RH' AND per_Estatus=1",[$fecha,$empleadoID])->getRowArray()['per_TipoID'] ?? null;
+                    $permisos = $this->db->query("SELECT per_TipoID FROM permiso P WHERE ? BETWEEN per_FechaInicio AND per_FechaFin AND P.per_EmpleadoID=? AND P.per_Estado = 'AUTORIZADO_RH' AND per_Estatus=1", [$fecha, $empleadoID])->getRowArray()['per_TipoID'] ?? null;
                     //Salidas
-                    $salidas = $this->db->query("SELECT rep_Dias FROM reportesalida WHERE rep_EmpleadoID=? AND rep_Estado IN('APLICADO','PAGADO') AND rep_Estatus=1 AND ? BETWEEN rep_DiaInicio AND rep_DiaFin ", array($empleadoID,$fecha))->getResultArray();
-                    $reportesalidas=0;
+                    $salidas = $this->db->query("SELECT rep_Dias FROM reportesalida WHERE rep_EmpleadoID=? AND rep_Estado IN('APLICADO','PAGADO') AND rep_Estatus=1 AND ? BETWEEN rep_DiaInicio AND rep_DiaFin ", array($empleadoID, $fecha))->getResultArray();
+                    $reportesalidas = 0;
                     foreach ($salidas as $salida) {
-                        $presalidas = json_decode($salida['rep_Dias'],true);
+                        $presalidas = json_decode($salida['rep_Dias'], true);
                         foreach ($presalidas as $presalida) {
                             if ($presalida['fecha'] === $fecha) {
-                                $reportesalidas= 1;
+                                $reportesalidas = 1;
                             }
                         }
                     }
                     $pdf->SetXY($x + (5.675 * $asistencia['dia']), $y + (4.82 * $asistencia['mes']));
-                    if($horario['hor_'.$diaNombre.'Descanso']==0){
-                        $horaEntrada = date('h:i', strtotime($tolerancia,strtotime($horario['hor_'.$diaNombre.'Entrada'])));
+                    if ($horario['hor_' . $diaNombre . 'Descanso'] == 0) {
+                        $horaEntrada = date('h:i', strtotime($tolerancia, strtotime($horario['hor_' . $diaNombre . 'Entrada'])));
                     }
                     //Si tiene asistencia
                     if ($asistencia['horaEntrada'] !== '00:00') {
@@ -2242,73 +2205,80 @@ class PDF extends BaseController
                         if ($asistencia['justificacion'] === '1') {
                             $pdf->SetFillColor(29, 154, 221);
                             $pdf->Cell(5.4, 4.4, '*', 0, 0, 'C', true);
-                        }elseif($permisos){
+                        } elseif ($permisos) {
                             switch ($permisos) {
-                                case 6: $color = [156, 231, 122]; break;
-                                default: $color = [142, 124, 195];break;
+                                case 6:
+                                    $color = [156, 231, 122];
+                                    break;
+                                default:
+                                    $color = [142, 124, 195];
+                                    break;
                             }
                             $pdf->SetFillColor($color[0], $color[1], $color[2]);
                             $pdf->Cell(5.4, 4.4, 'P', 0, 0, 'C', true);
-                        }elseif($reportesalidas){
+                        } elseif ($reportesalidas) {
                             $pdf->SetFillColor(89, 195, 195);
                             $pdf->Cell(5.4, 4.4, 'S', 0, 0, 'C', true);
-                        }else { //Si llego bien o tiene retardo
+                        } else { //Si llego bien o tiene retardo
                             $color = $horaEntrada >= $asistencia['horaEntrada'] ? [29, 154, 221] : [255, 111, 97];
                             $pdf->SetFillColor(...$color);
                             $pdf->Cell(5.4, 4.4, $horaEntrada >= $asistencia['horaEntrada'] ? '*' : 'R', 0, 0, 'C', true);
                         }
                     } else { // Si no asistio o no tiene registro
                         //Dia inhabil
-                        $inhabiles = $this->db->query("SELECT D.dia_Fecha FROM diainhabil D WHERE D.dia_Fecha=? UNION SELECT DI.dial_Fecha as 'dia_Fecha' FROM diainhabilley DI WHERE DI.dial_Fecha=?",[$fecha,$fecha])->getRowArray()['dia_Fecha'] ?? null;
+                        $inhabiles = $this->db->query("SELECT D.dia_Fecha FROM diainhabil D WHERE D.dia_Fecha=? UNION SELECT DI.dial_Fecha as 'dia_Fecha' FROM diainhabilley DI WHERE DI.dial_Fecha=?", [$fecha, $fecha])->getRowArray()['dia_Fecha'] ?? null;
                         //vacaciones
-                        $vacaciones= $this->db->query("SELECT vac_VacacionesID FROM vacacion WHERE vac_EmpleadoID=? AND vac_Estatus='AUTORIZADO_RH' AND vac_Estado=1 AND ? BETWEEN vac_FechaInicio AND vac_FechaFin", array($empleadoID,$fecha))->getRowArray()['vac_VacacionesID'] ?? null;
+                        $vacaciones = $this->db->query("SELECT vac_VacacionesID FROM vacacion WHERE vac_EmpleadoID=? AND vac_Estatus='AUTORIZADO_RH' AND vac_Estado=1 AND ? BETWEEN vac_FechaInicio AND vac_FechaFin", array($empleadoID, $fecha))->getRowArray()['vac_VacacionesID'] ?? null;
                         //Incapacidad
-                        $incapacidades = $this->db->query("SELECT inc_IncapacidadID FROM incapacidad  WHERE inc_Estatus='Autorizada' AND inc_EmpleadoID=? AND ? BETWEEN inc_FechaInicio AND inc_FechaFin", array($empleadoID,$fecha))->getRowArray()['inc_Incapacidad'] ?? null;
+                        $incapacidades = $this->db->query("SELECT inc_IncapacidadID FROM incapacidad  WHERE inc_Estatus='Autorizada' AND inc_EmpleadoID=? AND ? BETWEEN inc_FechaInicio AND inc_FechaFin", array($empleadoID, $fecha))->getRowArray()['inc_Incapacidad'] ?? null;
                         //Salidas
-                        $salidas = $this->db->query("SELECT rep_Dias FROM reportesalida WHERE rep_EmpleadoID=? AND rep_Estado IN('APLICADO','PAGADO') AND rep_Estatus=1 AND ? BETWEEN rep_DiaInicio AND rep_DiaFin ", array($empleadoID,$fecha))->getResultArray();
-                        $reportesalidas=0;
+                        $salidas = $this->db->query("SELECT rep_Dias FROM reportesalida WHERE rep_EmpleadoID=? AND rep_Estado IN('APLICADO','PAGADO') AND rep_Estatus=1 AND ? BETWEEN rep_DiaInicio AND rep_DiaFin ", array($empleadoID, $fecha))->getResultArray();
+                        $reportesalidas = 0;
                         foreach ($salidas as $salida) {
-                            $presalidas = json_decode($salida['rep_Dias'],true);
+                            $presalidas = json_decode($salida['rep_Dias'], true);
                             foreach ($presalidas as $presalida) {
                                 if ($presalida['fecha'] === $fecha) {
-                                    $reportesalidas= 1;
+                                    $reportesalidas = 1;
                                 }
                             }
                         }
                         //Suspensiones
                         //$suspensiones = $this->db->query("SELECT act_FechaRealizo FROM actaadministrativa  WHERE act_EmpleadoID=? AND act_Estatus='APLICADA' AND act_Tipo='Suspension' AND act_FechaRealizo=?", array($empleadoID,$fecha))->getRowArray();
 
-                        if($horario['hor_'.$diaNombre.'Descanso']==1){
-                            $color = ($diaNombre=='Domingo') ? [128, 128, 128] : [29, 154, 221];
+                        if ($horario['hor_' . $diaNombre . 'Descanso'] == 1) {
+                            $color = ($diaNombre == 'Domingo') ? [128, 128, 128] : [29, 154, 221];
                             $pdf->SetFillColor(...$color);
-                            $pdf->Cell(5.4, 4.4, ($diaNombre=='Domingo') ? 'D' : '', 0, 0, 'C', true);
-                        }else{
+                            $pdf->Cell(5.4, 4.4, ($diaNombre == 'Domingo') ? 'D' : '', 0, 0, 'C', true);
+                        } else {
                             //tipo de cuadro
                             $pdf->SetXY($x + (5.675 * $i), $y + (4.82 * $nMes));
                             if ($inhabiles) {
                                 $pdf->SetFillColor(233, 113, 23);
                                 $pdf->Cell(5.4, 4.4, 'DI', 0, 0, 'C', true);
-                            }elseif ($vacaciones) {
+                            } elseif ($vacaciones) {
                                 $pdf->SetFillColor(255, 217, 102);
                                 $pdf->Cell(5.4, 4.4, 'V', 0, 0, 'C', true);
-                            }elseif($incapacidades){
+                            } elseif ($incapacidades) {
                                 $pdf->SetFillColor(213, 166, 189);
                                 $pdf->Cell(5.4, 4.4, 'IN', 0, 0, 'C', true);
-                            }elseif($permisos){
+                            } elseif ($permisos) {
                                 switch ($permisos) {
-                                    case 6: $color = [156, 231, 122]; break;
-                                    default: $color = [142, 124, 195];break;
+                                    case 6:
+                                        $color = [156, 231, 122];
+                                        break;
+                                    default:
+                                        $color = [142, 124, 195];
+                                        break;
                                 }
                                 $pdf->SetFillColor($color[0], $color[1], $color[2]);
                                 $pdf->Cell(5.4, 4.4, 'P', 0, 0, 'C', true);
-                            }elseif($reportesalidas){
+                            } elseif ($reportesalidas) {
                                 $pdf->SetFillColor(89, 195, 195);
                                 $pdf->Cell(5.4, 4.4, 'S', 0, 0, 'C', true);
                             }/*elseif($suspensiones){
                                 $pdf->SetFillColor(234, 21, 21);
                                 $pdf->Cell(5.4, 4.4, 'SL', 0, 0, 'C', true);
-                            }*/
-                            else{
+                            }*/ else {
                                 $pdf->SetFillColor(234, 21, 21);
                                 $pdf->Cell(5.4, 4.4, '/', 0, 0, 'C', true);
                             }
@@ -2404,7 +2374,6 @@ class PDF extends BaseController
         //Output
         $pdf->output('I', 'Kardex#' . $empleado['emp_EmpleadoID'] . '.pdf');
         exit();
-        
     } // end reporteIncidencias
 
     //Nat -> PDF reporte incidencias
@@ -3983,8 +3952,7 @@ class PDF extends BaseController
             exit();
         } //if
 
-        $model = new PdfModel();
-        $baja = $model->getBajaEmpleado($bajaEmpleadoID);
+        $baja = $this->PdfModel->getBajaEmpleado($bajaEmpleadoID);
 
         //Create Document
         $pdf = new Fpdi();
@@ -4057,15 +4025,16 @@ class PDF extends BaseController
         $pdf->Multicell(151, 4, utf8_decode($baja['baj_Comentarios']), 0,  'L');
 
         //FIRMA COLABORADOR
-        $pdf->SetXY(7, 240);
-        $pdf->Multicell(60, 4, utf8_decode($baja['empleado']), 0,  'C');
+        $pdf->SetFont('Arial', '', 8);
+        $pdf->SetXY(13, 238);
+        $pdf->Multicell(40, 4, utf8_decode($baja['empleado']), 0,  'C');
 
         //FIRMA DE CAPITAL HUMANO
-        $pdf->SetXY(152, 240);
-        $pdf->Multicell(60, 4, utf8_decode($baja['capitalHumano']), 0,  'C');
+        $pdf->SetXY(165, 238);
+        $pdf->Multicell(40, 4, utf8_decode($baja['capitalHumano']), 0,  'C');
 
         //Output
-        $pdf->output('I', 'hojaLiberacion-' . $bajaEmpleadoID . '.pdf');
+        $pdf->output('I', 'Hoja de Liberacion-' . $bajaEmpleadoID . '.pdf');
         exit();
     } //imprimirHojaLiberacion
 

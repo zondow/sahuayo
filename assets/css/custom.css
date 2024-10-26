@@ -131,6 +131,14 @@ textarea::placeholder {
     background-color: #fff !important;
 }
 
-.select2-container--default .select2-search--inline .select2-search__field{
+.select2-container--default .select2-search--inline .select2-search__field {
     width: 100% !important;
+}
+
+.question-q-box {
+    width: 2% !important;
+}
+
+.progress .progress-bar {
+    background-color: #f0ad4e !important;
 }

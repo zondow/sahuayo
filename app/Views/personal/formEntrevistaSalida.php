@@ -53,7 +53,7 @@
                         ¿Cuál es el motivo de salida?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta1" class="select2 form-control select2-multiple" name="ent_Pregunta1[]" style="width: 100%" multiple="multiple" style="width: 100%">
+                        <select id="ent_Pregunta1" class="select2" name="ent_Pregunta1[]" style="width: 100%" multiple="multiple" style="width: 100%">
                             <option value="Oferta de trabajo con mejor salario">Oferta de trabajo con mejor salario </option>
                             <option value="Oferta de trabajo con mejores prestaciones">Oferta de trabajo con mejores prestaciones</option>
                             <option value="Oferta de trabajo con mejor puesto">Oferta de trabajo con mejor puesto </option>
@@ -78,7 +78,7 @@
                         ¿Cuánto tiempo llevas planeando tu salida?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta2" class="select2 form-control" name="ent_Pregunta2" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta2" class="select2" name="ent_Pregunta2" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="De 1 día a 1 semana">De 1 día a 1 semana</option>
                             <option value="De 1 a 2 semanas">De 1 a 2 semanas</option>
@@ -93,7 +93,7 @@
                     <div class="form-row ">
                         <div class="col-md-6">
                             <label for="ent_Pregunta3_1" class="col-form-label">Con tus compañeros de trabajo </label>
-                            <select id="ent_Pregunta3_1" class="select2 form-control" name="ent_Pregunta3_1" style="width: 100%" style="width: 100%">
+                            <select id="ent_Pregunta3_1" class="select2" name="ent_Pregunta3_1" style="width: 100%" style="width: 100%">
                                 <option value="" hidden>Seleccione</option>
                                 <option value="Bueno">Bueno</option>
                                 <option value="Regular">Regular</option>
@@ -102,7 +102,7 @@
                         </div>
                         <div class=" col-md-6">
                             <label for="ent_Pregunta3_2" class="col-form-label">Con tu jefe directo</label>
-                            <select id="ent_Pregunta3_2" class="select2 form-control" name="ent_Pregunta3_2" style="width: 100%" style="width: 100%">
+                            <select id="ent_Pregunta3_2" class="select2" name="ent_Pregunta3_2" style="width: 100%" style="width: 100%">
                                 <option value="" hidden>Seleccione</option>
                                 <option value="Bueno">Bueno</option>
                                 <option value="Regular">Regular</option>
@@ -119,7 +119,7 @@
                         ¿Qué tan realistas fueron las expectativas establecidas para usted?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta4" class="select2 form-control" name="ent_Pregunta4" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta4" class="select2" name="ent_Pregunta4" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="Bueno">Bueno</option>
                             <option value="Regular">Regular</option>
@@ -133,7 +133,7 @@
                         En general ¿Qué tan equitativo fue el trato que recibió?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta5" class="select2 form-control" name="ent_Pregunta5" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta5" class="select2" name="ent_Pregunta5" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="Bueno">Bueno</option>
                             <option value="Regular">Regular</option>
@@ -147,7 +147,7 @@
                         ¿Con que frecuencia sintió que sus aportaciones fueron reconocidas?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta6" class="select2 form-control" name="ent_Pregunta6" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta6" class="select2" name="ent_Pregunta6" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="Siempre">Siempre </option>
                             <option value="La mayor parte del tiempo">La mayor parte del tiempo</option>
@@ -162,7 +162,7 @@
                         En una semana típica ¿Con que frecuencia se sintió estresado /a en el Trabajo?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta7" class="select2 form-control" name="ent_Pregunta7" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta7" class="select2" name="ent_Pregunta7" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="Con extremada frecuencia">Con extremada frecuencia </option>
                             <option value="Con mucha frecuencia">Con mucha frecuencia</option>
@@ -177,7 +177,7 @@
                         En general ¿Cuánto le gusto trabajar en Caja Alianza?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta8" class="select2 form-control" name="ent_Pregunta8" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta8" class="select2" name="ent_Pregunta8" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="Muchísimo">Muchísimo</option>
                             <option value="Mucho">Mucho</option>
@@ -192,7 +192,7 @@
                         ¿Qué tan difícil fue para usted equilibrar su vida laboral y su vida personal mientras trabajo en Caja Alianza?
                     </label>
                     <div class="form-row">
-                        <select id="ent_Pregunta9" class="select2 form-control" name="ent_Pregunta9" style="width: 100%" style="width: 100%">
+                        <select id="ent_Pregunta9" class="select2" name="ent_Pregunta9" style="width: 100%" style="width: 100%">
                             <option value="" hidden>Seleccione</option>
                             <option value="Extremadamente difícil">Extremadamente difícil</option>
                             <option value="Muy difícil">Muy difícil</option>
@@ -214,8 +214,8 @@
 
                     <div class="form-row mt-3 text-center">
                         <div class="form-group col-md-12">
-                            <button id="btnGuardarEntrevistaSalida" type="submit" id="" class="mb-2 btn btn-success">
-                                <span class="label"><i class="fas fa-save"></i>&nbsp;&nbsp;Guardar</span>
+                            <button id="btnGuardarEntrevistaSalida" type="submit" id="" class="mb-2 btn btn-success btn-round">
+                                <span class="label">Guardar</span>
                             </button>
                         </div>
                     </div>
@@ -224,3 +224,12 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
+    });
+</script>
