@@ -307,6 +307,59 @@ class Evaluaciones extends BaseController
         echo view("htdocs/footer");
     } //
 
+    // Lia-> listado de plantillas de evaluacion de desempeño
+    public function plantillasDesempeño(){
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Plantillas evaluación de desempeño';
+        $data['plantillas'] = $this->EvaluacionesModel->getPlantillas('desempeño');
+
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+            array("titulo" => 'Plantillas', "link" => base_url('Evaluaciones/plantillasDesempeño'), "class" => "active"),
+        );
+
+        //pluggins
+        load_plugins(['datatables_buttons','sweetalert2'],$data);
+
+        //custom scripts
+        $data['scripts'][] = base_url("assets/js/evaluaciones/plantillas.js");
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('evaluaciones/plantillas', $data);
+        echo view('htdocs/footer');
+    }//end 
+
+    //Lia->crear evaluacion de desempeño
+    public function addEvaluacionDesempeno($plantillaID){
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Crear evaluación';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "active"),
+            array("titulo" => 'Plantilla ', "link" => base_url('Evaluaciones/plantillasDesempeno'), "class" => "active"),
+            array("titulo" => 'Crear evaluación ', "link" => base_url('Evaluaciones/addEvaluacionDesempeno/' . $plantillaID), "class" => "active"),
+        );
+ 
+        //Obtener los datos de la plantilla
+        $data['plantilla']=$this->EvaluacionesModel->getInfoPlantillaByID(encryptDecrypt('decrypt',$plantillaID));
+
+
+        //pluggins
+        load_plugins(['select2'],$data);
+
+        //custom scripts
+        $data['scripts'][] = base_url('assets/js/evaluaciones/addEvaluacionDesempeno.js');
+        $data['scripts'][] = base_url('assets/plugins/jquery-steps/jquery.steps.js');
+        $data['scripts'][] = base_url('assets/js/pages/forms/form-wizard.js');
+
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('evaluaciones/addEvaluacionDesempeno',$data);
+        echo view('htdocs/footer');
+
+    }
+
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
      |  ____| |  | | \ | |/ ____|_   _/ __ \| \ | |  ____|/ ____|
@@ -643,5 +696,41 @@ class Evaluaciones extends BaseController
     
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
+
+    //Lia -> guarda una plantilla de evaluacion
+    public function ajaxSaveplantilla(){
+        $post = $this->request->getPost();
+        $post['pla_PlantillaID'] = encryptDecrypt('decrypt',$post['pla_PlantillaID']);
+        $data['code'] = 0;
+        $builder = db()->table("plantillacuestionario");
+        if ((int)$post['pla_PlantillaID'] == 0) {
+            unset($post['pla_PlantillaID']);
+            $builder->insert($post);
+            $result = $this->db->insertID();
+            if ($result) $data['code'] = 1;
+        } else {
+            $result = $builder->update($post, array('pla_PlantillaID' => (int)$post['pla_PlantillaID']));
+            if ($result) $data['code'] = 2;
+        }
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }// end ajaxSavePlantilla
+
+    //Lia- trae la info de la plantilla
+    public function ajaxGetInfoPlantilla()
+    {
+        $plantillaID = encryptDecrypt('decrypt', post("plantillaID"));
+        $data['result'] = $this->EvaluacionesModel->getInfoPlantillaByID($plantillaID);
+        $data['code'] = 1;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }//end ajaxGetInfoPlantilla
+
+    //Lia->cambia el estatus de la plantilla
+    public function ajaxCambiarEstadoPlantilla(){
+        $plantillaID = encryptDecrypt('decrypt', post("plantillaID"));
+        $estado = post("estado");
+        $data['code'] = update('plantillacuestionario', ['pla_Estatus' => $estado], ['pla_PlantillaID' => (int)$plantillaID]);
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }//end ajaxCambiarEstadoPlantilla
+
     
 }

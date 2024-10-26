@@ -143,6 +143,12 @@ if (showMenu($incidencias)) :?>
 
     </ul>
 </li>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-assignment-check"></i><span>Desempeño</span> </a>
+    <ul class="ml-menu">
+        <li><a href="<?= base_url("Evaluaciones/plantillasDesempeño") ?>">Plantillas</a></li>
+        
+    </ul>
+</li>
 <li class="header">Bienestar Laboral</li>
 <?php echo addMenuOptionSingle('comunicados','Comunicados','Gestión de comunicados','zmdi zmdi-edit'); ?>
 <li> <a href="<?= base_url("Comunicados/misComunicados") ?>"><i class="zmdi zmdi-email"></i><span>Mis comunicados</span></a></li>
