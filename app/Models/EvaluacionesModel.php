@@ -368,6 +368,20 @@ class EvaluacionesModel extends Model
     }
 
 
+    public function getPlantillas($tipo){
+        $sql = "SELECT * FROM plantillacuestionario WHERE pla_Tipo =?";
+        $data = $this->db->query($sql, [$tipo])->getResultArray();
+
+        return array_map(function ($d) {
+            $d['pla_PlantillaID'] = encryptDecrypt('encrypt', $d['pla_PlantillaID']);
+            return $d;
+        }, $data);
+    }
+
+    public function getInfoPlantillaByID($plantillaID){
+        return $this->db->query("SELECT * FROM plantillacuestionario WHERE pla_PlantillaID= ?", array($plantillaID))->getRowArray();
+    }
+
 
 
 
