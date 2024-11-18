@@ -3485,7 +3485,7 @@ class PDF extends BaseController
 
 
         //Output
-        $pdf->output('I', $capacitacion['cur_Nombre'] . '_' . $fecha . '.pdf');
+        $pdf->output('I', eliminar_acentos($capacitacion['cur_Nombre']) . '_' . $fecha . '.pdf');
         exit();
     }
 
@@ -3630,8 +3630,7 @@ class PDF extends BaseController
     private function setEncuestaTableOption($estatus, $pdf, $y)
     {
         $posiciones = array(
-            "Totalmente de acuerdo" => 165.7, "De acuerdo" => 171.5, "Indeciso" => 176.7, "En desacuerdo" => 181.65,
-            "Totalmente en desacuerdo" => 189.7
+            "Totalmente de acuerdo" => 165.7, "De acuerdo" => 171.5, "Indeciso" => 176.7, "En desacuerdo" => 181.65, "Totalmente en desacuerdo" => 186.7
         );
 
         if ($estatus != '') {

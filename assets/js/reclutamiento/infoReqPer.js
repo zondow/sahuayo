@@ -64,11 +64,12 @@ $(document).ready(function (e) {
         }).done(function (data){
             if(data.response === "success"){
                 $('#candidatoID').val(data.info.candidatoID);
-                if(data.info.can_Observacion !== ""){
+                $('#can_Observacion').val(data.info.can_Observacion);
+                /*if(data.info.can_Observacion !== ""){
                     $('#can_Observacion').summernote('code',data.info.can_Observacion);
                 }else{
                     $('#can_Observacion').summernote();
-                }
+                }*/
             }
         }).fail(function () {
             $.toast({
@@ -82,12 +83,12 @@ $(document).ready(function (e) {
         });
     }
 
-    $('#can_Observacion').summernote({
+    /*$('#can_Observacion').summernote({
         //placeholder: 'Hello bootstrap 4',
         tabsize: 2,
         height: 400,
         lang: 'es-ES' // default: 'en-US'
-    });
+    });*/
 
     //Enviar notificacion a solicitante
     $("body").on("click", ".notificacionGerente", function (e) {
@@ -254,7 +255,7 @@ $(document).ready(function (e) {
             title: 'Seleccionar candidato',
             text: '',
             type: "question",
-            html: '<form>¿Esta seguro que desea seleccionar al candidato ' + candidato + '? <br><br> Seleccione la fecha de ingreso<br><input class="form-control datepicker" type="date" id="fechaIngreso" name="fechaIngreso" required></form>',
+            html: '<form class="text-center">¿Esta seguro que desea seleccionar al candidato ' + candidato + '? <br><br> Seleccione la fecha de ingreso<br><input class="form-control datepicker" type="date" id="fechaIngreso" name="fechaIngreso" required></form>',
             showCancelButton: true,
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",

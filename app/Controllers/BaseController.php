@@ -82,6 +82,8 @@ class BaseController extends Controller
 		$this->PersonalModel = model('App\Models\PersonalModel', false);
 		$this->EvaluacionesModel = model('App\Models\EvaluacionesModel', false);
 		$this->ComunicadosModel = model('App\Models\ComunicadosModel', false);
+		$this->FormacionModel = model('App\Models\FormacionModel', false);
+		$this->ReclutamientoModel = model('App\Models\ReclutamientoModel', false);
     }
 
 }

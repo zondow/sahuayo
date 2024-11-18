@@ -1504,7 +1504,7 @@ function diasCapacitacion($inicio, $fin, $arrayDias, $obj)
 function isInstructor()
 {
     $id = session("id");
-    $instructor = db()->query("SELECT I.*FROM instructor I WHERE I.ins_EmpleadoID=" . (int)$id)->getRowArray();
+    $instructor = db()->query("SELECT I.*FROM instructor I WHERE I.ins_Estatus=1 AND I.ins_EmpleadoID=" . (int)$id)->getRowArray();
     return ($instructor) ? TRUE : FALSE;
 }
 
@@ -2076,7 +2076,6 @@ function fechaPresentarse($fechaFinVacacion, $empleadoID)
 function portadaGaleria($galeriaNombre)
 {
     $url = FCPATH . "/assets/uploads/galeria/" . $galeriaNombre;
-    echo $galeriaNombre;
     if (!file_exists($url)) mkdir($url, 0777, true);
     $directory = $url;
     $files = scandir($directory);

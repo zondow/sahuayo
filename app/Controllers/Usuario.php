@@ -134,16 +134,10 @@ class Usuario extends BaseController
             array("titulo" => 'Reglamentos y politicas', "link" => base_url('Usuario/normativa'), "class" => "active"),
         );
 
+        load_plugins(['sweetalert2','datables4'],$data);
 
         //Styles
-        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-
         //Scripts
-        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
-
 
         $data['scripts'][] = base_url('assets/js/misNotmativas.js');
 
@@ -153,40 +147,6 @@ class Usuario extends BaseController
         echo view('htdocs/footer');
     }
 
-    public function anuncio()
-    {
-        //Validar sessión
-        validarSesion(self::LOGIN_TYPE);
-
-        $data['title'] = 'Gestionar anuncios';
-        $data['breadcrumb'] = array(
-            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
-            array("titulo" => 'Anuncios', "link" => base_url('Usuario/anuncio'), "class" => "active"),
-        );
-
-        //Styles
-        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-        $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
-        $data['styles'][] = base_url('assets/libs/summernote/summernote-bs4.css');
-
-
-        //Scripts
-        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
-
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
-        $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
-        $data['scripts'][] = base_url('assets/libs/summernote/summernote-bs4.min.js');
-        $data['scripts'][] = base_url('assets/libs/summernote/lang/summernote-es-ES.js');
-
-        $data['scripts'][] = base_url('assets/js/anuncio/subirAnuncio.js');
-
-        //Cargar vistas
-        echo view('htdocs/header', $data);
-        echo view('usuario/subirAnuncio', $data);
-        echo view('htdocs/footer', $data);
-    }
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
      |  ____| |  | | \ | |/ ____|_   _/ __ \| \ | |  ____|/ ____|
@@ -247,96 +207,6 @@ class Usuario extends BaseController
         }
     }
 
-    public function addAnuncio()
-    {
-        $code = 0;
-        $id = null;
-        $msg = '';
-        $post = $this->request->getPost();
-        $nombreRepetido = $this->db->query("SELECT * FROM anuncio WHERE anu_Titulo=?", [$post['anu_Titulo']])->getResultArray();
-        if ($nombreRepetido == null) {
-            if ($post['anu_Estatus'] == 'Si') {
-                $post['anu_Estatus'] = 1;
-                $this->db->query("UPDATE anuncio SET anu_Estatus=0 WHERE anu_Estatus=1");
-                $msg = ' y se ha publicado';
-            } else {
-                $post['anu_Estatus'] = 0;
-            }
-            $data = array(
-                'anu_Titulo' => $post['anu_Titulo'],
-                'anu_FechaRegistro' => date('Y-m-d'),
-                'anu_Estatus' => $post['anu_Estatus']
-            );
-            $builder = db()->table('anuncio');
-            $builder->insert($data);
-            $id = $this->db->insertID();
-            if ($id) {
-                $directorio = dirname(WRITEPATH) . "/assets/uploads/anuncios/" . encryptDecrypt('encrypt', $id) . '/';
-                if (!file_exists($directorio)) {
-                    mkdir($directorio, 0777, true);
-                }
-                $tmpFilePath = $_FILES['files']['tmp_name'];
-                if ($tmpFilePath != "") {
-                    $newFilePath = $directorio . $_FILES['files']['name'];
-                    move_uploaded_file($tmpFilePath, $newFilePath);
-                }
-                $code = 1;
-            }
-        } else {
-            $code = 2;
-        }
-
-        switch ($code) {
-            case 1:
-                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha guardado el anuncio ' . $msg));
-                break;
-            case 2:
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'Existe otro anuncio con el mismo nombre'));
-                break;
-            case 0:
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
-                break;
-        }
-        return redirect()->to($_SERVER['HTTP_REFERER']);
-    }
-
-    public function estatusAnuncio($estatus, $id)
-    {
-        $anuncioActivo = $this->db->query("SELECT * FROM anuncio WHERE anu_Estatus=1 AND anu_AnuncioID!=?", array(encryptDecrypt('decrypt', $id)))->getRowArray();
-        if ($anuncioActivo) {
-            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'Existe otro anuncio habilitado, deshabilitalo para poder continuar'));
-        } else {
-            $builder = db()->table('anuncio');
-            $result = $builder->update(array('anu_Estatus' => $estatus), array('anu_AnuncioID' => encryptDecrypt('decrypt', $id)));
-            if ($result) {
-                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha actualizado el anuncio'));
-            } else {
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'No se ha podido actualizar el anuncio'));
-            }
-        }
-        return redirect()->to($_SERVER['HTTP_REFERER']);
-    }
-
-    public function borrarAnuncio($id)
-    {
-        $url = FCPATH . "/assets/uploads/anuncios/" . $id . "/";
-        if (!file_exists($url)) mkdir($url, 0777, true);
-        $files = preg_grep('/^([^.])/', scandir($url));
-        $builder = db()->table('anuncio');
-        if ($files) {
-            sort($files);
-            if (unlink($url . $files[0])) {
-                $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt', $id)));
-                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha eliminado el anuncio'));
-            } else {
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'No se ha podido eliminar el anuncio'));
-            }
-        } else {
-            $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt', $id)));
-            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha eliminado el anuncio'));
-        }
-        return redirect()->to($_SERVER['HTTP_REFERER']);
-    }
     /*
                    _         __   __
          /\       | |  /\    \ \ / /
@@ -732,14 +602,7 @@ class Usuario extends BaseController
         $idPuesto = session('puesto');
         $idEmpleado = session('id');
 
-
-
-        $sql = "SELECT P.*, MAX(N.not_NotiPoliticaID) AS max_not_NotiPoliticaID, N.*
-        FROM politica P
-        JOIN notipolitica N ON P.pol_PoliticaID = N.not_PoliticaID
-        WHERE N.not_EmpleadoID = " . $idEmpleado . " AND P.pol_Estatus = 1
-        GROUP BY P.pol_PoliticaID";
-        $result =  $this->db->query($sql)->getResultArray();
+        $result = $this->ComunicadosModel->getPoliticasUsuario($idEmpleado);
 
         $politicas = array();
         $pol = array();
@@ -756,21 +619,15 @@ class Usuario extends BaseController
                             $imagen = base_url('assets/images/file_icons/pdf.svg');
                         }
 
-
                         $archivoNombre = explode('/', $documento);
                         $count = count($archivoNombre) - 1;
                         $nombre = explode('.', $archivoNombre[$count]);
 
-                        $html = '
-                                <div class="file-img-box">
-                                    <img src="' . $imagen . '" class="avatar-sm" alt="icon">
-                                </div>
-                                <a href="' . $documento . '" class="file-download show-pdf vistoPolitica" data-id="' . $item['not_NotiPoliticaID'] . '" data-title="' . $nombre[0] . ' " ><i
-                                        class="fa fa-eye"></i> </a>
-                                <div class="file-man-title">
-                                    <p class="mb-0 text-overflow">' . $nombre[0] . ' </p>
-                                </div>
-                           ';
+                        $html = '<a href="' . $documento . '" class="file-download show-pdf vistoPolitica" data-id="' . $item['not_NotiPoliticaID'] . '" data-title="' . $nombre[0] . ' " >
+                                    <div class="file-img-box" style="width:25%">
+                                        <img src="' . $imagen . '" class="avatar-sm" alt="icon">
+                                    </div>
+                                </a>';
                     }
                     $pol['id'] = $item['pol_PoliticaID'];
                     $pol['no'] = $item['pol_No'];
@@ -809,8 +666,7 @@ class Usuario extends BaseController
         $post = $this->request->getPost();
         $idPolitica = $post['politicaID'];
         $data['code'] = 0;
-        $builder = $this->db->table('notipolitica');
-        $builder->update(array('not_Visto' => 1), array('not_NotiPoliticaID' => $idPolitica));
+        update('notipolitica',array('not_Visto' => 1), array('not_NotiPoliticaID' => $idPolitica));
         if ($this->db->affectedRows() > 0) {
             $data['code'] = 1;
         }
@@ -1093,20 +949,4 @@ class Usuario extends BaseController
         echo json_encode($tree);
     }
 
-
-    public function ajax_getAnuncio()
-    {
-        $anuncios = $this->db->query("SELECT * FROM anuncio ORDER BY anu_AnuncioID DESC")->getResultArray();
-        $data = array();
-        foreach ($anuncios as $anuncio) {
-            $anuncio['anu_AnuncioID'] = encryptDecrypt('encrypt', $anuncio['anu_AnuncioID']);
-            $anuncio['anu_FechaRegistro'] = longDate($anuncio['anu_FechaRegistro']);
-            if (archivoAnuncio($anuncio['anu_AnuncioID'])) {
-                $anuncio['archivo'] = archivoAnuncio($anuncio['anu_AnuncioID']);
-            }
-            array_push($data, $anuncio);
-        }
-        $data['data'] = $data;
-        echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    }
 }

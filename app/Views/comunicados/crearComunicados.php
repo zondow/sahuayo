@@ -52,7 +52,7 @@
 
                     <div class="form-group col-md-12" id="divColaboradores">
                         <label for="com_Empleados" class="col-form-label">* Colaboradores</label>
-                        <select id="com_Empleados" class="select2" required name="com_Empleados[]" style="width: 100%" multiple="multiple" style="width: 100%">
+                        <select id="com_Empleados" class="select2" required name="com_Empleados[]" style="width: 100%" multiple="multiple">
                             <?php foreach ($empleados as $empleado) { ?>
                                 <option value="<?= encryptDecrypt('encrypt', $empleado['emp_EmpleadoID']) ?>"><?= $empleado['emp_Nombre'] ?></option>
                             <?php } ?>

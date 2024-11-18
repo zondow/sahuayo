@@ -79,11 +79,12 @@ $(document).ready(function(e) {
         }).done(function (data){
             if(data.response === "success"){
                 $('#cap_CapacitacionID').val(data.capacitacion.cap_CapacitacionID);
-                if(data.capacitacion.cap_ComentariosInstructor !== ""){
+                $('#cap_ComentariosInstructor').val(data.capacitacion.cap_ComentariosInstructor);
+                /*if(data.capacitacion.cap_ComentariosInstructor !== ""){
                     $('#cap_ComentariosInstructor').summernote('code',data.capacitacion.cap_ComentariosInstructor);
                 }else{
                     $('#cap_ComentariosInstructor').summernote();
-                }
+                }*/
             }
         }).fail(function () {
             $.toast({
@@ -99,12 +100,12 @@ $(document).ready(function(e) {
 
 
 
-    $('#cap_ComentariosInstructor').summernote({
+    /*$('#cap_ComentariosInstructor').summernote({
         //placeholder: 'Hello bootstrap 4',
         tabsize: 2,
         height: 400,
         lang: 'es-ES' // default: 'en-US'
-    });
+    });*/
 
 
 });

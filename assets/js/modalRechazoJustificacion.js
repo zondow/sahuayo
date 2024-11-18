@@ -1,4 +1,24 @@
 (function ($) {
+    // Variables
+    var $link = $('#confirmLink');
+    var $tema = $('#confirmTema');
+
+    // Fijar evento
+    $('body').on('click', '.modal-rechazo', function (e) {
+        e.preventDefault();
+
+        var $this = $(this);
+
+        // Asignar la acción y el tema a los elementos del modal
+        $("#justificacionRechazo").attr('action', $this.attr('data-href'));
+        $("#rechazoTema").html($this.attr('data-action'));
+
+        // Abrir el modal
+        $('#rechazoModal').modal('show');
+    });
+})(jQuery);
+
+/*(function ($) {
     //Variables
     var $link = $('#confirmLink');
     var $tema = $('#confirmTema');
@@ -23,4 +43,4 @@
         // Open
         modal.open();
     });
-})(jQuery);
+})(jQuery);*/

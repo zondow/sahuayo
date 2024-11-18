@@ -10,14 +10,14 @@ $(document).ready(function (e) {
             "processing": true,
         },
         columns: [
+            { "data": "no" },
+            { "data": "nombre" },
+            { "data": "documento" },
             {
                 "data": "acciones", render: function (data, type, row) {
                     return acciones(data, type, row)
                 }
             },
-            { "data": "no" },
-            { "data": "nombre" },
-            { "data": "documento" },
         ],
         columnDefs: [
             { targets: 0, className: 'text-center' },
@@ -53,9 +53,9 @@ $(document).ready(function (e) {
 
     function acciones(data, type, row) {
         let button = '';
-        button += ' <a type="button" class="btn btn-secondary waves-effect waves-light cambiosPolitica" title="Historial de cambios" data-id="' + row['id'] + '" style="color:#FFFFFF"><i class=" fas fa-history"></i> </a><br>';
+        button += ' <button class="btn btn-secondary btn-icon btn-icon-mini btn-round hidden-sm-down cambiosPolitica" title="Historial de cambios" data-id="' + row['id'] + '" style="color:#FFFFFF"><i class=" fas fa-history"></i> </button><br>';
         if (row['enterado'] == 0)
-            button += ' <a type="button" class="btn btn-success waves-effect waves-light enteradoPolitica" title="Marcar como enterado" data-id="' + row['idNoti'] + '" style="color:#FFFFFF"><i class="zmdi zmdi-check"></i> </a>';
+            button += ' <button class="btn btn-success btn-icon btn-icon-mini btn-round hidden-sm-down enteradoPolitica" title="Marcar como enterado" data-id="' + row['idNoti'] + '" style="color:#FFFFFF"><i class="zmdi zmdi-check"></i> </button>';
         return button;
     }
 
@@ -165,7 +165,7 @@ $(document).ready(function (e) {
                 if (data.info.pol_Cambios !== null) {
                     $('#divCambios').html(data.info.pol_Cambios);
                 } else {
-                    $('#divCambios').html('<div class="col-md-12 alert alert-info text-center">No hay actualización del la normativa.</div>');
+                    $('#divCambios').html('<div class="col-md-12 alert l-slategray text-center" style="border-radius:50px">No hay actualización del la normativa.</div>');
                 }
             }
         }).fail(function () {

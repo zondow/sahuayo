@@ -228,11 +228,6 @@ $(document).ready(function (e) {
         }
     });
 
-    $(".select2").select2({ language: "es", });
-    $(".select2-multiple").select2({
-        language: "es",
-    });
-
     // Obtén la fecha actual
     var fechaActual = new Date();
 

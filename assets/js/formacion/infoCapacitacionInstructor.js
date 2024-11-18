@@ -15,13 +15,13 @@ $(document).ready(function (e) {
                 type: "post",
             },
             columns: [
-                { "data": "acciones", render: function(data,type,row){return acciones(data,type,row)} },
                 { "data": "emp_Numero"},
                 { "data": "emp_Nombre"},
                 { "data": "pue_Nombre"},
                 { "data": "are_Nombre"},
                 { "data": "suc_Sucursal"},
                 { "data": "cape_Calificacion"},
+                { "data": "acciones", render: function(data,type,row){return acciones(data,type,row)} },
             ],
             columnDefs: [
                 {targets:0,className: 'text-center'},
@@ -81,9 +81,7 @@ $(document).ready(function (e) {
 
         function acciones(data,type,row){
             let button = '';
-            button += '<div>';
-                button += '<a href="#" class="btn min="0" max="10" value="" btn-sm btn-info btnCalificacionEmpleado" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Calificación"><i class="mdi mdi-file-document-box-check-outline"></i></a>';
-            button += '</div>';
+                button += '<button href="#" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down btnCalificacionEmpleado" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Calificación"><i class="zmdi zmdi-star"></i></button>';
             return button;
         }
     }
@@ -246,6 +244,8 @@ $(document).ready(function (e) {
                         position: 'top-right',
                         allowToastClose : true,
                     });
+                    location.reload();
+
 
                 }
             }

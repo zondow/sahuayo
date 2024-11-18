@@ -87,13 +87,13 @@ $(document).ready(function (e) {
             dataType: "json"
         }).done(function (data) {
             if (data.response === "success") {
-                $('#can_Observacion').summernote('disable');
                 $('#candidatoID').val(data.info.candidatoID);
-                if (data.info.can_Observacion !== "") {
+                $('#can_Observacion').val( data.info.can_Observacion);
+                /*if (data.info.can_Observacion !== "") {
                     $('#can_Observacion').summernote('code', data.info.can_Observacion);
                 } else {
                     $('#can_Observacion').summernote();
-                }
+                }*/
             }
         }).fail(function () {
             $.toast({
@@ -123,13 +123,15 @@ $(document).ready(function (e) {
             dataType: "json"
         }).done(function (data) {
             if (data.response === "success") {
-                $('#can_Observacion').summernote('disable');
+                //$('#can_Observacion').summernote('disable');
                 $('#candidatoID').val(data.info.candidatoID);
-                if (data.info.can_Observacion !== "") {
+                $('#can_Observacion').val(data.info.can_Observacion);
+
+                /*if (data.info.can_Observacion !== "") {
                     $('#can_Observacion').summernote('code', data.info.can_Observacion);
                 } else {
                     $('#can_Observacion').summernote();
-                }
+                }*/
             }
         }).fail(function () {
             $.toast({
@@ -143,27 +145,4 @@ $(document).ready(function (e) {
         });
     }
 
-    $('#can_Observacion').summernote({
-        //placeholder: 'Hello bootstrap 4',
-        toolbar: false,
-        tabsize: 2,
-        height: 400,
-        lang: 'es-ES' // default: 'en-US'
-    });
-
-    $('#selectSolicitudID').select2({
-        minimumResultsForSearch: Infinity,
-        minimumResultsForSearch: '',
-        language: {
-
-            noResults: function () {
-
-                return "No hay resultado";
-            },
-            searching: function () {
-
-                return "Buscando..";
-            }
-        }
-    });
 });

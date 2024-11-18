@@ -22,28 +22,28 @@ foreach ($result as $row) {
 
         </ul>
     </li>
-<?php endif; 
-    if(showMenu($catalogos)):?>
-<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
-    <ul class="ml-menu">
-        <?php
-        echo addMenuOption('sucursales', 'Catalogos', 'Sucursales');
-        echo addMenuOption('departamentos', 'Catalogos', 'Departamentos');
-        echo addMenuOption('areas', 'Catalogos', 'Areas');
-        echo addMenuOption('puestos', 'Catalogos', 'Puestos');
-        echo addMenuOption('competencias', 'Catalogos', 'Competencias');
-        echo addMenuOption('cursos', 'Catalogos', 'Cursos');
-        echo addMenuOption('proveedores', 'Catalogos', 'Proveedores de capacitación');
-        echo addMenuOption('instructores', 'Catalogos', 'Instructores de capacitación');
+<?php endif;
+if (showMenu($catalogos)) : ?>
+    <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Catalogos</span> </a>
+        <ul class="ml-menu">
+            <?php
+            echo addMenuOption('sucursales', 'Catalogos', 'Sucursales');
+            echo addMenuOption('departamentos', 'Catalogos', 'Departamentos');
+            echo addMenuOption('areas', 'Catalogos', 'Areas');
+            echo addMenuOption('puestos', 'Catalogos', 'Puestos');
+            echo addMenuOption('competencias', 'Catalogos', 'Competencias');
+            echo addMenuOption('cursos', 'Catalogos', 'Cursos');
+            echo addMenuOption('proveedores', 'Catalogos', 'Proveedores de capacitación');
+            echo addMenuOption('instructores', 'Catalogos', 'Instructores de capacitación');
 
-        ?>
-    </ul>
-</li>
+            ?>
+        </ul>
+    </li>
 <?php endif; ?>
 <li class="header">Personal</li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-accounts"></i><span>Colaboradores</span> </a>
     <ul class="ml-menu">
-    <?php
+        <?php
         echo addMenuOption('empleados', 'Personal', 'Plantilla');
         echo addMenuOption('organigrama', 'Personal', 'Organigrama');
         echo addMenuOption('recibosNomina', 'Personal', 'Recibos de nómina');
@@ -56,7 +56,7 @@ foreach ($result as $row) {
     <ul class="ml-menu">
         <li><a href="<?= base_url('Incidencias/misVacaciones') ?>">Mis Vacaciones</a></li>
         <?php if (isJefe($this)) : ?><li><a href="<?= base_url("Incidencias/vacacionesMisEmpleados") ?>">Autorizar vacaciones</a></li><?php endif;
-        echo addMenuOption('listVacaciones', 'Incidencias', 'Aplicar vacaciones');?>
+                                                                                                                                    echo addMenuOption('listVacaciones', 'Incidencias', 'Aplicar vacaciones'); ?>
         <li><a href="<?= base_url("Incidencias/cambioVacacionesHoras") ?>">Cambiar Vacaciones por horas</a></li>
         <?php echo addMenuOption('aplicarCambioHorasVac', 'Incidencias', 'Aplicar Cambio de Vacaciones a Horas') ?>
     </ul>
@@ -65,25 +65,25 @@ foreach ($result as $row) {
     <ul class="ml-menu">
         <li><a href="<?= base_url("Incidencias/misPermisos") ?>">Mis permisos</a></li>
         <?php if (isJefe($this)) : ?><li><a href="<?= base_url("Incidencias/permisosMisEmpleados") ?>">Autorizar permisos</a></li> <?php endif;
-        echo addMenuOption('aplicarPermisos','Incidencias', 'Aplicar permisos');
-        ?>
+                                                                                                                                echo addMenuOption('aplicarPermisos', 'Incidencias', 'Aplicar permisos');
+                                                                                                                                    ?>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-pin-assistant"></i><span>Asistencia</span> </a>
     <ul class="ml-menu">
-    <?= addMenuOption('reporteAsistencia','Incidencias','Reporte de asistencia');?>
+        <?= addMenuOption('reporteAsistencia', 'Incidencias', 'Reporte de asistencia'); ?>
     </ul>
 </li>
-<?php if(in_array(session('id'),[7,19,41,50,105])): ?>
-<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-time-countdown"></i><span>Horas Extra</span> </a>
-    <ul class="ml-menu">
-        <li><a href="<?= base_url("Incidencias/controlHorasExtra") ?>">Control de mis horas extra</a></li>
-        <?php
-        if (isJefe($this)) : ?> <li><a href="<?= base_url("Incidencias/horasExtraMisEmpleados") ?>">Autorizar Horas Extra</a></li> <?php endif;
-        echo addMenuOption('aplicarReporteHoras','Incidencias','Aplicar Horas Extra');
-        ?>
-    </ul>
-</li>
+<?php if (in_array(session('id'), [7, 19, 41, 50, 105])) : ?>
+    <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-time-countdown"></i><span>Horas Extra</span> </a>
+        <ul class="ml-menu">
+            <li><a href="<?= base_url("Incidencias/controlHorasExtra") ?>">Control de mis horas extra</a></li>
+            <?php
+            if (isJefe($this)) : ?> <li><a href="<?= base_url("Incidencias/horasExtraMisEmpleados") ?>">Autorizar Horas Extra</a></li> <?php endif;
+                                                                                                                                    echo addMenuOption('aplicarReporteHoras', 'Incidencias', 'Aplicar Horas Extra');
+                                                                                                                                        ?>
+        </ul>
+    </li>
 <?php endif; ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-car"></i><span>Salidas</span> </a>
     <ul class="ml-menu">
@@ -91,47 +91,47 @@ foreach ($result as $row) {
         <?php if (isJefe($this)) { ?>
             <li><a href="<?= base_url("Incidencias/informeSalidasMisEmpleados") ?>">Autorizar salidas</a></li>
         <?php }
-        echo addMenuOption('aplicarInformeSalidas','Incidencias', 'Aplicar salidas');
+        echo addMenuOption('aplicarInformeSalidas', 'Incidencias', 'Aplicar salidas');
         ?>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-hospital-alt"></i><span>Incapacidades</span> </a>
     <ul class="ml-menu">
-    <li><a href="<?= base_url("Incidencias/misIncapacidades") ?>">Mis incapacidades</a></li>
+        <li><a href="<?= base_url("Incidencias/misIncapacidades") ?>">Mis incapacidades</a></li>
         <?php if (isJefe($this)) { ?>
-            <li><a href="<?= base_url("Incidencias/incapacidadesMisEmpleados")?>">Incapacidades de Colaboradores</a></li>
+            <li><a href="<?= base_url("Incidencias/incapacidadesMisEmpleados") ?>">Incapacidades de Colaboradores</a></li>
         <?php }
-        echo addMenuOption('incapacidad','Incidencias', 'Revisar Incapacidades');
+        echo addMenuOption('incapacidad', 'Incidencias', 'Revisar Incapacidades');
         ?>
     </ul>
 </li>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-card-alert"></i><span>Sanciones</span> </a>
     <ul class="ml-menu">
-    <li><a href="<?= base_url("Incidencias/misSanciones") ?>">Mis sanciones</a></li>
+        <li><a href="<?= base_url("Incidencias/misSanciones") ?>">Mis sanciones</a></li>
         <?php if (isJefe($this)) { ?>
             <li><a href="<?= base_url("Incidencias/sancionesMisEmpleados") ?>">Sanciones de Colaboradores</a></li>
         <?php }
-        echo addMenuOption('sanciones','Incidencias', 'Crear sanciones');
+        echo addMenuOption('sanciones', 'Incidencias', 'Crear sanciones');
         ?>
     </ul>
 </li>
 <?php
-if (showMenu($incidencias)) :?>
+if (showMenu($incidencias)) : ?>
     <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book"></i><span>Reportes</span> </a>
         <ul class="ml-menu">
             <?php
-            echo addMenuOption('reporteHorasVacacionesEmpleados','Incidencias', 'Vacaciones y Horas extra');
-            echo addMenuOption('reportePeriodo','Incidencias', 'Vacaciones (Periodo)');
-            ?>  
+            echo addMenuOption('reporteHorasVacacionesEmpleados', 'Incidencias', 'Vacaciones y Horas extra');
+            echo addMenuOption('reportePeriodo', 'Incidencias', 'Vacaciones (Periodo)');
+            ?>
         </ul>
     </li>
 <?php endif; ?>
 <li class="header">Evaluaciones</li>
-<?php echo addMenuOptionSingle('periodoEvaluacion','Evaluaciones', 'Periodo de Evaluación','zmdi zmdi-time-restore'); ?>
+<?php echo addMenuOptionSingle('periodoEvaluacion', 'Evaluaciones', 'Periodo de Evaluación', 'zmdi zmdi-time-restore'); ?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-thumb-up-down"></i><span>Clima laboral</span> </a>
     <ul class="ml-menu">
         <li><a href="<?= base_url("Evaluaciones/evaluacionClimaLaboral") ?>">Realizar evalución</a></li>
-        <?php echo addMenuOption('resultadosClimaLaboral','Evaluaciones', 'Resultados') ?>
+        <?php echo addMenuOption('resultadosClimaLaboral', 'Evaluaciones', 'Resultados') ?>
     </ul>
 </li>
 <li><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-account-box"></i><span>NOM 035</span></a>
@@ -146,11 +146,43 @@ if (showMenu($incidencias)) :?>
 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-assignment-check"></i><span>Desempeño</span> </a>
     <ul class="ml-menu">
         <li><a href="<?= base_url("Evaluaciones/plantillasDesempeño") ?>">Plantillas</a></li>
-        
+
     </ul>
 </li>
+<li class="header">Reclutamiento</li>
+<?php
+echo addMenuOptionSingle('requisicionPersonal', 'Reclutamiento', 'Requisición de Personal', 'zmdi zmdi-assignment-o');
+echo addMenuOptionSingle('seguimientoReqPer', 'Reclutamiento', 'Seguimiento de requisición de personal', 'zmdi zmdi-accounts-list');
+echo addMenuOptionSingle('carteraCandidatos', 'Reclutamiento', 'Cartera de candidato', 'zmdi zmdi-balance-wallet');
+?>
+<li class="header">Formación</li>
+<?php echo addMenuOptionSingle('programaCapacitacion', 'Formacion', 'Programa de capacitación', 'zmdi zmdi-border-color');
+if (isInstructor()) {
+    echo '<li><a href="' . base_url("Formacion/capacitacionesInstructor") . '"><i class="zmdi zmdi-developer-board"></i> Capacitaciones</a></li>';
+} ?>
+<li><a href="<?= base_url("Formacion/misCapacitaciones") ?>"><i class="zmdi zmdi-airplay"></i> Mis capacitaciones</a></li>
+
 <li class="header">Bienestar Laboral</li>
-<?php echo addMenuOptionSingle('comunicados','Comunicados','Gestión de comunicados','zmdi zmdi-edit'); ?>
+<?php echo addMenuOptionSingle('comunicados', 'Comunicados', 'Gestión de comunicados', 'zmdi zmdi-edit'); ?>
 <li> <a href="<?= base_url("Comunicados/misComunicados") ?>"><i class="zmdi zmdi-email"></i><span>Mis comunicados</span></a></li>
-
-
+<?php if (showMenu('normativaInterna')) { ?>
+    <li><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-file-plus"></i><span>Gestión de documentos</span></a>
+        <ul class="ml-menu">
+            <?php echo addMenuOption('normativaInterna', 'Comunicados', 'Gestión de documentos'); ?>
+            <li><a href="<?= base_url("Usuario/normativa") ?>">Mis reglamentos</a></li>
+        </ul>
+    </li>
+<?php } else { ?>
+    <li> <a href="<?= base_url("Usuario/normativa") ?>"><i class="zmdi zmdi-file-text"></i><span>Mis reglamentos</span></a></li>
+<?php } ?>
+<?php echo addMenuOptionSingle('anuncios', 'Comunicados', 'Anuncios', 'zmdi zmdi-collection-video'); ?>
+<?php if (showMenu('subirFotos')) { ?>
+    <li><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-book-photo"></i><span>Galería de fotos</span></a>
+        <ul class="ml-menu">
+            <?php echo addMenuOption('subirFotos', 'Comunicados', 'Gestión de galería'); ?>
+            <li><a href="<?= base_url("Comunicados/galeriaFotos") ?>">Ver galería</a></li>
+        </ul>
+    </li>
+<?php } else { ?>
+    <li> <a href="<?= base_url("Comunicados/galeriaFotos") ?>"><i class="zmdi zmdi-book-photo"></i><span>Ver galería</span></a></li>
+<?php } ?>
