@@ -1053,31 +1053,6 @@ class Personal extends BaseController
         echo json_encode($array);
     }
 
-    public function ajaxEnviarNotiNuevoIngreso()
-    {
-        $post = $this->request->getPost();
-        $idEmpleado = encryptDecrypt('decrypt', $post['empleadoID']);
-
-        $data['code'] = 0;
-
-        $this->db->transStart();
-
-        $sql = "SELECT emp_Nombre,pue_Nombre,dep_Nombre,emp_FechaIngreso FROM empleado
-                JOIN puesto ON pue_PuestoID=emp_PuestoID
-                JOIN departamento ON dep_DepartamentoID=emp_DepartamentoID
-            WHERE emp_EmpleadoID=?";
-        $empleado = $this->db->query($sql, array($idEmpleado))->getRowArray();
-
-        $check = $this->db->query("SELECT * FROM catalogochecklist WHERE cat_Estatus=1")->getResultArray();
-        $arrayResponsables = array();
-        foreach ($check as $ch) {
-            $responsables = json_decode($ch['cat_ResponsableID']);
-            foreach ($responsables as $responsable) {
-                array_push($arrayResponsables, $responsable);
-            }
-        }
-    }
-
     //Lis->Guarda la foto del empleado
     public function ajaxSubirFotoEmpleado($empleadoID)
     {
@@ -1107,4 +1082,134 @@ class Personal extends BaseController
         } //if
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
+
+    //Lia->obtiene informacion del onboarding del colaborador
+    public function ajax_getInfoOnboardingColaboradorByID($colaboradorID)
+    {
+        $data['colaborador'] = $this->PersonalModel->getColaboradorByID($colaboradorID);
+        $data['foto'] = fotoPerfil($colaboradorID);
+        $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Ingreso' AND cat_Requerido=1")->getRowArray()['total'];
+        $data['totalCheck'] = $this->PersonalModel->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $colaboradorID));
+        $data['response'] = 'success';
+        echo json_encode($data,);
+    }
+
+    //Lia->obtiene el checklist de ingreso
+    public function ajax_getChecklist($colaboradorID)
+    {
+        $checklist = $this->PersonalModel->getChecklist('Ingreso');
+        $emp_EmpleadoID = encryptDecrypt('decrypt', $colaboradorID);
+        $response = [];
+        foreach ($checklist as $ck) {
+            $catalogoID = '["' . $ck['cat_CatalogoID'] . '"]';
+
+            $sql = "
+                SELECT COUNT(che_ChecklistEmpleadoID) as 'existe'
+                FROM checklistempleado
+                WHERE JSON_CONTAINS(che_CatalogoChecklistID, ?)
+                AND che_EmpleadoID = ?
+            ";
+
+            $query = db()->query($sql, [$catalogoID, $emp_EmpleadoID]);
+            $check = $query->getRowArray();
+
+
+            $checked = ($check['existe'] == 1) ? true : false;
+
+            $response[] = [
+                'id' => $ck['cat_CatalogoID'],
+                'nombre' => $ck['cat_Nombre'],
+                'requerido' => $ck['cat_Requerido'],
+                'checked' => $checked
+            ];
+        }
+        echo json_encode($response);
+    } //and ajax_getChecklist
+
+    //Diego-> guardar onboarding
+    public function ajax_saveOnboarding()
+    {
+        $post = $this->request->getPost();
+        $empleadoID = encryptDecrypt('decrypt', $post['col']);
+        unset($post['col']);
+        if ($post) {
+            $id = json_encode($post['check']);
+        } else {
+            $id = '';
+        }
+        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=" . $empleadoID)->getRowArray();
+        $builder = $this->db->table('checklistempleado');
+        if ($registro !== NULL) {
+            $builder->update(array('che_CatalogoChecklistID' => $id), array('che_ChecklistEmpleadoID' => $registro['che_ChecklistEmpleadoID']));
+            $result = $registro['che_ChecklistEmpleadoID'];
+            $tipo = 'Actualizar';
+        } else {
+            $data = array(
+                "che_EmpleadoID" => $empleadoID,
+                "che_CatalogoChecklistID" => $id
+            );
+            $builder->insert($data);
+            $result = $this->db->insertID();
+            $tipo = 'Insertar';
+        }
+        if ($result) {
+            insertLog($this, session('id'), $tipo, 'onboarding', $result);
+            $response['code'] = 1;
+        } else {
+            $response['code'] = 0;
+        }
+        echo json_encode($response, JSON_UNESCAPED_SLASHES);
+    } //end saveOboarding
+
+    //Lia ->Envia correos para le onboarding 
+    public function ajaxEnviarNotiNuevoIngreso()
+    {
+        $post = $this->request->getPost();
+        $idEmpleado = encryptDecrypt('decrypt', $post['empleadoID']);
+        $empleado = $this->PersonalModel->getInfoEmpleadoByID($idEmpleado);
+        $checklist = $this->PersonalModel->getChecklist('Ingreso');
+
+        // Extraer IDs de responsables únicos
+        $responsablesArr = array_unique(array_merge(...array_map(function ($ch) {
+            return json_decode($ch['cat_ResponsableID'], true);
+        }, $checklist)));
+
+        $enviado = 0;
+        foreach ($responsablesArr as $responsable) {
+            $empResp = $this->PersonalModel->getInfoEmpleadoByID($responsable);
+            $nombreCatCheck = $this->PersonalModel->getChecklistByEmpleado($responsable);
+
+            // Preparar datos de correo
+            $data_correo = [
+                'nombre' => $empResp['emp_Nombre'],
+                'titulo' => '¡Nuevo ingreso de personal!',
+                'cuerpo' => 'Mediante el presente se le comunica que el día <b>' . longDate($empleado['emp_FechaIngreso'], ' de ') . '</b>
+                            se incorporará a ' . getSetting('nombre_empresa', $this) . ' un nuevo integrante llamad@ <b>' . $empleado['emp_Nombre'] . '</b> 
+                            el cual, se une al equipo de <b>' . $empleado['dep_Nombre'] . '</b> con el puesto de <b>' . $empleado['pue_Nombre'] . '</b>.<br>
+                            El departamento de Recursos Humanos te pide tu apoyo con los indicadores:<br>  <b>' . $nombreCatCheck . '</b> del checklist de ingreso.',
+            ];
+
+            // Enviar correo y agregar notificación
+            if (!empty($empResp['emp_Correo'])) {
+                sendMail($empResp['emp_Correo'], 'Nuevo Ingreso', $data_correo, 'NuevoIngreso');
+            }
+
+            $notificacion = [
+                "not_EmpleadoID" => $empResp['emp_EmpleadoID'],
+                "not_Titulo" => 'Nuevo ingreso',
+                "not_Descripcion" => $empleado['emp_Nombre'] . ' se incorpora al equipo.',
+                "not_EmpleadoIDCreo" => (int)session("id"),
+                "not_FechaRegistro" => date('Y-m-d H:i:s'),
+                "not_URL" => '#',
+                "not_Icono" => "zmdi zmdi-folder-person",
+                "not_Color" => "bg-purple"
+            ];
+            insert('notificacion', $notificacion);
+            $enviado++;
+        }
+
+        echo json_encode(["response" => $enviado > 0 ? 1 : 0]);
+    }
+    //end ajaxEnviarNotiNuevoIngreso
+
 }
