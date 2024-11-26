@@ -800,6 +800,12 @@ function isJefe()
     return (count($colaboradores) > 0) ? TRUE : FALSE;
 }
 
+//Obtiene si es rh
+function isRH()
+{
+    return revisarPermisos('Ver', 'dashboardRH');
+}
+
 //Obtiene si el empleado es jefe de departamento
 function isJefeDepartamento()
 {
@@ -2206,3 +2212,37 @@ function generateOptions($items, $valueField, $textField)
     }
     return $options;
 }
+
+function mensajeBienvenida()
+{
+    $horario = date('H:i');
+    $configuraciones = [
+        ['inicio' => '06:00', 'fin' => '11:59', 'mensaje' => 'Buenos días', 'icon' => base_url('assets/images/dia/amanecer.svg'), 'color' => '#f7cd5d'],
+        ['inicio' => '12:00', 'fin' => '15:59', 'mensaje' => 'Buen día', 'icon' => base_url('assets/images/dia/dia.svg'), 'color' => '#fce391'],
+        ['inicio' => '16:00', 'fin' => '18:59', 'mensaje' => 'Buenas tardes', 'icon' => base_url('assets/images/dia/atardecer.svg'), 'color' => '#fb9062'],
+        ['inicio' => '19:00', 'fin' => '23:59', 'mensaje' => 'Buenas noches', 'icon' => base_url('assets/images/dia/noche.svg'), 'color' => '#546bab'],
+        ['inicio' => '00:00', 'fin' => '05:59', 'mensaje' => 'Buenas noches', 'icon' => base_url('assets/images/dia/noche.svg'), 'color' => '#546bab'],
+    ];
+
+    foreach ($configuraciones as $config) {
+        if ($horario >= $config['inicio'] && $horario <= $config['fin']) {
+            $mensaje = $config['mensaje'];
+            $icon = $config['icon'];
+            $color = $config['color'];
+            break;
+        }
+    }
+
+    $infoEmpleado = consultar_dato('empleado', 'emp_Sexo,emp_Nombre', 'emp_EmpleadoID =' . session('id'));
+    $nombreCompleto = explode(' ', trim($infoEmpleado['emp_Nombre']));
+    $nombres = array_slice($nombreCompleto, -2);
+    $infoEmpleado['emp_Nombre'] = implode(' ', $nombres);
+    
+    return [
+        'mensaje' => $mensaje,
+        'icon' => $icon,
+        'color' => $color,
+        'nombre' => ucwords(strtolower($infoEmpleado['emp_Nombre'])),
+        'genero' => ($infoEmpleado['emp_Sexo'] == 'Femenino') ? 'Bienvenida' : 'Bienvenido'
+    ];
+    }

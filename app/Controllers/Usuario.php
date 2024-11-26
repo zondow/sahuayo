@@ -37,30 +37,34 @@ class Usuario extends BaseController
         $data['colaboradores'] = $this->UsuarioModel->getColaboradoresJefe();
         $data['retardos'] = $this->UsuarioModel->getRetardosColaborador();
         $data['misSanciones'] = $this->UsuarioModel->getMisSanciones();
-        $data['welcome'] = $this->UsuarioModel->getWelcome();
         $data['galeria'] = $this->UsuarioModel->getUltimaGaleria();
         $data['anuncio'] = $this->UsuarioModel->getAnuncioActivo();
+        $data['horasExtra'] = $this->BaseModel->getHorasExtra(session('id'));
+        $data['horasAdministrativas'] = $this->BaseModel->getHorasAdministrativas(session('id'));
+        $data['vacacionesPermisosPendientes'] = $this->BaseModel->getVacacionesPermisosPendientes(session('id'));
+        $data['bienvenida'] = mensajeBienvenida();
 
-        $data['styles'][] = base_url('assets/plugins/fullcalendar/fullcalendar.min.css');
-        $data['styles'][] = base_url('assets/plugins/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
-        $data['styles'][] = base_url('assets/plugins/sweetalert/sweetalert.css');
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-        $data['styles'][] = 'https://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.4/fotorama.css';
+        load_plugins(['moment','fullcalendar','datetimepicker','sweetalert2','select2','daterangepicker'],$data);
 
-        $data['scripts'][] = base_url('assets/plugins/moment/min/moment.min.js');
-        $data['scripts'][] = base_url('assets/plugins/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-        $data['scripts'][] = base_url('assets/plugins/fullcalendar/fullcalendar.min.js');
-        $data['scripts'][] = base_url('assets/plugins/sweetalert/sweetalert.min.js');
-        $data['scripts'][] = base_url('assets/plugins/sweetalert/jquery.sweet-alert.custom.js');
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
-        $data['scripts'][] = 'https://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.4/fotorama.js';
         $data['scripts'][] = base_url('assets/js/dashboard.js');
-
         $data['scripts'][] = base_url('assets/js/incidencias/calendarioOperativo.js');
+        if(isJefe()){
+            $data['misEmpleados'] = $this->BaseModel->getMisEmpleados();
+            $data['scripts'][] = base_url('assets/js/dashboard/calendarioVacPerJefe.js');
+        }
+        if(isRH()){
+            $data['generoEmpleados'] = $this->UsuarioModel->generoEmpleados();
+            $data['empleadosIngresos'] = $this->UsuarioModel->ingresosEmpleados();
+            $data['empleadosEgresos'] = $this->UsuarioModel->bajasEmpleados();
+            $data['empleadosIncapacidades'] = $this->UsuarioModel->incapacidadesEmpleados();
+            $data['empleadosSucursal'] = $this->UsuarioModel->sucursalEmpleados();
+            $data['empleadosDepartamento'] = $this->UsuarioModel->departamentoEmpleados();
+            $data['empleadosAntiguedad'] = $this->UsuarioModel->antiguedadEmpleados();
+        }
 
         //Cargar vistas
         echo view('htdocs/header', $data);
-        //echo view('usuario/dashboard', $data);
+        echo view('usuario/dashboard', $data);
         echo view('htdocs/modalPdf');
         echo view('htdocs/footer');
     } //INDEX
@@ -219,8 +223,7 @@ class Usuario extends BaseController
     //Lia->trae los cumpleaños de los colaboradores
     public function ajax_getCumpleanios()
     {
-        $model = new UsuarioModel();
-        $cumpleanios = $model->getInformacionCumpleaños();
+        $cumpleanios = $this->UsuarioModel->getInformacionCumpleaños();
         $data_cumpleanios = array();
 
         foreach ($cumpleanios as $c) {
@@ -250,7 +253,7 @@ class Usuario extends BaseController
                         "end" => $cumple . " 23:59:00",
                         "allDay" => true,
                         'tipo' => "cumple",
-                        'className' => "bg-purple",
+                        'className' => "bg-blue",
                         'img' => fotoPerfil(encryptDecrypt('encrypt', $c['emp_EmpleadoID']))
                     );
                 }
@@ -353,7 +356,7 @@ class Usuario extends BaseController
                 "allDay" => true,
                 "end" => $fin . " 23:59:00",
                 'tipo' => "aniversario",
-                'className' => "bg-primary",
+                'className' => "bg-amber",
                 'img' => fotoPerfil(encryptDecrypt('encrypt', $aniv['emp_EmpleadoID']))
             );
         }
@@ -370,24 +373,17 @@ class Usuario extends BaseController
             $titulo = "";
             $inicio = $evaluacion['eva_FechaInicio'];
             $fin = $evaluacion['eva_FechaFin'];
-            $className = "";
             if ($evaluacion['eva_Tipo'] == 'Desempeño') {
-                $className = "bg-warning";
                 $titulo = "Evaluación de desempeño";
             } else if ($evaluacion['eva_Tipo'] == 'Competencias') {
-                $className = "bg-info";
                 $titulo = "Evaluación de competencias";
             } else if ($evaluacion['eva_Tipo'] == 'Departamentos') {
-                $className = "bg-pink";
                 $titulo = "Evaluación de departamentos";
             } else if ($evaluacion['eva_Tipo'] == 'Clima Laboral') {
-                $className = "bg-primary";
                 $titulo = "Evaluación de clima laboral";
             } else if ($evaluacion['eva_Tipo'] == 'Sucursales') {
-                $className = "bg-secondary";
                 $titulo = "Evaluación de sucursales";
             } else if ($evaluacion['eva_Tipo'] == 'Nom035') {
-                $className = "bg-secondary";
                 $titulo = "Evaluación Nom 035";
             }
 
@@ -397,7 +393,7 @@ class Usuario extends BaseController
                 "end" => $fin . ' 23:59:59',
                 "allDay" => true,
                 'tipo' => "evaluacion",
-                'className' => $className,
+                'className' => 'bg-primary',
                 'img' => ""
             );
         }
@@ -949,4 +945,36 @@ class Usuario extends BaseController
         echo json_encode($tree);
     }
 
+    public function ajax_getVacacionesPermisosEmpleadosJefe()
+    {
+        $numJefe = session('numero');
+        $vacaciones = $this->UsuarioModel->getVacacionesPermisosEmpleadosJefe($numJefe);
+
+        // Mapeo de estatus a clases CSS
+        $estatusClases = [
+            'PENDIENTE' => 'bg-info',
+            'AUTORIZADO' => 'bg-warning',
+            'AUTORIZADO_JEFE' => 'bg-warning',
+            'RECHAZADO' => 'bg-danger',
+            'RECHAZADO_JEFE' => 'bg-danger',
+            'AUTORIZADO_GO' => 'bg-warning',
+            'RECHAZADO_GO' => 'bg-danger',
+            'AUTORIZADO_RH' => 'bg-success',
+            'RECHAZADO_RH' => 'bg-danger',
+            'DECLINADO' => 'bg-danger'
+        ];
+
+        $data_vacaciones = array_map(function ($vacacion) use ($estatusClases) {
+            return [
+                "title" => $vacacion['emp_Nombre'],
+                "start" => $vacacion['fechaInicio'],
+                "end" => $vacacion['fechaFin'] . " 23:59:59",
+                'periodo' => 'del ' . longDate($vacacion['fechaInicio'], ' de ') . ' al ' . longDate($vacacion['fechaFin'], ' de '),
+                'className' => $estatusClases[$vacacion['estatus']] ?? '',
+                'tipo' => $vacacion['tipo'],
+            ];
+        }, $vacaciones);
+
+        echo json_encode(["events" => $data_vacaciones]);
+    }
 }

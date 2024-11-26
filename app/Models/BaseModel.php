@@ -114,7 +114,7 @@ class BaseModel extends Model
     {
         return $this->db->query("SELECT * FROM puesto WHERE pue_Estatus=1 ORDER BY pue_Nombre ASC")->getResultArray();
     } //getPuestos
-    
+
     //Fer->trae las areas
     function getAreas()
     {
@@ -127,4 +127,33 @@ class BaseModel extends Model
         return $this->db->query("SELECT * FROM departamento WHERE dep_Estatus = 1")->getResultArray();
     } //getDepartamentos
 
+    function getVacacionesPermisosPendientes($empleadoID)
+    {
+        $vacper = $this->db->query("
+            SELECT 'Vacaciones' as tipo, vac_FechaInicio as FechaInicio,vac_FechaFin as FechaFin
+            FROM vacacion WHERE vac_EmpleadoID = $empleadoID AND vac_Estado = 1 AND vac_Estatus NOT IN ('DECLINADO','AUTORIZADO_RH','RECHAZADO_RH','RECHAZADO')
+            UNION
+            SELECT 'Permisos' as tipo, per_FechaInicio as FechaInicio, per_FechaFin as FechaFin
+            FROM permiso WHERE per_EmpleadoID = $empleadoID AND per_Estatus = 1 AND per_Estado NOT IN ('DECLINADO','AUTORIZADO_RH','RECHAZADO_RH','RECHAZADO_JEFE')")->getResultArray();
+            foreach($vacper as &$vp){
+                $vp['fechas'] = shortDate($vp['FechaInicio']) . ' a '.shortDate($vp['FechaFin']);
+            }
+            return $vacper;
+    }
+
+    function getMisEmpleados(){
+        $empleados = $this->db->query('SELECT emp_EmpleadoID,emp_Numero,emp_Nombre,emp_Correo,pue_Nombre,emp_FechaIngreso 
+        FROM empleado 
+        LEFT JOIN puesto on emp_PuestoID = pue_PuestoID
+        WHERE emp_Jefe = ?',[session('numero')])->getResultArray();
+        foreach($empleados as &$emp){
+            if (isset($emp['emp_Password'])) {
+                unset($emp['emp_Password']);
+            }
+            if (isset($emp['pass'])) {
+                unset($emp['pass']);
+            }
+        }
+        return $empleados;
+    }
 }
