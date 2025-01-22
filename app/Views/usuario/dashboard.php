@@ -482,7 +482,7 @@ if ($retardos > 3) {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><b class="iconsminds-next"></b> Información de permisos</h5>
+                <h4 class="modal-title"><b class="iconsminds-next"></b> Información de permisos</h5>
                 <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -540,7 +540,7 @@ if ($retardos > 3) {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><b class="iconsminds-next"></b> Información de retardos</h5>
+                <h4 class="modal-title"><b class="iconsminds-next"></b> Información de retardos</h5>
                 <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">

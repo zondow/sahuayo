@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <button id="btnGuardar" class="btn btn-success waves-effect waves-light">Guardar</button>
+                        <button id="btnGuardar" class="btn btn-success btn-round">Guardar</button>
                     </div>
                 </form>
             </div>

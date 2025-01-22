@@ -115,14 +115,17 @@ $(document).ready(function (e) {
     /*******************FUNCTIONS***************/
     function estatus(data, type, row) {
         return row['cat_Estatus'] == 1 ?
-            '<span class="badge badge-info activarInactivar" data-id="' + row['cat_CatalogoPermisoID'] + '"  data-estado="' + row['cat_Estatus'] + '" >Activo</span>' :
-            '<span class="badge badge-default activarInactivar" data-id="' + row['cat_CatalogoPermisoID'] + '"  data-estado="' + row['cat_Estatus'] + '" >Inactivo</span>';
+            '<span class="badge badge-info" >Activo</span>' :
+            '<span class="badge badge-default" >Inactivo</span>';
     }//estatusHorario
 
     function acciones(data, type, row) {
         let output = '';
-        if (revisarPermisos('Editar', 'configuracionPermisos'))
+        if (revisarPermisos('Editar', 'configuracionPermisos')){
             output += '<button type="button" data-catalogo="' + row['cat_CatalogoPermisoID'] + '" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down btnEditar"><i class="zmdi zmdi-edit" title="Editar"></i></button>';
+        }
+        estatus_btn = row['cat_Estatus'] == 1 ? 'Inactivo' : 'Activo';
+        output +='<a role="button" class="btn btn-icon  btn-icon-mini btn-round btn-primary activarInactivar" data-id="' + row['cat_CatalogoPermisoID'] + '"  data-estado="' + row['cat_Estatus'] + '" title="Da clic para cambiar a '+estatus_btn+'" href="#"><i class="zmdi zmdi-check-circle pt-2"></i></a>';
         return output;
     }//accionesHorario
 
@@ -146,7 +149,6 @@ $(document).ready(function (e) {
             text: txt,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {

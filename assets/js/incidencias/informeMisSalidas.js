@@ -114,7 +114,7 @@
         var html = data;
         switch (data){
             case 'CREADO':html = '<span class="badge badge-purple p-1">CREADO</span>';break;
-            case 'PENDIENTE':html = '<span class="badge badge-dark p-1">PENDIENTE</span>';break;
+            case 'PENDIENTE':html = '<span class="badge badge-info p-1">PENDIENTE</span>';break;
             case 'AUTORIZADO':html = '<span class="badge badge-warning p-1">AUTORIZADO</span>';break;
             case 'APLICADO':html = '<span class="badge badge-success p-1">APLICADO</span>';break;
             case 'RECHAZADO':html = '<span class="badge badge-danger p-1">RECHAZADO</span>';break;

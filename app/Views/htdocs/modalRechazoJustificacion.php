@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="rechazoModalLabel"><b class="fa fa-warning"></b> Rechazar</h5>
+                <h4 class="modal-title" id="rechazoModalLabel"><b class="fa fa-warning"></b> Rechazar</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     &times;
                 </button>

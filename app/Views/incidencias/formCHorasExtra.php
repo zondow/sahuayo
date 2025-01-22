@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <button type="submit" id="btnGuardar" class="btn btn-success waves-effect waves-light">Guardar</button>
+                        <button type="submit" id="btnGuardar" class="btn btn-success btn-round">Guardar</button>
                     </div>
                 </form>
             </div>

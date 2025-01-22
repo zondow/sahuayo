@@ -24,8 +24,10 @@
             <div class="card-body">
                 <div class="row">
                     <?php if (revisarPermisos('Agregar', 'programaCapacitacion')) { ?>
-                        <div class="col-md-12 ">
-                            <button href="#" id="btnAddCapacitacion" class="btn btn-success btn-round mb-4"><i class="mdi mdi-plus"></i> Registrar</button>
+                        <div class="col-md-12 text-right">
+                            <button href="#" id="btnAddCapacitacion" class="btn btn-success btn-round mb-4">
+                                <i class="zmdi zmdi-plus"></i> Agregar
+                            </button>
                         </div>
                     <?php } ?>
                     <div class="col-md-12 table-responsive">
@@ -288,8 +290,10 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success btn-round">Guardar</button>
+                    <div class="text-right col-md-12">
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-round">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -318,7 +322,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
+                    <div class="text-right col-md-12">
+                        <button type="button" class="btn btn-light btn-round waves-effect" data-dismiss="modal">Cancelar</button>
+                    </div>
                 </div>
             </form>
         </div>

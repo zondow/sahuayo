@@ -24,7 +24,7 @@
                 <div class="col-md-12 text-right mb-2">
                     <?php
                     $botones = [
-                        'Agregar' => ['permiso' => 'Agregar', 'clase' => 'btn-success', 'icono' => 'dripicons-plus', 'texto' => 'Agregar', 'modal' => 'Politica'],
+                        'Agregar' => ['permiso' => 'Agregar', 'clase' => 'btn-success', 'icono' => 'zmdi zmdi-plus', 'texto' => 'Agregar', 'modal' => 'Politica'],
                         'Notificar' => ['permiso' => 'Notificar', 'clase' => 'btn-warning', 'icono' => 'fas fa-concierge-bell', 'texto' => 'Notificar', 'modal' => 'ComCambios']
                     ];
                     foreach ($botones as $boton) {
@@ -100,8 +100,10 @@
                     </div>
                 </div>
                 <div class="modal-footer text-right">
-                    <button type="button" class="btn btn-round" data-dismiss="modal">Cancelar</button>
-                    <button id="guardar" type="click" class="btn btn-success btn-round">Guardar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-round" data-dismiss="modal">Cancelar</button>
+                        <button id="guardar" type="click" class="btn btn-success btn-round">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -148,9 +150,11 @@
 
                 </div>
 
-                <div class="modal-footer text-right">
-                    <button type="button" class="btn btn-round" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success btn-round">Guardar</button>
+                <div class="modal-footer">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-round">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -176,8 +180,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-round" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-succes btn-round" id="btnNotifCambios">Guardar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success btn-round" id="btnNotifCambios">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -212,7 +218,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-round" data-dismiss="modal">Cerrar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-round" data-dismiss="modal">Cerrar</button>
+                    </div>
                 </div>
             </div>
         </div>

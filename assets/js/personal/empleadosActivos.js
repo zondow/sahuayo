@@ -161,7 +161,6 @@ $(document).ready(function (e) {
             text: txt,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {

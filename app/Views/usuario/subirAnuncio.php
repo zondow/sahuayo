@@ -13,8 +13,7 @@
             <div class="card-body">
                 <div class="col-md-12 mb-2 text-right">
                     <a href="#" class="btn btn-success btn-round btnModalGaleria">
-                        <i class="dripicons-plus" style="top: 2px !important; position: relative"></i>
-                        Agregar
+                        <i class="zmdi zmdi-plus"></i> Agregar
                     </a>
                 </div>
                 <div class="table-responsive">
@@ -69,9 +68,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer text-right">
-                    <button type="button" class="btn btn-light  btn-round" data-dismiss="modal">Cancelar</button>
-                    <button id="guardar" type="submit" class="btn btn-success btn-round">Guardar</button>
+                <div class="modal-footer">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-light  btn-round" data-dismiss="modal">Cancelar</button>
+                        <button id="guardar" type="submit" class="btn btn-success btn-round">Guardar</button>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -96,8 +98,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button id="guardar" type="submit" class="btn btn-primary waves-effect waves-light">Guardar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
+                        <button id="guardar" type="submit" class="btn btn-primary waves-effect waves-light">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>

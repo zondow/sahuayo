@@ -3,7 +3,9 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 text-right">
-                    <a href="#" class="btn btn-success btn-round btnComunicado"><i class="mdi mdi-plus"></i> Nuevo comunicado</a>
+                    <a href="#" class="btn btn-success btn-round btnComunicado">
+                        <i class="zmdi zmdi-plus"></i> Agregar
+                    </a>
                 </div>
                 <div class="mt-3">
                     <div class="table-responsive">
@@ -64,8 +66,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success btn-round" id="btnGuardar">Guardar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success btn-round" id="btnGuardar">Guardar</button>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -99,7 +104,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cerrar</button>
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cerrar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,12 +131,12 @@
     </div>
 </div>
 <script>
-$(document).ready(function (e) {
-    $('.select2').select2({
-        dropdownParent: $('#modalComunicado .modal-body'),
-        placeholder: 'Seleccione una opción',
-        allowClear: true,
-        width: 'resolve'
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            dropdownParent: $('#modalComunicado .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
     });
-});
 </script>

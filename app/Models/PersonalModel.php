@@ -275,4 +275,9 @@ class PersonalModel extends Model
     public function existeRegistroChecklist($empleadoID){
         return $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=?",[$empleadoID])->getRowArray();
     }
+    
+    //Diego->datos contratos por empelado
+    public function getDatosContratos($empleadoID){
+        return $this->db->query('select * from contrato where con_EmpleadoID = '.encryptDecrypt('decrypt',$empleadoID))->getResultArray();
+    }//getDatosContratos
 }//end PersonalModel

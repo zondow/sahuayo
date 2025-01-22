@@ -106,15 +106,14 @@ class Personal extends BaseController
             array("titulo" => 'Onboarding (Checklist entrada)', "link" => base_url('Personal/onboarding/' . $empleadoID), "class" => "active"),
         );
 
-        $model = new PersonalModel();
-        $data['colaborador'] = $model->getInfoColaboradorByID($empleadoID);
+        $data['colaborador'] = $this->PersonalModel->getInfoColaboradorByID($empleadoID);
         $data['colaborador']['emp_EmpleadoID'] = encryptDecrypt('encrypt', $data['colaborador']['emp_EmpleadoID']);
         $data['colaborador']['pue_Nombre'] = $this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=" . encryptDecrypt('decrypt', $data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
-        $data['checklist'] = $model->getChecklist('Ingreso');
+        $data['checklist'] = $this->PersonalModel->getChecklist('Ingreso');
         $data['empleadoID'] = $empleadoID;
         $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Ingreso' AND cat_Requerido=1")->getRowArray()['total'];
-        $data['totalCheck'] = $model->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $empleadoID));
-        //$data['cartas']=$model->getCartasResguardoColaboradorByID(encryptDecrypt('decrypt',$empleadoID));
+        $data['totalCheck'] = $this->PersonalModel->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $empleadoID));
+        //$data['cartas']=$this->PersonalModel->getCartasResguardoColaboradorByID(encryptDecrypt('decrypt',$empleadoID));
 
         //Styles
         $data['styles'][] = base_url('assets/libs/spinkit/spinkit.css');
@@ -191,13 +190,13 @@ class Personal extends BaseController
         $data['scripts'][] = base_url('assets/js/personal/expediente.js');
 
         //Expediente
-        $model = new PersonalModel();
+        $this->PersonalModel = new PersonalModel();
         $data['empleadoID'] = $empleadoID;
-        $data['expedientes'] = $model->getDatosExpediente();
+        $data['expedientes'] = $this->PersonalModel->getDatosExpediente();
         $data['empleado'] = $this->db->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID=" . $empleadoID)->getRowArray()['emp_Nombre'];
         $data['usuario'] = $usuario;
-        $data['C1'] = $model->getDocumentosC1(); //'Externos'
-        $data['C2'] = $model->getDocumentosC2(); //'Internos'
+        $data['C1'] = $this->PersonalModel->getDocumentosC1(); //'Externos'
+        $data['C2'] = $this->PersonalModel->getDocumentosC2(); //'Internos'
 
         //Cargar vistas
         echo view('htdocs/header', $data);
@@ -267,6 +266,37 @@ class Personal extends BaseController
         echo view('personal/reportequinquenios', $data);
         echo view('htdocs/footer', $data);
     } //end reporteQuinquenio
+
+
+    //Diego -> contratos
+    public function contrato($empleadoID)
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+
+        $empleado = $this->BaseModel->getEmpleadoByID(decrypt($empleadoID));
+        $data['empleado'] = array_merge($empleado, ['emp_EmpleadoID' => $empleadoID]);
+        $data['title'] = 'Contratos de ' . $empleado['emp_Nombre'];
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Personal', "link" => base_url('Personal/empleados'), "class" => "active");
+        $data['breadcrumb'][] = array("titulo" => 'Contratos del colaborador', "link" => base_url('Personal/contrato'), "class" => "active");
+
+        $data['contratos'] = $this->PersonalModel->getDatosContratos($empleadoID);
+        $data['empleados'] = $this->BaseModel->getEmpleados();
+        //$data['sucursales']=$this->PersonalModel->getSucursales();
+        $data['departamentos'] = $this->BaseModel->getDepartamentos();
+
+        load_plugins(['moment', 'datatables_buttons', 'select2', 'daterangepicker', 'datetimepicker'], $data);
+
+        //Styles
+        //Scripts
+        $data['scripts'][] = base_url('assets/js/personal/contratos.js');
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('personal/contratos', $data);
+        echo view('htdocs/footer', $data);
+    } //contrato
 
     //Diego -> Formulario agregar baja empleado
     /*public function formBajaEmpleado($empleadoID = null)
@@ -656,6 +686,22 @@ class Personal extends BaseController
 
         return redirect()->to($_SERVER['HTTP_REFERER']);
     } //end saveoffboarding
+
+    //Diego -> funcion añadir contrato
+    public function addContrato()
+    {
+        $post = $this->request->getPost();
+        $post['con_EmpleadoID'] = decrypt($post['con_EmpleadoID']);
+        $post['con_Fecha'] = date('Y-m-d');
+
+        $message = insert('contrato', $post)
+            ? ['response' => 'success', 'txttoastr' => '¡Contrato generado correctamente!']
+            : ['response' => 'error', 'txttoastr' => '¡Ocurrió un error al registrar los datos para el contrato!'];
+
+        $this->session->setFlashdata($message);
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    }
+    //end addContrato
 
 
     /*

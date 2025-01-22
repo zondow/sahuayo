@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel"><b class="fa fa-warning"></b> Confirmación</h5>
+                <h4 class="modal-title" id="confirmModalLabel"><b class="fa fa-warning"></b> Confirmación</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     &times;
                 </button>

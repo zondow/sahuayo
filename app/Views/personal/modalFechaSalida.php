@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h5 class="modal-title" id="tituloModal">Fecha de salida</h5>
+                <h4 class="modal-title" id="tituloModal">Fecha de salida</h5>
             </div>
             <form id="formColaborador" method="post" autocomplete="off">
                 <div class="modal-body">

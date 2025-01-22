@@ -1,4 +1,9 @@
 <?php defined('FCPATH') or exit('No direct script access allowed'); ?>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -82,9 +87,7 @@
                 <div class="col-md-12 text-right">
                     <button type="button" class="btn btn-round btn-light waves-effect " data-dismiss="modal">Cancelar</button>
                     <?php if (revisarPermisos('Eliminar', 'diasInhabiles')) { ?>
-                        <div id="botonEliminar" name="botonEliminar">
-                            <button type="button" id="deleteDiaIn" name="deleteDiaIn" class="btn btn-round btn-success waves-effect waves-light">Eliminar</button>
-                        </div>
+                        <button type="button" id="deleteDiaIn" name="deleteDiaIn" class="btn btn-round btn-success waves-effect waves-light hidden">Eliminar</button>
                     <?php } ?>
                 </div>
 
@@ -93,12 +96,12 @@
     </div>
 </div>
 <script>
-$(document).ready(function (e) {
-    $('.select2').select2({
-        dropdownParent: $('#modalDiaInhabil .modal-body'),
-        placeholder: 'Seleccione una opción',
-        allowClear: true,
-        width: 'resolve'
+    $(document).ready(function(e) {
+        $('.select2').select2({
+            dropdownParent: $('#modalDiaInhabil .modal-body'),
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: 'resolve'
+        });
     });
-});
 </script>

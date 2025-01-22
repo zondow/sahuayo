@@ -26,7 +26,7 @@ $(document).ready(function (e) {
             { "data": "name" },
             { "data": "responsable" },
             { "data": "status", render: function (data, type, row) { return statusChecklist(data, row) } },
-            { "data": "id", render: function (data, type, row) { return accionesChecklist(data) } },
+            { "data": "id", render: function (data, type, row) { return accionesChecklist(data, row) } },
         ],
         columnDefs: [
             { targets: 3, className: 'text-center' },
@@ -186,8 +186,8 @@ $(document).ready(function (e) {
 
         var id = row.id;
         return status == 1 ?
-            '<span class="badge badge-info btnActivo" data-checklist="' + id + '" >Activo</span>' :
-            '<span class="badge badge-default btnInactivo" data-checklist="' + id + '">Inactivo</span>';
+            '<span class="badge badge-info" >Activo</span>' :
+            '<span class="badge badge-default">Inactivo</span>';
 
     }//statusChecklist
 
@@ -294,13 +294,16 @@ $(document).ready(function (e) {
         });//ajax
     }//ajax_changeEstatusChecklist
 
-    function accionesChecklist(id) {
+    function accionesChecklist(id, row) {
 
         var editButton = '';
         if (revisarPermisos('Editar', 'configChecklistIngresoEgreso')) {
             editButton = '<button type="button" data-checklist="' + id + '" class="btn btn-info btn-icon btn-icon-mini btn-round hidden-sm-down btnEditChecklist">' +
                 '<i class="zmdi zmdi-edit" title="Editar"></i></button>';
         }
+        status = row.status;
+        clase_btn = status == 1 ? 'btnActivo' : 'btnInactivo';
+        editButton += '<a role="button" class="btn btn-icon  btn-icon-mini btn-round btn-primary '+clase_btn+'" data-checklist="' + id + '"><i class="zmdi zmdi-check-circle pt-2" style="color:white;"></i></a>';
 
         return editButton;
     }//accionesChecklist

@@ -12,8 +12,7 @@
                     <div class="col-md-12 text-right">
                         <?php if (revisarPermisos('Crear', 'requisicionPersonal')) { ?>
                             <a href="<?= base_url("Reclutamiento/nuevaSolicitudPersonal") ?>" class="btn btn-success btn-round mt-2 mb-4">
-                                <i class="dripicons-plus" style="top: 2px !important; position: relative"></i>
-                                Nueva solicitud de personal
+                                <i class="zmdi zmdi-plus"></i> Agregar
                             </a>
                         <?php } ?>
                     </div>

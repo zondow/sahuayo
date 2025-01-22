@@ -5,7 +5,7 @@
             <div class="card-body">
                 <div class="col-md-12 text-right">
                     <button class="btn btn-round btn-success waves-effect waves-light mb-4" type="button" data-toggle="modal" data-target="#modalAddIncapacidad">
-                        <b class="dripicons-plus"></b> Registrar incapacidad
+                        <i class="zmdi zmdi-plus"></i> Agregar
                     </button>
                 </div>
                 <div class="table-responsive">
@@ -124,9 +124,12 @@
                         <input type="file" class="input-filestyle" id="archivo" name="archivo" accept="image/png, image/jpeg, .pdf" required="required">
                     </div>
                 </div>
-                <div class="modal-footer text-right">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success waves-effect waves-light">Guardar</button>
+                <div class="modal-footer">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-round">Guardar</button>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -137,10 +140,10 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Ver imagen</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h4 class="modal-title" id="imageModalLabel">Ver imagen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
             </div>
             <div class="modal-body text-center">
                 <img id="modalImage" src="" class="img-fluid" alt="Imagen">
