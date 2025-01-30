@@ -79,6 +79,10 @@
                         <label for="salario">* Vales de despensa</label>
                         <input type="number" id="con_Vales" name="con_Vales" min="0" required style="width: 100%;">
                     </div>
+                    <div class="form-group" id="actividad">
+                        <label for="acticidad">* Actividad Principal</label>
+                        <textarea type="text" id="con_ACtividad" name="con_ACtividad" required style="width:100%"></textarea>
+                    </div>
                     
                 </div>
 
