@@ -11,6 +11,16 @@ class BaseModel extends Model
         return $this->db->query("SELECT * FROM sucursal WHERE suc_Estatus=1")->getResultArray();
     }
 
+    public function getDepartamentos()
+    {
+        return $this->db->query("SELECT * FROM departamento WHERE dep_Estatus=1")->getResultArray();
+    }
+
+    public function getPuestos()
+    {
+        return $this->db->query("SELECT * FROM puesto WHERE pue_Estatus=1")->getResultArray();
+    }
+
     public function getDiasInhabiles()
     {
         return $this->db->query("SELECT * FROM diainhabil ")->getResultArray();
@@ -101,5 +111,44 @@ class BaseModel extends Model
     
     public function getTotalEmpleadosBySucursal($sucursal){
         return $this->db->query("SELECT COUNT(emp_EmpleadoID) as 'empleados' FROM empleado WHERE emp_SucursalID=? AND emp_Estatus=1", array($sucursal))->getRowArray()['empleados'];
+    }
+
+    public function getColaboradoresConFoto($sucursalID = null, $departamentoID = null, $puestoID = null, $personaID = null)
+    {
+        $builder = $this->db->table('empleado E');
+        $builder->select('E.emp_EmpleadoID, E.emp_Numero, E.emp_Nombre, JEFE.emp_Nombre as jefe, E.emp_Correo, P.pue_Nombre, D.dep_Nombre, S.suc_Sucursal')
+                ->join('puesto P', 'P.pue_PuestoID = E.emp_PuestoID', 'left')
+                ->join('departamento D', 'D.dep_DepartamentoID = E.emp_DepartamentoID', 'left')
+                ->join('empleado JEFE', 'JEFE.emp_Numero = E.emp_Jefe', 'left')
+                ->join('sucursal S', 'S.suc_SucursalID = E.emp_SucursalID', 'left')
+                ->where('E.emp_Estatus', 1)
+                ->where('E.emp_Estado', 'Activo');
+
+        // Aplicar filtros solo si tienen valores
+        if ($sucursalID) {
+            $builder->where('S.suc_SucursalID', $sucursalID);
+        }
+        if ($departamentoID) {
+            $builder->where('D.dep_DepartamentoID', $departamentoID);
+        }
+        if ($puestoID) {
+            $builder->where('E.emp_PuestoID', $puestoID);
+        }
+        if ($personaID) {
+            $builder->where('E.emp_EmpleadoID', $personaID);
+        }
+
+        $builder->orderBy('E.emp_Nombre', 'ASC');
+        $colaboradores = $builder->get()->getResultArray();
+
+        // Agregar la foto y el ID cifrado
+        $data = [];
+        foreach ($colaboradores as $colaborador) {
+            $colaborador['emp_Foto'] = fotoPerfil(encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID']));
+            $colaborador['emp_EmpleadoID'] = encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID']);
+            $data[] = $colaborador;
+        }
+
+        return $data;
     }
 }

@@ -91,8 +91,31 @@ $(document).ready(function (e) {
         },
         "order": [[ 1, "asc" ]],
         "processing":true,
-       
+        
     });
+
+   // Agregar filtros de columna
+$("#tblEmpleados thead tr").clone(true).appendTo("#tblEmpleados thead");
+$("#tblEmpleados thead tr:eq(1) th").each(function(i) {
+    if (i != 0) {  // No agregar filtro en la columna de imagen (emp_Foto)
+        var title = $(this).text();
+        $(this).html('<input type="text" class="column_filter" placeholder="Buscar ' + title + '" />');
+        $('input', this).on('keyup change', function() {
+            if (tblEmpleados.column(i).search() !== this.value) {
+                tblEmpleados
+                    .column(i)
+                    .search(this.value)
+                    .draw();
+            }
+        });
+    }
+});
+
+// Asegurarse de que los inputs se muestran correctamente
+$(window).on('resize', function() {
+    // Recarga de la tabla después de un cambio en el tamaño de la ventana
+    tblEmpleados.columns.adjust().draw();
+});
 
     function acciones(data,type,row) {
         let button = '';

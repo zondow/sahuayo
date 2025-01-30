@@ -383,8 +383,81 @@ class EvaluacionesModel extends Model
     }
 
 
+    public function guardarCuestionarioEvaluados($evaluados, $cuestionarioID) {
+        // Verifica si hay evaluados
+        if (empty($evaluados)) {
+            return ['status' => 'error', 'message' => 'No se seleccionaron evaluados'];
+        }
+    
+        $data = [];
+    
+        foreach ($evaluados as $evaluadoID) {
+            $empleadoID = encryptDecrypt('decrypt', $evaluadoID);
+
+            // Verifica si el empleado ya existe en la tabla evaluadocuestionario
+            $existe = $this->db->table('evaluadocuestionario')
+                ->where('eva_EmpleadoID', $empleadoID)
+                ->where('eva_CuestionarioID', $cuestionarioID)
+                ->countAllResults(); // Cuenta cuántos registros coinciden
+
+            if ($existe <= 0) {
+                // Si no existe, prepara los datos para la inserción
+                $data[] = [
+                    'eva_CuestionarioID' => $cuestionarioID,
+                    'eva_EmpleadoID' => $empleadoID,
+                    'eva_UsuarioID' => session('id'),
+                    'eva_Fecha' => date('yyyy-mm-dd') // Fecha actual
+                ];
+            } 
+        }
+    
+        // Si no hay errores, realiza la inserción
+        if (!empty($data)) {
+            // Inserta los datos en la tabla evaluadocuestionario
+            $this->db->table('evaluadocuestionario')->insertBatch($data);
+    
+            return ['status' => 'success', 'message' => 'Evaluados guardados exitosamente'];
+        }
+
+        return ['status' => 'error', 'message' => 'No se pudieron guardar los evaluados'];
+    }
 
 
+    public function getEvaluadosByCuestionarioID($cuestionarioID) {
+        $sql = "SELECT 
+                EC.eva_EvaluadoCuestionarioID,
+                E.emp_EmpleadoID,
+                E.emp_Nombre,
+                P.pue_Nombre,
+                D.dep_Nombre,
+                S.suc_Sucursal
+                FROM evaluadocuestionario EC
+                    LEFT JOIN empleado E ON E.emp_EmpleadoID = EC.eva_EmpleadoID
+                    LEFT JOIN puesto P ON P.pue_PuestoID =   E.emp_PuestoID
+                    LEFT JOIN departamento D ON D.dep_DepartamentoID = E.emp_DepartamentoID
+                    LEFT JOIN sucursal S ON S.suc_SucursalID=E.emp_SucursalID
+                WHERE EC.eva_CuestionarioID =?";
+                
+        $colaboradores = $this->db->query($sql,$cuestionarioID)->getResultArray();
+        $data = array();
+        foreach ($colaboradores as $colaborador) {
+            $colaborador['emp_Foto'] = fotoPerfil(encryptDecrypt('encrypt',$colaborador['emp_EmpleadoID']));
+            array_push($data, $colaborador);
+        }
+        return $data;
+    }
+
+    public function eliminarEvaluadoCuestionario($idEvaluado){
+        $this->db->table('evaluadocuestionario')->delete([ 'eva_EvaluadoCuestionarioID' => $idEvaluado]);
+        if($this->db->affectedRows() > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+   
 
 
 

@@ -340,17 +340,20 @@ class Evaluaciones extends BaseController
             array("titulo" => 'Crear evaluación ', "link" => base_url('Evaluaciones/addEvaluacionDesempeno/' . $plantillaID), "class" => "active"),
         );
  
-        //Obtener los datos de la plantilla
+        //Obtener los datos 
         $data['plantilla']=$this->EvaluacionesModel->getInfoPlantillaByID(encryptDecrypt('decrypt',$plantillaID));
+        $data['sucursales']=$this->BaseModel->getSucursales();
+        $data['departamentos']=$this->BaseModel->getDepartamentos();
+        $data['puestos']=$this->BaseModel->getPuestos();
+        $data['empleados']=$this->BaseModel->getEmpleados();
 
 
         //pluggins
-        load_plugins(['select2'],$data);
+        load_plugins(['select2','datatables_buttons','sweetalert2'],$data);
 
         //custom scripts
-        $data['scripts'][] = base_url('assets/js/evaluaciones/addEvaluacionDesempeno.js');
-        $data['scripts'][] = base_url('assets/plugins/jquery-steps/jquery.steps.js');
-        $data['scripts'][] = base_url('assets/js/pages/forms/form-wizard.js');
+        //$data['scripts'][] = base_url('assets/js/evaluaciones/addEvaluacionDesempeno.js');
+     
 
 
         //Cargar vistas
@@ -731,6 +734,235 @@ class Evaluaciones extends BaseController
         $data['code'] = update('plantillacuestionario', ['pla_Estatus' => $estado], ['pla_PlantillaID' => (int)$plantillaID]);
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }//end ajaxCambiarEstadoPlantilla
+
+
+    //Lia->llena la tabla de empleados
+    public function ajax_getEmpleadosActivos()
+    {
+        // Captura de filtros desde la solicitud POST y los descifra
+        $sucursalID = isset($_POST['sucursalID']) ? encryptDecrypt('decrypt', $_POST['sucursalID']) : null;
+        $departamentoID = isset($_POST['departamentoID']) ? encryptDecrypt('decrypt', $_POST['departamentoID']) : null;
+        $puestoID = isset($_POST['puestoID']) ? encryptDecrypt('decrypt', $_POST['puestoID']) : null;
+        $personaID = isset($_POST['personaID']) ? encryptDecrypt('decrypt', $_POST['personaID']) : null;
+        
+        // Llama al modelo con los filtros descifrados
+        $colaboradores = $this->BaseModel->getColaboradoresConFoto($sucursalID, $departamentoID, $puestoID, $personaID);
+
+        // Prepara la respuesta en formato JSON
+        $data['response'] = $colaboradores;
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
+
+    public function guardarCuestionarioCompleto() {
+        $post = $this->request->getPost();
+        $evaluationJson = $post['evaluation'];
+        $CuestionarioID = $post['cuestionarioID'];
+        $evaluationData = json_decode($evaluationJson, true);
+
+        $deletedQuestions = isset($post['deletedQuestions']) ? json_decode($post['deletedQuestions'], true) : [];
+        
+        // Variables de respuesta inicializadas
+        $data['code'] = 0;
+        $data['message'] = 'Error al guardar la evaluación';
+    
+        // Inicializa los builders para cada tabla
+        $grupoBuilder = db()->table("grupocuestionario");
+        $preguntaBuilder = db()->table("preguntacuestionario");
+        $respuestaBuilder = db()->table("respuestacuestionario");
+    
+        // Validar que `evaluationData` es un arreglo antes de proceder
+        if (isset($evaluationData) && is_array($evaluationData)) {
+            foreach ($evaluationData as $grupo) {
+
+                foreach ($deletedQuestions as $deletedQuestionId) {
+                    $preguntaBuilder->where('pre_PreguntaID', $deletedQuestionId)->delete();
+                    // También elimina las respuestas asociadas
+                    $respuestaBuilder->where('res_PreguntaID', $deletedQuestionId)->delete();
+                }
+
+
+                // Verificar si el grupo ya existe por nombre
+                $grupoExiste = $grupoBuilder->where('gru_Titulo', $grupo['nombre'])->get()->getRow();
+                
+                if ($grupoExiste) {
+                    // Si el grupo ya existe, usamos su ID
+                    $grupoId = $grupoExiste->gru_GrupoID;
+                } else {
+                    // Si no existe, creamos el grupo
+                    $grupoData = [
+                        'gru_Titulo' => $grupo['nombre'],
+                        'gru_UsuarioID' => session('id'),
+                    ];
+                    $grupoBuilder->insert($grupoData);
+                    $grupoId = $this->db->insertID(); // ID del grupo insertado
+                }
+    
+                // Obtener las preguntas existentes en este grupo
+                $preguntasExistentes = $preguntaBuilder->where('pre_GrupoID', $grupoId)->get()->getResult();
+    
+                // Eliminar las preguntas que ya no están en la evaluación
+                foreach ($preguntasExistentes as $preguntaExistente) {
+                    $encontrada = false;
+                    foreach ($grupo['preguntas'] as $pregunta) {
+                        if ($preguntaExistente->pre_PreguntaID == $pregunta['id']) {
+                            $encontrada = true;
+                            break;  // Salir del bucle si la pregunta fue encontrada
+                        }
+                    }
+    
+                    // Si la pregunta ya no está en la evaluación, la eliminamos
+                    if (!$encontrada) {
+                        // Eliminar las respuestas asociadas a la pregunta
+                        $respuestaBuilder->where('res_PreguntaID', $preguntaExistente->pre_PreguntaID)->delete();
+                        
+                        // Eliminar la pregunta
+                        $preguntaBuilder->where('pre_PreguntaID', $preguntaExistente->pre_PreguntaID)->delete();
+                    }
+                }
+    
+                // Recorre y guarda cada pregunta del grupo
+                foreach ($grupo['preguntas'] as $pregunta) {
+                    // Verificar si la pregunta ya existe en el grupo por texto
+                    $preguntaExiste = $preguntaBuilder->where('pre_Texto', $pregunta['texto'])
+                                                      ->where('pre_GrupoID', $grupoId)
+                                                      ->get()->getRow();
+                    if ($preguntaExiste) {
+                        // Si la pregunta ya existe, usamos su ID
+                        $preguntaId = $preguntaExiste->pre_PreguntaID;
+                    } else {
+                        // Si no existe, creamos la pregunta
+                        $preguntaData = [
+                            'pre_CuestionarioID' => $CuestionarioID,
+                            'pre_GrupoID' => $grupoId,
+                            'pre_Texto' => $pregunta['texto'],
+                            'pre_TipoRespuesta' => $pregunta['tipo'],
+                            'pre_Obligatoria' => $pregunta['obligatoria'],
+                            'pre_Ponderacion' => $pregunta['ponderacion'],
+                            'pre_UsuarioID' => session('id'),
+                        ];
+                        $preguntaBuilder->insert($preguntaData);
+                        $preguntaId = $this->db->insertID(); // ID de la pregunta insertada
+                    }
+                    
+                    // Recorre y guarda cada respuesta de la pregunta
+                    foreach ($pregunta['respuestas'] as $respuesta) {
+                        // Verificar si la respuesta ya existe para la pregunta
+                        $respuestaExiste = $respuestaBuilder->where('res_Texto', $respuesta)
+                                                            ->where('res_PreguntaID', $preguntaId)
+                                                            ->get()->getRow();
+                        if (!$respuestaExiste) {
+                            // Si la respuesta no existe, la insertamos
+                            $respuestaData = [
+                                'res_CuestionarioID' => $CuestionarioID,
+                                'res_PreguntaID' => $preguntaId,
+                                'res_Texto' => $respuesta,
+                                'res_UsuarioID' => session('id')
+                            ];
+                            $respuestaBuilder->insert($respuestaData);
+                        }
+                    }
+                }
+            }
+    
+            // Si se insertaron los datos correctamente
+            $data['code'] = 1;
+            $data['message'] = 'Evaluación guardada exitosamente';
+        }
+    
+        // Devuelve la respuesta en formato JSON
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+    }
+
+    
+    public function ajax_getEvaluacion(){
+        $grupoBuilder = db()->table("grupocuestionario");
+        $preguntaBuilder = db()->table("preguntacuestionario");
+        $respuestaBuilder = db()->table("respuestacuestionario");
+    
+        // Obtener los grupos
+        $grupos = $grupoBuilder->get()->getResultArray();
+    
+        // Obtener las preguntas y respuestas asociadas
+        foreach ($grupos as &$grupo) {
+            $grupo['nombre'] = $grupo['gru_Titulo']; // Se asigna el nombre del grupo
+            $grupo['preguntas'] = []; // Inicializar el array de preguntas
+    
+            // Obtener las preguntas para este grupo
+            $preguntas = $preguntaBuilder->where('pre_GrupoID', $grupo['gru_GrupoID'])->get()->getResultArray();
+            foreach ($preguntas as &$pregunta) {
+                $pregunta['respuestas'] = []; // Inicializar el array de respuestas
+    
+                // Obtener las respuestas asociadas a esta pregunta
+                $respuestas = $respuestaBuilder->where('res_PreguntaID', $pregunta['pre_PreguntaID'])->get()->getResultArray();
+                foreach ($respuestas as &$respuesta) {
+                    $pregunta['respuestas'][] = $respuesta['res_Texto']; // Añadir las respuestas
+                }
+    
+                // Añadir la pregunta al grupo
+                $grupo['preguntas'][] = [
+                    'id' => $pregunta['pre_PreguntaID'], //id
+                    'texto' => $pregunta['pre_Texto'], // Pregunta
+                    'tipo' => $pregunta['pre_TipoRespuesta'],      // Tipo de la pregunta
+                    'ponderacion' => $pregunta['pre_Ponderacion'], // Ponderación
+                    'obligatoria' => $pregunta['pre_Obligatoria'] == 1, // Obligatoria (convertir a booleano)
+                    'respuestas' => $pregunta['respuestas'] // Respuestas de la pregunta
+                ];
+            }
+        }
+    
+        // Retornar los datos en formato JSON
+        header('Content-Type: application/json');
+        echo json_encode($grupos, JSON_UNESCAPED_UNICODE);
+    }
+    
+    public function guardarEvaluadosSeleccionados() {
+        // Recibe los datos enviados desde el cliente (IDs de los evaluados)
+        $post = $this->request->getPost();
+        $evaluados = $post['ids'];  
+        $cuestionarioID = $post['cuestionarioID'];  
+
+        // Llamar a la función del modelo para guardar los evaluados
+        $resultado = $this->EvaluacionesModel->guardarCuestionarioEvaluados($evaluados, $cuestionarioID);
+        // Devolver la respuesta como JSON
+        echo json_encode($resultado,JSON_UNESCAPED_SLASHES);
+    }
+
+    public function ajax_getEvaluadosCuestionario(){
+        $post = $this->request->getPost();
+        $cuestionarioID = $post['cuestionarioID'];  
+        $evaluados = $this->EvaluacionesModel->getEvaluadosByCuestionarioID($cuestionarioID);
+
+        return $this->response->setJSON(['data' => $evaluados]);
+    }
+
+    public function eliminarEvaluadoCuestionario()
+    {
+        $post = $this->request->getPost(); // Obtener los datos enviados por POST
+        $evaluadoID = isset($post['idEvaluado']) ? $post['idEvaluado'] : null;
+    
+        // Intentar eliminar al evaluado
+        try {
+            $resultado = $this->EvaluacionesModel->eliminarEvaluadoCuestionario($evaluadoID);
+            
+            // Comprobar si la eliminación fue exitosa
+            if ($resultado === true) {
+                return $this->response->setJSON([
+                    'success' => true
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Manejo de errores en caso de excepciones
+            return $this->response->setJSON([
+                'success' => false
+            ]);
+        }
+    }
+
+    
 
     
 }
