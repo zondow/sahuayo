@@ -58,9 +58,11 @@ $txtAntiguedad = " {$antiguedad->format('%Y')} años y {$antiguedad->format('%m'
                         </div>
                     </div>
                     <?php if ($diasRestantes > 0) { ?>
-                        <button type="submit" class="btn btn-success mb-0" id="btnRegistrar" data-loading-text="<i class='iconsminds-loading-3'></i> Registrando...">
-                            <i class="dripicons-plus"></i> Registrar
-                        </button>
+                        <div class="text-right mb-1 mt-2">
+                            <button type="submit" class="btn btn-success btn-round mb-0" id="btnRegistrar" data-loading-text="<i class='iconsminds-loading-3'></i> Registrando...">
+                                <i class="dripicons-plus"></i> Registrar
+                            </button>
+                        </div>
                     <?php } else { ?>
                         <div class="alert alert-warning">Has alcanzado el límite de vacaciones permitidas o no cumples con la antigüedad para solicitar vacaciones.</div>
                     <?php } ?>

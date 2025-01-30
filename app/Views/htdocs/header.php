@@ -31,6 +31,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/bootstrap/css/bootstrap.min.css") ?>">
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css") ?>" />
 	<link rel="stylesheet" href="<?= base_url("assets/plugins/morrisjs/morris.min.css") ?>" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
 	<!-- Custom Css -->
 	<link href="<?= base_url("assets/libs/jquery-toast/jquery.toast.min.css") ?>" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="<?= base_url("assets/css/custom.css") ?>" type="text/css" />
@@ -193,7 +194,7 @@ $navigation = APPPATH . "Views/usuario/navigation.php";
 					<ul class="breadcrumb float-md-right">
 						<?php if (isset($breadcrumb))
 							foreach ($breadcrumb as $item) { ?>
-							<li class="breadcrumb-item <?= $item['class'] ?>"><a href="<?= $item['link'] ?>"><?= $item['titulo'] ?></a></li>
+							<li class="breadcrumb-item <?= $item['class'] ?? '' ?>"><a href="<?= $item['link'] ?>"><?= $item['titulo'] ?></a></li>
 						<?php } ?>
 					</ul>
 				</div>

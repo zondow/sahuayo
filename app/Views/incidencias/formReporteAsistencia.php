@@ -24,8 +24,8 @@ $url = 'https://view.officeapps.live.com/op/embed.aspx?src=https://sahuayo.thigo
                                 </div>
                             </div>
                             <div class="form-group mb-0 justify-content-end row text-right">
-                                <div class="col-9">
-                                    <button type="submit" id="btnConsultar" class="btn btn-success waves-effect waves-light">Consultar</button>
+                                <div class="col-9 text-right">
+                                    <button type="submit" id="btnConsultar" class="btn btn-success btn-round ">Consultar</button>
                                 </div>
                             </div>
                         </form>
@@ -54,8 +54,8 @@ $url = 'https://view.officeapps.live.com/op/embed.aspx?src=https://sahuayo.thigo
                                 </div>
                             </div>
                             <div class="form-group mb-0 justify-content-end row text-right">
-                                <div class="col-9">
-                                    <button type="submit" id="btnConsultar" class="btn btn-success waves-effect waves-light">Consultar</button>
+                                <div class="col-9 text-right">
+                                    <button type="submit" id="btnConsultar" class="btn btn-success btn-round">Consultar</button>
                                 </div>
                             </div>
                         </form>

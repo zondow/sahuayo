@@ -3,12 +3,6 @@ $(document).ready(function (e) {
     $("#divProv").hide();
     $("#divInstructor").hide();
 
-    $(".select2").select2({
-        language: "es",
-        selectOnClose: true
-    });
-
-
     $('.timepicker').bootstrapMaterialDatePicker({
         format: 'HH:mm',
         clearButton: false,
@@ -26,7 +20,7 @@ $(document).ready(function (e) {
     });
 
     $(".datatableCapacitacion").DataTable({
-        dom: '<"row"<"col-md-4"l><"col-md-4 text-center"f><"col-md-4 cls-export-buttons"B>>rtip',
+        dom: '<"row"<"col-md-4"l><"col-md-4"f><"col-md-4 cls-export-buttons"B>>rtip',
         buttons: [
             {
                 extend: 'excelHtml5',
@@ -86,6 +80,12 @@ $(document).ready(function (e) {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
         }
     });
+
+    document.querySelectorAll('button[data-href]').forEach(button => {
+        button.addEventListener('click', function() {
+            window.location.href = this.getAttribute('data-href');
+        });
+    });    
 
     var DIAS = 1;
 
@@ -296,7 +296,7 @@ $(document).ready(function (e) {
                 });
 
                 $('.timepicker').bootstrapMaterialDatePicker({
-                    format: 'HH:mm',
+                    format: 'hh:mm A', // Formato de 12 horas con AM/PM
                     clearButton: false,
                     date: false,
                     cancelText: 'Cancelar',
@@ -398,11 +398,11 @@ $(document).ready(function (e) {
         }).done(function (data) {
             if (data.response === "success") {
                 $('#cap_CapacitacionID').val(data.capacitacion.cap_CapacitacionID);
-                if (data.capacitacion.cap_ComentariosInstructor !== "") {
+                /*if (data.capacitacion.cap_ComentariosInstructor !== "") {
                     $('#cap_ComentariosInstructor').summernote('code', data.capacitacion.cap_ComentariosInstructor);
                 } else {
                     $('#cap_ComentariosInstructor').summernote();
-                }
+                }*/
             }
         }).fail(function () {
             $.toast({
@@ -465,12 +465,12 @@ $(document).ready(function (e) {
 
 
 
-    $('#cap_ComentariosInstructor').summernote({
+    /*$('#cap_ComentariosInstructor').summernote({
         //placeholder: 'Hello bootstrap 4',
         tabsize: 2,
         height: 400,
         lang: 'es-ES' // default: 'en-US'
-    });
+    });*/
 
 
     $("body").on('keydown', '.numeric', function (e) {

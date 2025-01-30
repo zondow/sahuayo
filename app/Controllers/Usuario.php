@@ -37,30 +37,34 @@ class Usuario extends BaseController
         $data['colaboradores'] = $this->UsuarioModel->getColaboradoresJefe();
         $data['retardos'] = $this->UsuarioModel->getRetardosColaborador();
         $data['misSanciones'] = $this->UsuarioModel->getMisSanciones();
-        $data['welcome'] = $this->UsuarioModel->getWelcome();
         $data['galeria'] = $this->UsuarioModel->getUltimaGaleria();
         $data['anuncio'] = $this->UsuarioModel->getAnuncioActivo();
+        $data['horasExtra'] = $this->BaseModel->getHorasExtra(session('id'));
+        $data['horasAdministrativas'] = $this->BaseModel->getHorasAdministrativas(session('id'));
+        $data['vacacionesPermisosPendientes'] = $this->BaseModel->getVacacionesPermisosPendientes(session('id'));
+        $data['bienvenida'] = mensajeBienvenida();
 
-        $data['styles'][] = base_url('assets/plugins/fullcalendar/fullcalendar.min.css');
-        $data['styles'][] = base_url('assets/plugins/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
-        $data['styles'][] = base_url('assets/plugins/sweetalert/sweetalert.css');
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-        $data['styles'][] = 'https://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.4/fotorama.css';
+        load_plugins(['moment','fullcalendar','datetimepicker','sweetalert2','select2','daterangepicker'],$data);
 
-        $data['scripts'][] = base_url('assets/plugins/moment/min/moment.min.js');
-        $data['scripts'][] = base_url('assets/plugins/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-        $data['scripts'][] = base_url('assets/plugins/fullcalendar/fullcalendar.min.js');
-        $data['scripts'][] = base_url('assets/plugins/sweetalert/sweetalert.min.js');
-        $data['scripts'][] = base_url('assets/plugins/sweetalert/jquery.sweet-alert.custom.js');
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
-        $data['scripts'][] = 'https://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.4/fotorama.js';
         $data['scripts'][] = base_url('assets/js/dashboard.js');
-
         $data['scripts'][] = base_url('assets/js/incidencias/calendarioOperativo.js');
+        if(isJefe()){
+            $data['misEmpleados'] = $this->BaseModel->getMisEmpleados();
+            $data['scripts'][] = base_url('assets/js/dashboard/calendarioVacPerJefe.js');
+        }
+        if(isRH()){
+            $data['generoEmpleados'] = $this->UsuarioModel->generoEmpleados();
+            $data['empleadosIngresos'] = $this->UsuarioModel->ingresosEmpleados();
+            $data['empleadosEgresos'] = $this->UsuarioModel->bajasEmpleados();
+            $data['empleadosIncapacidades'] = $this->UsuarioModel->incapacidadesEmpleados();
+            $data['empleadosSucursal'] = $this->UsuarioModel->sucursalEmpleados();
+            $data['empleadosDepartamento'] = $this->UsuarioModel->departamentoEmpleados();
+            $data['empleadosAntiguedad'] = $this->UsuarioModel->antiguedadEmpleados();
+        }
 
         //Cargar vistas
         echo view('htdocs/header', $data);
-        //echo view('usuario/dashboard', $data);
+        echo view('usuario/dashboard', $data);
         echo view('htdocs/modalPdf');
         echo view('htdocs/footer');
     } //INDEX
@@ -134,16 +138,10 @@ class Usuario extends BaseController
             array("titulo" => 'Reglamentos y politicas', "link" => base_url('Usuario/normativa'), "class" => "active"),
         );
 
+        load_plugins(['sweetalert2','datables4'],$data);
 
         //Styles
-        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-
         //Scripts
-        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
-
 
         $data['scripts'][] = base_url('assets/js/misNotmativas.js');
 
@@ -153,40 +151,6 @@ class Usuario extends BaseController
         echo view('htdocs/footer');
     }
 
-    public function anuncio()
-    {
-        //Validar sessión
-        validarSesion(self::LOGIN_TYPE);
-
-        $data['title'] = 'Gestionar anuncios';
-        $data['breadcrumb'] = array(
-            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
-            array("titulo" => 'Anuncios', "link" => base_url('Usuario/anuncio'), "class" => "active"),
-        );
-
-        //Styles
-        $data['styles'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/css/dataTables.bootstrap4.css');
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-        $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
-        $data['styles'][] = base_url('assets/libs/summernote/summernote-bs4.css');
-
-
-        //Scripts
-        $data['scripts'][] = base_url('assets/plugins/datatables/jquery.dataTables.min.js');
-        $data['scripts'][] = base_url('assets/plugins/datatables/DataTables-1.10.21/js/dataTables.bootstrap4.js');
-
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
-        $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
-        $data['scripts'][] = base_url('assets/libs/summernote/summernote-bs4.min.js');
-        $data['scripts'][] = base_url('assets/libs/summernote/lang/summernote-es-ES.js');
-
-        $data['scripts'][] = base_url('assets/js/anuncio/subirAnuncio.js');
-
-        //Cargar vistas
-        echo view('htdocs/header', $data);
-        echo view('usuario/subirAnuncio', $data);
-        echo view('htdocs/footer', $data);
-    }
     /*
       ______ _    _ _   _  _____ _____ ____  _   _ ______  _____
      |  ____| |  | | \ | |/ ____|_   _/ __ \| \ | |  ____|/ ____|
@@ -247,96 +211,6 @@ class Usuario extends BaseController
         }
     }
 
-    public function addAnuncio()
-    {
-        $code = 0;
-        $id = null;
-        $msg = '';
-        $post = $this->request->getPost();
-        $nombreRepetido = $this->db->query("SELECT * FROM anuncio WHERE anu_Titulo=?", [$post['anu_Titulo']])->getResultArray();
-        if ($nombreRepetido == null) {
-            if ($post['anu_Estatus'] == 'Si') {
-                $post['anu_Estatus'] = 1;
-                $this->db->query("UPDATE anuncio SET anu_Estatus=0 WHERE anu_Estatus=1");
-                $msg = ' y se ha publicado';
-            } else {
-                $post['anu_Estatus'] = 0;
-            }
-            $data = array(
-                'anu_Titulo' => $post['anu_Titulo'],
-                'anu_FechaRegistro' => date('Y-m-d'),
-                'anu_Estatus' => $post['anu_Estatus']
-            );
-            $builder = db()->table('anuncio');
-            $builder->insert($data);
-            $id = $this->db->insertID();
-            if ($id) {
-                $directorio = dirname(WRITEPATH) . "/assets/uploads/anuncios/" . encryptDecrypt('encrypt', $id) . '/';
-                if (!file_exists($directorio)) {
-                    mkdir($directorio, 0777, true);
-                }
-                $tmpFilePath = $_FILES['files']['tmp_name'];
-                if ($tmpFilePath != "") {
-                    $newFilePath = $directorio . $_FILES['files']['name'];
-                    move_uploaded_file($tmpFilePath, $newFilePath);
-                }
-                $code = 1;
-            }
-        } else {
-            $code = 2;
-        }
-
-        switch ($code) {
-            case 1:
-                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha guardado el anuncio ' . $msg));
-                break;
-            case 2:
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'Existe otro anuncio con el mismo nombre'));
-                break;
-            case 0:
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
-                break;
-        }
-        return redirect()->to($_SERVER['HTTP_REFERER']);
-    }
-
-    public function estatusAnuncio($estatus, $id)
-    {
-        $anuncioActivo = $this->db->query("SELECT * FROM anuncio WHERE anu_Estatus=1 AND anu_AnuncioID!=?", array(encryptDecrypt('decrypt', $id)))->getRowArray();
-        if ($anuncioActivo) {
-            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'Existe otro anuncio habilitado, deshabilitalo para poder continuar'));
-        } else {
-            $builder = db()->table('anuncio');
-            $result = $builder->update(array('anu_Estatus' => $estatus), array('anu_AnuncioID' => encryptDecrypt('decrypt', $id)));
-            if ($result) {
-                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha actualizado el anuncio'));
-            } else {
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'No se ha podido actualizar el anuncio'));
-            }
-        }
-        return redirect()->to($_SERVER['HTTP_REFERER']);
-    }
-
-    public function borrarAnuncio($id)
-    {
-        $url = FCPATH . "/assets/uploads/anuncios/" . $id . "/";
-        if (!file_exists($url)) mkdir($url, 0777, true);
-        $files = preg_grep('/^([^.])/', scandir($url));
-        $builder = db()->table('anuncio');
-        if ($files) {
-            sort($files);
-            if (unlink($url . $files[0])) {
-                $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt', $id)));
-                $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha eliminado el anuncio'));
-            } else {
-                $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => 'No se ha podido eliminar el anuncio'));
-            }
-        } else {
-            $builder->delete(array("anu_AnuncioID" => encryptDecrypt('decrypt', $id)));
-            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => 'Se ha eliminado el anuncio'));
-        }
-        return redirect()->to($_SERVER['HTTP_REFERER']);
-    }
     /*
                    _         __   __
          /\       | |  /\    \ \ / /
@@ -349,8 +223,7 @@ class Usuario extends BaseController
     //Lia->trae los cumpleaños de los colaboradores
     public function ajax_getCumpleanios()
     {
-        $model = new UsuarioModel();
-        $cumpleanios = $model->getInformacionCumpleaños();
+        $cumpleanios = $this->UsuarioModel->getInformacionCumpleaños();
         $data_cumpleanios = array();
 
         foreach ($cumpleanios as $c) {
@@ -380,7 +253,7 @@ class Usuario extends BaseController
                         "end" => $cumple . " 23:59:00",
                         "allDay" => true,
                         'tipo' => "cumple",
-                        'className' => "bg-purple",
+                        'className' => "bg-blue",
                         'img' => fotoPerfil(encryptDecrypt('encrypt', $c['emp_EmpleadoID']))
                     );
                 }
@@ -483,7 +356,7 @@ class Usuario extends BaseController
                 "allDay" => true,
                 "end" => $fin . " 23:59:00",
                 'tipo' => "aniversario",
-                'className' => "bg-primary",
+                'className' => "bg-amber",
                 'img' => fotoPerfil(encryptDecrypt('encrypt', $aniv['emp_EmpleadoID']))
             );
         }
@@ -500,24 +373,17 @@ class Usuario extends BaseController
             $titulo = "";
             $inicio = $evaluacion['eva_FechaInicio'];
             $fin = $evaluacion['eva_FechaFin'];
-            $className = "";
             if ($evaluacion['eva_Tipo'] == 'Desempeño') {
-                $className = "bg-warning";
                 $titulo = "Evaluación de desempeño";
             } else if ($evaluacion['eva_Tipo'] == 'Competencias') {
-                $className = "bg-info";
                 $titulo = "Evaluación de competencias";
             } else if ($evaluacion['eva_Tipo'] == 'Departamentos') {
-                $className = "bg-pink";
                 $titulo = "Evaluación de departamentos";
             } else if ($evaluacion['eva_Tipo'] == 'Clima Laboral') {
-                $className = "bg-primary";
                 $titulo = "Evaluación de clima laboral";
             } else if ($evaluacion['eva_Tipo'] == 'Sucursales') {
-                $className = "bg-secondary";
                 $titulo = "Evaluación de sucursales";
             } else if ($evaluacion['eva_Tipo'] == 'Nom035') {
-                $className = "bg-secondary";
                 $titulo = "Evaluación Nom 035";
             }
 
@@ -527,7 +393,7 @@ class Usuario extends BaseController
                 "end" => $fin . ' 23:59:59',
                 "allDay" => true,
                 'tipo' => "evaluacion",
-                'className' => $className,
+                'className' => 'bg-primary',
                 'img' => ""
             );
         }
@@ -732,14 +598,7 @@ class Usuario extends BaseController
         $idPuesto = session('puesto');
         $idEmpleado = session('id');
 
-
-
-        $sql = "SELECT P.*, MAX(N.not_NotiPoliticaID) AS max_not_NotiPoliticaID, N.*
-        FROM politica P
-        JOIN notipolitica N ON P.pol_PoliticaID = N.not_PoliticaID
-        WHERE N.not_EmpleadoID = " . $idEmpleado . " AND P.pol_Estatus = 1
-        GROUP BY P.pol_PoliticaID";
-        $result =  $this->db->query($sql)->getResultArray();
+        $result = $this->ComunicadosModel->getPoliticasUsuario($idEmpleado);
 
         $politicas = array();
         $pol = array();
@@ -756,21 +615,15 @@ class Usuario extends BaseController
                             $imagen = base_url('assets/images/file_icons/pdf.svg');
                         }
 
-
                         $archivoNombre = explode('/', $documento);
                         $count = count($archivoNombre) - 1;
                         $nombre = explode('.', $archivoNombre[$count]);
 
-                        $html = '
-                                <div class="file-img-box">
-                                    <img src="' . $imagen . '" class="avatar-sm" alt="icon">
-                                </div>
-                                <a href="' . $documento . '" class="file-download show-pdf vistoPolitica" data-id="' . $item['not_NotiPoliticaID'] . '" data-title="' . $nombre[0] . ' " ><i
-                                        class="fa fa-eye"></i> </a>
-                                <div class="file-man-title">
-                                    <p class="mb-0 text-overflow">' . $nombre[0] . ' </p>
-                                </div>
-                           ';
+                        $html = '<a href="' . $documento . '" class="file-download show-pdf vistoPolitica" data-id="' . $item['not_NotiPoliticaID'] . '" data-title="' . $nombre[0] . ' " >
+                                    <div class="file-img-box" style="width:25%">
+                                        <img src="' . $imagen . '" class="avatar-sm" alt="icon">
+                                    </div>
+                                </a>';
                     }
                     $pol['id'] = $item['pol_PoliticaID'];
                     $pol['no'] = $item['pol_No'];
@@ -809,8 +662,7 @@ class Usuario extends BaseController
         $post = $this->request->getPost();
         $idPolitica = $post['politicaID'];
         $data['code'] = 0;
-        $builder = $this->db->table('notipolitica');
-        $builder->update(array('not_Visto' => 1), array('not_NotiPoliticaID' => $idPolitica));
+        update('notipolitica',array('not_Visto' => 1), array('not_NotiPoliticaID' => $idPolitica));
         if ($this->db->affectedRows() > 0) {
             $data['code'] = 1;
         }
@@ -1093,20 +945,36 @@ class Usuario extends BaseController
         echo json_encode($tree);
     }
 
-
-    public function ajax_getAnuncio()
+    public function ajax_getVacacionesPermisosEmpleadosJefe()
     {
-        $anuncios = $this->db->query("SELECT * FROM anuncio ORDER BY anu_AnuncioID DESC")->getResultArray();
-        $data = array();
-        foreach ($anuncios as $anuncio) {
-            $anuncio['anu_AnuncioID'] = encryptDecrypt('encrypt', $anuncio['anu_AnuncioID']);
-            $anuncio['anu_FechaRegistro'] = longDate($anuncio['anu_FechaRegistro']);
-            if (archivoAnuncio($anuncio['anu_AnuncioID'])) {
-                $anuncio['archivo'] = archivoAnuncio($anuncio['anu_AnuncioID']);
-            }
-            array_push($data, $anuncio);
-        }
-        $data['data'] = $data;
-        echo json_encode($data, JSON_UNESCAPED_SLASHES);
+        $numJefe = session('numero');
+        $vacaciones = $this->UsuarioModel->getVacacionesPermisosEmpleadosJefe($numJefe);
+
+        // Mapeo de estatus a clases CSS
+        $estatusClases = [
+            'PENDIENTE' => 'bg-info',
+            'AUTORIZADO' => 'bg-warning',
+            'AUTORIZADO_JEFE' => 'bg-warning',
+            'RECHAZADO' => 'bg-danger',
+            'RECHAZADO_JEFE' => 'bg-danger',
+            'AUTORIZADO_GO' => 'bg-warning',
+            'RECHAZADO_GO' => 'bg-danger',
+            'AUTORIZADO_RH' => 'bg-success',
+            'RECHAZADO_RH' => 'bg-danger',
+            'DECLINADO' => 'bg-danger'
+        ];
+
+        $data_vacaciones = array_map(function ($vacacion) use ($estatusClases) {
+            return [
+                "title" => $vacacion['emp_Nombre'],
+                "start" => $vacacion['fechaInicio'],
+                "end" => $vacacion['fechaFin'] . " 23:59:59",
+                'periodo' => 'del ' . longDate($vacacion['fechaInicio'], ' de ') . ' al ' . longDate($vacacion['fechaFin'], ' de '),
+                'className' => $estatusClases[$vacacion['estatus']] ?? '',
+                'tipo' => $vacacion['tipo'],
+            ];
+        }, $vacaciones);
+
+        echo json_encode(["events" => $data_vacaciones]);
     }
 }

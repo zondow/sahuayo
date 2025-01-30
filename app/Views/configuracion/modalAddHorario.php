@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="title">&nbsp;Nuevo horario</h4>
+                <h5 class="title">&nbsp;Nuevo horario</h5>
                 <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
             <form id="frmHorario" action="#" method="post" autocomplete="off" role="form">

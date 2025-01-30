@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" style="max-width: 910px !important;" role="document">
         <div class="modal-content" style="max-width: 910px !important;">
             <div class="modal-header">
-                <h4 class="title"><i class="far fa-clock "></i>&nbsp;Editar horario</h4>
+                <h5 class="title">&nbsp;Editar horario</h5>
                 <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
             <form id="frmHorarioEdit" action="#" method="post" autocomplete="off" role="form">

@@ -4,7 +4,9 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-body m-2">
-                <h4>HOJA DE LIBERACIÓN</h4>
+                <div class="header">
+                    <h2><strong>HOJA DE LIBERACIÓN</strong></h2>
+                </div>
                 <form class="needs-validation" role="form" action="<?= base_url("Personal/formBajaEmpleado") ?>" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
                     <!--FECHA,EMPLEADO,MOTIVOS-->
                     <input type="text" id="txtEmpleadoID" name="txtEmpleadoID" class="form-control" required hidden value="<?= encryptDecrypt('encrypt', $empleado['emp_EmpleadoID']) ?>">
@@ -28,8 +30,6 @@
                     </div>
                     <!--RESGUARDOS TI-->
                     <?php if (!empty($equipoI)) { ?>
-
-                        <hr>
                         <h5 class="mt-4 mb-2">Equipo informático</h5>
                         <?php
                         $i = 1;
@@ -61,9 +61,9 @@
                         }
                     }
                     ?>
-
-                    <hr>
-                    <h5 class="mt-3">Lista de contraseñas</h5>
+                    <div class="header">
+                        <h2><strong>Lista de contraseñas</strong></h2>
+                    </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txtCorreo">Correo</label>
@@ -95,9 +95,10 @@
                         </div>
                     </div>
                     <!--SITIOS WEB-->
-                    <hr>
                     <div id="divSitiosWeb">
-                        <h5 style="vertical-align: middle !important;" for="">Sitios web&nbsp;&nbsp;
+                            <div class="header">
+                                <h2><strong>Sitios web</strong></h2>
+                            </div>
                             <i id="btnNuevoSitio" class="fe-plus-circle btnAddSitio" style="color: #00c100" data-toggle="tooltip" data-placement="top" title="Agregar sitio"></i>
                             <i id="btnEliminarSitio" class="fe-minus-circle btnRemoveSitio" style="color: red" data-toggle="tooltip" data-placement="top" title="Quitar sitio"></i>
                         </h5>

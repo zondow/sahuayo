@@ -103,7 +103,6 @@ $(document).ready(function(e) {
             text: '¿Esta seguro que desea marcar como enterado el comunicado?',
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {

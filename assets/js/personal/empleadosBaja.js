@@ -10,10 +10,12 @@ $(document).ready(function (e) {
             "serverSide": true
         },
         columns: [
-            { "data": "baj_FechaBaja" },
-            { "data": "baj_MotivoBaja" },
+            { "data": "numero" },
             { "data": "emp_Numero" },
             { "data": "emp_Nombre" },
+            { "data": "acciones", render: function (data, type, row) { return acciones(data, type, row) } },
+            { "data": "baj_FechaBaja" },
+            { "data": "baj_MotivoBaja" },
             { "data": "pue_Nombre" },
             { "data": "dep_Nombre" },
             { "data": "suc_Sucursal" },
@@ -86,7 +88,7 @@ $(document).ready(function (e) {
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
-        "order": [[1, "asc"]],
+        "order": [[0, "desc"]],
         "processing": true,
         /*drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
@@ -95,23 +97,36 @@ $(document).ready(function (e) {
 
     function acciones(data, type, row) {
         let button = '';
+        button += '<div class="header">' +
+            '<ul class="header-dropdown">' +
+            '<li class="dropdown">' +
+            '<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' +
+            '<i class="zmdi zmdi-more"></i>' +
+            '</a>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
 
-        button += '<div class="btn-group">\n' +
-            '        <button type="button" class="btn btn-light dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false"> Acciones <i class="mdi mdi-chevron-down"></i> </button>\n' +
-            '        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" >\n' +
-            '            <a class="dropdown-item editar"  data-id="' + row['emp_EmpleadoID'] + '" href="#">Editar</a>\n' +
-            '            <a class="dropdown-item fechaSalida"  data-id="' + row['emp_EmpleadoID'] + '" href="#">Fecha</a>\n' +
-            '        </div>\n' +
-            '    </div>';
+        button += '<li><a class="fechaSalida" data-id="' + row['baj_BajaEmpleadoID'] + '" href="#">Fecha de salida</a></li>';
+
+        if (row['entrevista_realizada'] !== null) {
+            button += '<li><a href="' + BASE_URL+'PDF/imprimirEntrevistaSalida/' + row['entrevista_realizada']['ent_EntrevistaSalidaID'] + '" target="_blank">Imprimir entrevista</a></li>';
+        } else {
+            button += '<li><a href="' + BASE_URL+'Personal/entrevistaSalida/' + row['baj_BajaEmpleadoID'] + '">Realizar entrevista</a></li>';
+        }
+
+        button += '<li><a href="' + BASE_URL+'PDF/imprimirHojaLiberacion/' + row['baj_BajaEmpleadoID']+ '" target="_blank">Hoja de liberación</a></li>';
+        button += '<li><a href="' + BASE_URL+'Personal/offboarding/' + row['baj_BajaEmpleadoID'] + '" target="_blank">Offboarding (salida)</a></li>';
+        button += '</ul></li></ul></div>';
 
         return button;
     }
+
+
 });
 
 let colaboradorID;
 $('body').on('click', '.fechaSalida', function (e) {
     e.preventDefault();
-    $('#tituloModal').html('Editar fecha de salida');
+    $('#tituloModal').html('Editar');
     colaboradorID = $(this).data('id');
     $("#modalFechaSalida").modal("show");
 });

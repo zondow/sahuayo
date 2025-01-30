@@ -406,7 +406,7 @@ function felicitacionAniversario(){
 }
 
 // - - Datetimepicker - -
-$('.bs-datetimepicker').datetimepicker({
+/*$('.bs-datetimepicker').datetimepicker({
     format: 'YYYY-MM-DD HH:mm:00',
     sideBySide: true,
     stepping: 5,
@@ -430,4 +430,4 @@ $('.bs-datetimepicker').datetimepicker({
         prevCentury: 'Siglo Anterior',
         nextCentury: 'Siguiente Siglo'
     }
-});
+});*/

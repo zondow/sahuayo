@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="col-md-12 text-right">
                     <?php if (revisarPermisos('Agregar', 'periodoEvaluacion')) { ?>
-                        <a href="#" class="btn btn-success btn-round mb-1 modalPeriodoEvaluacion"><b class="dripicons-plus"></b> Agregar</a>
+                        <a href="#" class="btn btn-success btn-round mb-1 modalPeriodoEvaluacion"><i class="zmdi zmdi-plus"></i> Agregar</a>
                     <?php } ?>
                 </div>
                 <div>
@@ -31,8 +31,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><b class="iconsminds-next"></b> Período de evaluación</h5>
-                <button class="close" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><b class="iconsminds-next"></b> Período de evaluación</h5>
+                    <button class="close" type="button" data-dismiss="modal">&times;</button>
             </div>
             <form id="formPeriodo" method="post" autocomplete="off">
                 <div class="modal-body">
@@ -58,9 +58,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer text-right">
-                    <button class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnSavePeriodo" class="btn btn-success btn-round">Guardar</button>
+                <div class="modal-footer">
+                    <div class="text-right col-md-12">
+                        <button class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnSavePeriodo" class="btn btn-success btn-round">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>

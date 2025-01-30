@@ -5,7 +5,9 @@
             <div class="card-body">
                 <div class="col-md-12 text-right">
                     <?php if (revisarPermisos('Agregar', 'incapacidad')) { ?>
-                        <button class="btn btn-success btn-round waves-effect waves-light mb-4" type="button" data-toggle="modal" data-target="#modalAddActa"><b class="dripicons-plus"></b>Registar sanción</button>
+                        <button class="btn btn-success btn-round waves-effect waves-light mb-4" type="button" data-toggle="modal" data-target="#modalAddActa">
+                            <i class="zmdi zmdi-plus"></i> Agregar
+                        </button>
                     <?php } ?>
                 </div>
                 <div class="table-responsive">
@@ -127,8 +129,11 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">Guardar</button>
+                    <div class="text-right col-md-12">
+                        <button type="button" class="btn btn-light btn-round" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-round">Guardar</button>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -139,7 +144,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Ver imagen</h5>
+                <h4 class="modal-title" id="imageModalLabel">Ver imagen</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -148,7 +153,9 @@
                 <img id="modalImage" src="" class="img-fluid" alt="Imagen">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <div class="text-right col-md-12">
+                    <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>

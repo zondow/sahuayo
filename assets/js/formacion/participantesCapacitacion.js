@@ -100,13 +100,13 @@ $(document).ready(function (e) {
                 type: "post",
             },
             columns: [
-                { "data": "acciones", render: function(data,type,row){return acciones(data,type,row)} },
                 { "data": "emp_Numero"},
                 { "data": "emp_Nombre"},
                 { "data": "pue_Nombre"},
                 { "data": "are_Nombre"},
                 { "data": "suc_Sucursal"},
                 { "data": "cape_Calificacion"},
+                { "data": "acciones", render: function(data,type,row){return acciones(data,type,row)} },
             ],
             columnDefs: [
                 {targets:0,className: 'text-center'},
@@ -168,13 +168,13 @@ $(document).ready(function (e) {
             let button = '';
             button += '<div>';
             if(revisarPermisos('Eliminar','participantesCapacitacion'))
-            button += '<a href="#" class="btn  btn-sm btn-danger btnDeleteParticipante" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Eliminar"><i class="zmdi zmdi-delete"></i></a>';
+            button += '<button href="#" class="btn  btn-icon btn-icon-mini btn-round hidden-sm-down btn-danger btnDeleteParticipante" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Eliminar"><i class="zmdi zmdi-delete"></i></button>';
             if(revisarPermisos('Calificacion','participantesCapacitacion'))
-                button += '<a href="#" class="btn  btn-sm btn-info btnCalificacionEmpleado" min="0" max="10" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Calificación"><i class="mdi mdi-file-document-box-check-outline"></i></a>';
+                button += '<button href="#" class="btn  btn-icon btn-icon-mini btn-round hidden-sm-down  btn-info btnCalificacionEmpleado" min="0" max="10" data-id="'+row['cape_CapacitacionEmpleadoID']+'"   title="Calificación"><i class="zmdi zmdi-star"></i></button>';
             
             if(row['encuestaID'] > 0){
-                button += '<a href="'+BASE_URL+'PDF/imprimirComprobanteCapacitacion/'+row['participante']+'" class="btn  btn-sm btn-warning show-pdf" data-title="Constancia de la capacitación"   title="Constancia de la capacitación"><i class="mdi mdi-medal"></i></a>';
-                button += '<a href="'+BASE_URL+'PDF/imprimirEncuestaCapacitacion/'+row['encuestaID']+'" class="btn  btn-sm btn-purple show-pdf" data-title="Encuesta de satisfacción"   title="Encuesta de satisfacción"><i class="mdi mdi-check-box-multiple-outline"></i></a>';
+                button += '<button href="'+BASE_URL+'PDF/imprimirComprobanteCapacitacion/'+row['participante']+'" class="btn  btn-icon btn-icon-mini btn-round hidden-sm-down  btn-warning show-pdf" data-title="Constancia de la capacitación"   title="Constancia de la capacitación"><i class="fa-solid fa-medal"></i></button>';
+                button += '<button href="'+BASE_URL+'PDF/imprimirEncuestaCapacitacion/'+row['encuestaID']+'" class="btn  btn-icon btn-icon-mini btn-round hidden-sm-down  btn-purple show-pdf" data-title="Encuesta de satisfacción"   title="Encuesta de satisfacción"><i class="mdi mdi-check-box-multiple-outline"></i></button>';
             }
             
             button += '</div>';

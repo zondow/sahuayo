@@ -36,7 +36,7 @@ function validarSesion_old($sesion)
         header($url);
         exit();
     }
-} 
+}
 // Verifica que la sesión sea correcta
 function validarSesion($sesion)
 {
@@ -673,6 +673,16 @@ function pushAndroid($device_id, $message)
     } //if perfilID
 } //function notificacionesAndroid*/
 
+//Encrypt corto
+function encrypt($string){
+    return encryptDecrypt('encrypt',$string);
+}
+
+//Decrypt corto
+function decrypt($string){
+    return encryptDecrypt('decrypt',$string);
+}
+
 //Encriptar / Desencriptar
 function encryptDecrypt($action, $string)
 {
@@ -788,6 +798,12 @@ function isJefe()
     $numEmpleado = session("numero");
     $colaboradores = db()->query("SELECT * FROM empleado WHERE emp_Jefe='" . $numEmpleado . "'")->getResultArray();
     return (count($colaboradores) > 0) ? TRUE : FALSE;
+}
+
+//Obtiene si es rh
+function isRH()
+{
+    return revisarPermisos('Ver', 'dashboardRH');
 }
 
 //Obtiene si el empleado es jefe de departamento
@@ -1494,7 +1510,7 @@ function diasCapacitacion($inicio, $fin, $arrayDias, $obj)
 function isInstructor()
 {
     $id = session("id");
-    $instructor = db()->query("SELECT I.*FROM instructor I WHERE I.ins_EmpleadoID=" . (int)$id)->getRowArray();
+    $instructor = db()->query("SELECT I.*FROM instructor I WHERE I.ins_Estatus=1 AND I.ins_EmpleadoID=" . (int)$id)->getRowArray();
     return ($instructor) ? TRUE : FALSE;
 }
 
@@ -2066,7 +2082,6 @@ function fechaPresentarse($fechaFinVacacion, $empleadoID)
 function portadaGaleria($galeriaNombre)
 {
     $url = FCPATH . "/assets/uploads/galeria/" . $galeriaNombre;
-    echo $galeriaNombre;
     if (!file_exists($url)) mkdir($url, 0777, true);
     $directory = $url;
     $files = scandir($directory);
@@ -2159,30 +2174,75 @@ function addMenuOption($funcion, $controlador, $nombre)
     return '';
 }
 
-function addMenuOptionSingle($funcion, $controlador, $nombre,$icono)
+function addMenuOptionSingle($funcion, $controlador, $nombre, $icono)
 {
     $permisos = json_decode(session('permisos'), true);
     if (isset($permisos[$funcion])) {
         if (in_array("Ver", $permisos[$funcion])) {
-            return '<li><a href="' . base_url($controlador . '/' . $funcion) . '"><i class="'.$icono.'"></i><span>' . $nombre . '</span></a></li>';
-
+            return '<li><a href="' . base_url($controlador . '/' . $funcion) . '"><i class="' . $icono . '"></i><span>' . $nombre . '</span></a></li>';
         }
     }
     return '';
 }
 
-function diferenciaTiempo($fechaInicio,$fechaFin){
+function diferenciaTiempo($fechaInicio, $fechaFin)
+{
     $start_date = new DateTime(date($fechaInicio));
     $since_start = $start_date->diff(new DateTime(date($fechaFin)));
     $time = "";
-    $time.= (($since_start->m > 0 ? $since_start->m.' mes ' : $since_start->m == 1) ? $since_start->m.' meses ' : '');
-    $time.= (($since_start->d > 0 ? $since_start->d.' día ' : $since_start->d == 1) ? $since_start->d.' días ':'');
-    $time.= (($since_start->h > 0 ? $since_start->h.' horas ' : $since_start->h == 1) ? $since_start->h.' horas ':'');
-    $time.= (($since_start->i > 0 ? $since_start->i.' minuto ' : $since_start->i == 1) ? $since_start->i.' minutos ':'');
-    $time.= (($since_start->s > 0 ? $since_start->s.' segundos ' : $since_start->s == 1) ? $since_start->s.' segundos ':'');
+    $time .= (($since_start->m > 0 ? $since_start->m . ' mes ' : $since_start->m == 1) ? $since_start->m . ' meses ' : '');
+    $time .= (($since_start->d > 0 ? $since_start->d . ' día ' : $since_start->d == 1) ? $since_start->d . ' días ' : '');
+    $time .= (($since_start->h > 0 ? $since_start->h . ' horas ' : $since_start->h == 1) ? $since_start->h . ' horas ' : '');
+    $time .= (($since_start->i > 0 ? $since_start->i . ' minuto ' : $since_start->i == 1) ? $since_start->i . ' minutos ' : '');
+    $time .= (($since_start->s > 0 ? $since_start->s . ' segundos ' : $since_start->s == 1) ? $since_start->s . ' segundos ' : '');
     return $time;
 }
 
-function updatePermisos(){
-    return db()->query("SELECT rol_Permisos FROM empleado LEFT JOIN rol ON rol_RolID=emp_Rol WHERE emp_EmpleadoID = ?",[session('id')])->getRowArray()['rol_Permisos'];
+function updatePermisos()
+{
+    return db()->query("SELECT rol_Permisos FROM empleado LEFT JOIN rol ON rol_RolID=emp_Rol WHERE emp_EmpleadoID = ?", [session('id')])->getRowArray()['rol_Permisos'];
 }
+
+// Función auxiliar para generar opciones HTML
+function generateOptions($items, $valueField, $textField)
+{
+    $options = '<option value="0">Seleccionar</option>';
+    foreach ($items as $item) {
+        $options .= "<option value='{$item[$valueField]}'>{$item[$textField]}</option>";
+    }
+    return $options;
+}
+
+function mensajeBienvenida()
+{
+    $horario = date('H:i');
+    $configuraciones = [
+        ['inicio' => '06:00', 'fin' => '11:59', 'mensaje' => 'Buenos días', 'icon' => base_url('assets/images/dia/amanecer.svg'), 'color' => '#f7cd5d'],
+        ['inicio' => '12:00', 'fin' => '15:59', 'mensaje' => 'Buen día', 'icon' => base_url('assets/images/dia/dia.svg'), 'color' => '#fce391'],
+        ['inicio' => '16:00', 'fin' => '18:59', 'mensaje' => 'Buenas tardes', 'icon' => base_url('assets/images/dia/atardecer.svg'), 'color' => '#fb9062'],
+        ['inicio' => '19:00', 'fin' => '23:59', 'mensaje' => 'Buenas noches', 'icon' => base_url('assets/images/dia/noche.svg'), 'color' => '#546bab'],
+        ['inicio' => '00:00', 'fin' => '05:59', 'mensaje' => 'Buenas noches', 'icon' => base_url('assets/images/dia/noche.svg'), 'color' => '#546bab'],
+    ];
+
+    foreach ($configuraciones as $config) {
+        if ($horario >= $config['inicio'] && $horario <= $config['fin']) {
+            $mensaje = $config['mensaje'];
+            $icon = $config['icon'];
+            $color = $config['color'];
+            break;
+        }
+    }
+
+    $infoEmpleado = consultar_dato('empleado', 'emp_Sexo,emp_Nombre', 'emp_EmpleadoID =' . session('id'));
+    $nombreCompleto = explode(' ', trim($infoEmpleado['emp_Nombre']));
+    $nombres = array_slice($nombreCompleto, -2);
+    $infoEmpleado['emp_Nombre'] = implode(' ', $nombres);
+    
+    return [
+        'mensaje' => $mensaje,
+        'icon' => $icon,
+        'color' => $color,
+        'nombre' => ucwords(strtolower($infoEmpleado['emp_Nombre'])),
+        'genero' => ($infoEmpleado['emp_Sexo'] == 'Femenino') ? 'Bienvenida' : 'Bienvenido'
+    ];
+    }

@@ -144,7 +144,7 @@ $(window).on('resize', function() {
                 button += '            <li><a href="' + BASE_URL + 'Personal/expediente/' + row['emp_EmpleadoID'] + '/usuario">Expediente</a></li>';
             }
             if (revisarPermisos('Baja', 'empleados')) {
-                button += '            <li><a data-action="dar de baja al empleado seleccionado" href="#">Dar de baja</a></li>';
+                button += '            <li><a data-action="dar de baja al empleado seleccionado" href="'+BASE_URL + 'Personal/formBajaEmpleado/'+ row['emp_EmpleadoID'] +'">Dar de baja</a></li>';
             }
             if (revisarPermisos('Suspender', 'empleados')) {
                 button += '            <li><a class="activarSuspender" data-estado="' + row['emp_Estado'] + '" data-id="' + row['emp_EmpleadoID'] + '" href="#">Cambiar estado</a></li>';
@@ -184,7 +184,6 @@ $(window).on('resize', function() {
             text: txt,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {

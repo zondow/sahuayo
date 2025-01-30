@@ -7,10 +7,10 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs row ">
                     <li class="nav-item col-md-6 text-center ">
-                        <a href="<?= base_url("Personal/empleados") ?>" class="nav-link active"  >Activos</a>
+                        <a href="<?= base_url("Personal/empleados") ?>" class="nav-link">Activos</a>
                     </li>
                     <li class="nav-item col-md-6 text-center ">
-                        <a href="<?= base_url("Personal/bajaEmpleados") ?>" class="nav-link" >Bajas</a>
+                        <a href="<?= base_url("Personal/bajaEmpleados") ?>" class="nav-link active" >Bajas</a>
                     </li>
                 </ul>                      
                 <!-- Tab panes -->
@@ -24,10 +24,12 @@
                                     <table id="tblEmpleadosBaja" class="table table-hover m-0 table-centered table-responsive dt-responsive" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>Fecha de baja</th>
-                                                <th>Motivo</th>
+                                                <th>#</th>
                                                 <th>No. de empleado</th>
                                                 <th>Nombre</th>
+                                                <th>Acciones</th>
+                                                <th>Fecha de baja</th>
+                                                <th>Motivo</th>                                                
                                                 <th>Puesto</th>
                                                 <th>Departamento</th>
                                                 <th>Sucursal</th>

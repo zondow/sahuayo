@@ -32,9 +32,9 @@ class Personal extends BaseController
         );
 
         $data['colaboradores'] = $this->PersonalModel->getColaboradores();
-        $data['puestos'] = $this->PersonalModel->getPuestos();
-        $data['areas'] = $this->PersonalModel->getAreas();
-        $data['departamentos'] = $this->PersonalModel->getDepartamentos();
+        $data['puestos'] = $this->BaseModel->getPuestos();
+        $data['areas'] = $this->BaseModel->getAreas();
+        $data['departamentos'] = $this->BaseModel->getDepartamentos();
         $data['horarios'] = $this->PersonalModel->getHorarios();
         $data['roles'] = $this->PersonalModel->getRoles();
         $data['colaboradoresbaja'] = $this->PersonalModel->getBajas();
@@ -48,12 +48,14 @@ class Personal extends BaseController
         $data['scripts'][] = base_url('assets/js/personal/empleadosActivos.js');
         $data['scripts'][] = base_url('assets/js/personal/modalColaborador.js');
         $data['scripts'][] = base_url('assets/js/personal/modalDatosAcceso.js');
+        $data['scripts'][] = base_url('assets/js/personal/onboarding.js');
 
         //Cargar vistas
         echo view('htdocs/header', $data);
         echo view('personal/empleados', $data);
         echo view('personal/modalAgregarColaborador', $data);
         echo view('personal/modalDatosAcceso', $data);
+        echo view('personal/modalOnboarding', $data);
         echo view('personal/modalFotoColaborador', $data);
         echo view('htdocs/modalPdf', $data);
         //echo view('htdocs/modalConfirmation', $data);
@@ -104,15 +106,14 @@ class Personal extends BaseController
             array("titulo" => 'Onboarding (Checklist entrada)', "link" => base_url('Personal/onboarding/' . $empleadoID), "class" => "active"),
         );
 
-        $model = new PersonalModel();
-        $data['colaborador'] = $model->getInfoColaboradorByID($empleadoID);
+        $data['colaborador'] = $this->PersonalModel->getInfoColaboradorByID($empleadoID);
         $data['colaborador']['emp_EmpleadoID'] = encryptDecrypt('encrypt', $data['colaborador']['emp_EmpleadoID']);
         $data['colaborador']['pue_Nombre'] = $this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=" . encryptDecrypt('decrypt', $data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
-        $data['checklist'] = $model->getChecklist('Ingreso');
+        $data['checklist'] = $this->PersonalModel->getChecklist('Ingreso');
         $data['empleadoID'] = $empleadoID;
         $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Ingreso' AND cat_Requerido=1")->getRowArray()['total'];
-        $data['totalCheck'] = $model->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $empleadoID));
-        //$data['cartas']=$model->getCartasResguardoColaboradorByID(encryptDecrypt('decrypt',$empleadoID));
+        $data['totalCheck'] = $this->PersonalModel->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $empleadoID));
+        //$data['cartas']=$this->PersonalModel->getCartasResguardoColaboradorByID(encryptDecrypt('decrypt',$empleadoID));
 
         //Styles
         $data['styles'][] = base_url('assets/libs/spinkit/spinkit.css');
@@ -189,13 +190,13 @@ class Personal extends BaseController
         $data['scripts'][] = base_url('assets/js/personal/expediente.js');
 
         //Expediente
-        $model = new PersonalModel();
+        $this->PersonalModel = new PersonalModel();
         $data['empleadoID'] = $empleadoID;
-        $data['expedientes'] = $model->getDatosExpediente();
+        $data['expedientes'] = $this->PersonalModel->getDatosExpediente();
         $data['empleado'] = $this->db->query("SELECT emp_Nombre FROM empleado WHERE emp_EmpleadoID=" . $empleadoID)->getRowArray()['emp_Nombre'];
         $data['usuario'] = $usuario;
-        $data['C1'] = $model->getDocumentosC1(); //'Externos'
-        $data['C2'] = $model->getDocumentosC2(); //'Internos'
+        $data['C1'] = $this->PersonalModel->getDocumentosC1(); //'Externos'
+        $data['C2'] = $this->PersonalModel->getDocumentosC2(); //'Internos'
 
         //Cargar vistas
         echo view('htdocs/header', $data);
@@ -254,7 +255,7 @@ class Personal extends BaseController
         $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
         $data['breadcrumb'][] = array("titulo" => 'Reporte de quinquenios', "link" => base_url('Personal/reporteQuinquenio'), "class" => "active");
 
-        load_plugins(['datatables_buttons'],$data);
+        load_plugins(['datatables_buttons'], $data);
 
         //Styles
         //Scripts
@@ -266,8 +267,39 @@ class Personal extends BaseController
         echo view('htdocs/footer', $data);
     } //end reporteQuinquenio
 
-    //Nat -> Formulario agregar baja empleado
-    public function formBajaEmpleado($empleadoID = null)
+
+    //Diego -> contratos
+    public function contrato($empleadoID)
+    {
+        //Validar sessión
+        validarSesion(self::LOGIN_TYPE);
+
+        $empleado = $this->BaseModel->getEmpleadoByID(decrypt($empleadoID));
+        $data['empleado'] = array_merge($empleado, ['emp_EmpleadoID' => $empleadoID]);
+        $data['title'] = 'Contratos de ' . $empleado['emp_Nombre'];
+        $data['breadcrumb'][] = array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "");
+        $data['breadcrumb'][] = array("titulo" => 'Personal', "link" => base_url('Personal/empleados'), "class" => "active");
+        $data['breadcrumb'][] = array("titulo" => 'Contratos del colaborador', "link" => base_url('Personal/contrato'), "class" => "active");
+
+        $data['contratos'] = $this->PersonalModel->getDatosContratos($empleadoID);
+        $data['empleados'] = $this->BaseModel->getEmpleados();
+        //$data['sucursales']=$this->PersonalModel->getSucursales();
+        $data['departamentos'] = $this->BaseModel->getDepartamentos();
+
+        load_plugins(['moment', 'datatables_buttons', 'select2', 'daterangepicker', 'datetimepicker'], $data);
+
+        //Styles
+        //Scripts
+        $data['scripts'][] = base_url('assets/js/personal/contratos.js');
+
+        //Cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('personal/contratos', $data);
+        echo view('htdocs/footer', $data);
+    } //contrato
+
+    //Diego -> Formulario agregar baja empleado
+    /*public function formBajaEmpleado($empleadoID = null)
     {
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
@@ -299,12 +331,10 @@ class Personal extends BaseController
                 'baj_Comentarios' => trim(post('txtComentarios'))
             );
             $this->db->transBegin();
-            $builder = db()->table('bajaempleado');
-            $result = $builder->insert($baja);
+            $result = insert('bajaempleado', $baja);
 
             if ($result) {
-                $builder = db()->table('empleado');
-                $result = $builder->update(array('emp_Estatus' => 0), array('emp_EmpleadoID' => $empleadoID));
+                $result = update('empelado', array('emp_Estatus' => 0), array('emp_EmpleadoID' => $empleadoID));
                 if ($result) {
                     $this->session->setFlashdata('success', '¡La baja se registró correctamente!');
                 } else
@@ -321,10 +351,8 @@ class Personal extends BaseController
             }
             return redirect()->to(base_url("Personal/bajaEmpleados"));
         } else {
-            $sql = "SELECT COUNT(*) AS 'contador'
-                FROM empleado E
-                WHERE E.emp_EmpleadoID=? ";
-            $empleado = $this->db->query($sql, array(encryptDecrypt('decrypt', $empleadoID)))->getRowArray();
+            $empleado = $this->PersonalModel->empleadoExiste(encryptDecrypt('decrypt', $empleadoID));
+
 
             if ($empleado['contador'] == 0) {
                 redirect("Usuario/index");
@@ -332,21 +360,17 @@ class Personal extends BaseController
 
             $data['title'] = "Añadir baja";
             $data['breadcrumb'] = array(
-                array("titulo" => 'Inicio', "link" => base_url('Usuario/index')),
-                array("titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados')),
-                array("titulo" => 'Añadir baja', "link" => base_url('Personal/formBajaEmpleado'))
+                array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""),
+                array("titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados'), "class" => ""),
+                array("titulo" => 'Añadir baja', "link" => base_url('Personal/formBajaEmpleado'), "class" => "active")
             );
 
-            $model = new PersonalModel();
-            $data['empleado'] = $model->getColaboradorByID($empleadoID);
+            $data['empleado'] = $this->PersonalModel->getEmpleadoByID(encryptDecrypt('decrypt', $empleadoID));
+
+            load_plugins(['datepicker', 'select2'], $data);
 
             //STYLES
-            $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
-            $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
-
             //SCRIPTS
-            $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
-            $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
             $data['scripts'][] = base_url('assets/js/formBajaEmpleado.js');
 
             //Cargar vistas
@@ -355,10 +379,70 @@ class Personal extends BaseController
             echo view("htdocs/footer", $data);
         } //if POST
 
-    } //formBajaEmpleado
+    }*/ //formBajaEmpleado
+    //Diego -> Formulario agregar baja empleado
+    public function formBajaEmpleado($empleadoID = null)
+    {
+        // Validar sesión
+        validarSesion(self::LOGIN_TYPE);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $empleadoID = (int) encryptDecrypt('decrypt', post('txtEmpleadoID'));
+            $empleadoRegistra = (int) session('id');
+            $campos = [
+                'MotivoBaja', 'Correo', 'ContrasenaCorreo', 'Telefono', 'ContrasenaTelefono', 'Computadora',
+                'ContrasenaComputadora', 'UrlSitio1', 'UrlSitio2', 'UrlSitio3', 'UserSitio1', 'UserSitio2',
+                'UserSitio3', 'ContrasenaSitio1', 'ContrasenaSitio2', 'ContrasenaSitio3', 'Comentarios'
+            ];
+
+            $baja = [
+                'baj_EmpleadoID' => $empleadoID,
+                'baj_FechaRegistro' => date('Y-m-d'),
+                'baj_FechaBaja' => date('Y-m-d'),
+                'baj_EmpleadoDaBajaon' => $empleadoRegistra,
+            ];
+
+            foreach ($campos as $campo) {
+                $baja["baj_$campo"] = trim(post("txt$campo")) ?? '';
+            }
+            $this->db->transBegin();
+            $result = insert('bajaempleado', $baja);
+
+            if ($result && update('empleado', ['emp_Estatus' => 0], ['emp_EmpleadoID' => $empleadoID])) {
+                $this->session->setFlashdata('success', '¡La baja se registró correctamente!');
+            } else {
+                $this->session->setFlashdata('error', '¡Intente nuevamente!');
+            }
+
+            $this->db->transStatus() === FALSE ? $this->db->transRollback() : $this->db->transCommit();
+            return redirect()->to(base_url("Personal/bajaEmpleados"));
+        }
+
+        $empleado = $this->PersonalModel->empleadoExiste(encryptDecrypt('decrypt', $empleadoID));
+
+        if ($empleado['contador'] == 0) {
+            return redirect("Usuario/index");
+        }
+
+        $data['title'] = "Añadir baja";
+        $data['breadcrumb'] = [
+            ["titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => ""],
+            ["titulo" => 'Catálogo de empleados', "link" => base_url('Personal/empleados'), "class" => ""],
+            ["titulo" => 'Añadir baja', "link" => base_url('Personal/formBajaEmpleado'), "class" => "active"]
+        ];
+
+        $data['empleado'] = $this->BaseModel->getEmpleadoByID(encryptDecrypt('decrypt', $empleadoID));
+        load_plugins(['datepicker', 'select2'], $data);
+        $data['scripts'][] = base_url('assets/js/formBajaEmpleado.js');
+
+        echo view("htdocs/header", $data);
+        echo view("personal/formBajaEmpleado", $data);
+        echo view("htdocs/footer", $data);
+    }
+
 
     //Lia -> Entrevista de salida
-    public function entrevistaSalida($bajaID)
+    public function entrevistaSalida_old($bajaID)
     {
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
@@ -383,13 +467,10 @@ class Personal extends BaseController
                 "ent_Pregunta9" => (post("ent_Pregunta9") == null) ? '' : post("ent_Pregunta9"),
                 "ent_Pregunta10" => post("ent_Pregunta10"),
             );
-
-            $builder = db()->table('entrevistasalida');
-            $result = $builder->insert($entrevista);
+            $result = insert('entrevistasalida', $entrevista);
 
             if ($result) {
-                $builder = db()->table('empleado');
-                $builder->update(array('emp_Estado' => 'Suspendido'), array('emp_EmpleadoID' => (int)post("txtEmpleadoID")));
+                update('empleado', array('emp_Estado' => 'Suspendido'), array('emp_EmpleadoID' => (int)post("txtEmpleadoID")));
                 $this->session->setFlashdata('success', '¡La entrevista se guardó correctamente!');
             } else
                 $this->session->setFlashdata('error', '¡Intente nuevamente!');
@@ -398,32 +479,24 @@ class Personal extends BaseController
         } else {
             $data['title'] = "Entrevista de salida";
             $data['breadcrumb'] = array(
-                array("titulo" => 'Inicio', "link" => '#'),
-                array("titulo" => 'Solicitudes baja', "link" => base_url('Personal/misSolicitudesBajas')),
-                array("titulo" => 'Entrevista de salida', "link" => base_url('Personal/entrevistaSalida/' . $bajaID))
+                array("titulo" => 'Inicio', "link" => '#', 'class' => ''),
+                array("titulo" => 'Solicitudes baja', "link" => base_url('Personal/misSolicitudesBajas'), 'class' => ''),
+                array("titulo" => 'Entrevista de salida', "link" => base_url('Personal/entrevistaSalida/' . $bajaID), 'class' => 'active')
             );
 
+            load_plugins(['datepicker', 'select2', 'datatables', 'datables4'], $data);
+
             //STYLES
-            $data['styles'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css');
-            $data['styles'][] = base_url('assets/libs/select2/css/select2.min.css');
-            $data['styles'][] = base_url('assets/libs/datatables/dataTables.bootstrap4.css');
-            $data['styles'][] = base_url('assets/libs/datatables/responsive.bootstrap4.css');
             $data['styles'][] = base_url('assets/css/formEntrevistaSalida.css');
 
             //SCRIPTS
-            $data['scripts'][] = base_url('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js');
-            $data['scripts'][] = base_url('assets/libs/select2/js/select2.full.min.js');
-            $data['scripts'][] = base_url('assets/libs/datatables/jquery.dataTables.min.js');
-            $data['scripts'][] = base_url('assets/libs/datatables/dataTables.bootstrap4.min.js');
-            $data['scripts'][] = base_url('assets/libs/datatables/dataTables.responsive.min.js');
             $data['scripts'][] = base_url('assets/js/formEntrevistaSalida.js');
 
-            $model = new PersonalModel();
-            $data['datos'] = $model->getDatosBajaEntrevista($bajaID);
-            $data['empresa'] = array("emp_Nombre" => "Caja Popular Cerano");
+            $data['datos'] = $this->PersonalModel->getDatosBajaEntrevista($bajaID);
+            $data['empresa'] = array("emp_Nombre" => "Caja Popular Sahuayo");
 
             //GET PUESTOS
-            $puestos = $model->getPuestos();
+            $puestos = $this->BaseModel->getPuestos();
             $htmlPuestos = '<option value="0">Seleccionar puesto</option>';
             if (count($puestos) > 0) {
                 foreach ($puestos as $puesto) {
@@ -434,7 +507,7 @@ class Personal extends BaseController
             $data['puestos'] = $htmlPuestos;
 
             //GET DEPARTAMENTOS
-            $deptos = $model->getDepartamentos();
+            $deptos = $this->BaseModel->getDepartamentos();
             $htmlDeptos = '<option value="0">Seleccionar departamento</option>';
             if (count($puestos) > 0) {
                 foreach ($deptos as $depto) {
@@ -450,11 +523,70 @@ class Personal extends BaseController
         } //if POST
     } //entrevistaSalida
 
+    // Lia -> Entrevista de salida
+    public function entrevistaSalida($bajaID)
+    {
+        validarSesion(self::LOGIN_TYPE);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $empleadoRegistra = (int) session('id');
+            $entrevista = [
+                "ent_BajaID" => (int) encryptDecrypt('decrypt', $bajaID),
+                "ent_Fecha" => post("txtFechaEntrevista"),
+                "ent_EmpleadoID" => (int) encryptDecrypt('decrypt', post("txtEmpleadoID")),
+                "ent_EmpleadoAplicaID" => $empleadoRegistra,
+                "ent_Pregunta1" => $_POST["ent_Pregunta1"] ? json_encode($_POST["ent_Pregunta1"]) : '',
+                "ent_Pregunta2" => post("ent_Pregunta2") ?? '',
+                "ent_Pregunta3_1" => post("ent_Pregunta3_1") ?? '',
+                "ent_Pregunta3_2" => post("ent_Pregunta3_2") ?? '',
+                "ent_ComentariosP3" => post("ent_ComentariosP3"),
+                "ent_Pregunta4" => post("ent_Pregunta4") ?? '',
+                "ent_Pregunta5" => post("ent_Pregunta5") ?? '',
+                "ent_Pregunta6" => post("ent_Pregunta6") ?? '',
+                "ent_Pregunta7" => post("ent_Pregunta7") ?? '',
+                "ent_Pregunta8" => post("ent_Pregunta8") ?? '',
+                "ent_Pregunta9" => post("ent_Pregunta9") ?? '',
+                "ent_Pregunta10" => post("ent_Pregunta10"),
+            ];
+
+            $result = insert('entrevistasalida', $entrevista);
+            $this->session->setFlashdata($result ? 'success' : 'error', $result ? '¡La entrevista se guardó correctamente!' : '¡Intente nuevamente!');
+
+            if ($result) {
+                update('empleado', ['emp_Estado' => 'Suspendido'], ['emp_EmpleadoID' => (int) post("txtEmpleadoID")]);
+            }
+
+            return redirect()->to(base_url("Personal/bajaEmpleados"));
+        }
+
+        $data = [
+            'title' => "Entrevista de salida",
+            'breadcrumb' => [
+                ["titulo" => 'Inicio', "link" => '#', 'class' => ''],
+                ["titulo" => 'Solicitudes baja', "link" => base_url('Personal/misSolicitudesBajas'), 'class' => ''],
+                ["titulo" => 'Entrevista de salida', "link" => base_url("Personal/entrevistaSalida/$bajaID"), 'class' => 'active']
+            ],
+            'styles' => [base_url('assets/css/formEntrevistaSalida.css')],
+            'scripts' => [base_url('assets/js/formEntrevistaSalida.js')],
+            'datos' => $this->PersonalModel->getDatosBajaEntrevista($bajaID),
+            'puestos' => generateOptions($this->BaseModel->getPuestos(), 'pue_PuestoID', 'pue_Nombre'),
+            'deptos' => generateOptions($this->BaseModel->getDepartamentos(), 'dep_DepartamentoID', 'dep_Nombre'),
+            'bajaID' => $bajaID
+        ];
+        load_plugins(['datepicker', 'select2', 'datatables', 'datables4'], $data);
+
+        echo view("htdocs/header", $data);
+        echo view("personal/formEntrevistaSalida", $data);
+        echo view("htdocs/footer", $data);
+    }
+
     //Lia->checklist de bajas
     public function offboarding($empleadoID)
     {
         //Validar sessión
         validarSesion(self::LOGIN_TYPE);
+
+        $empleadoID = decrypt($empleadoID);
 
         $data['title'] = 'Offboarding (Checklist salida)';
         $data['breadcrumb'] = array(
@@ -463,20 +595,17 @@ class Personal extends BaseController
             array("titulo" => 'Offboarding (Checklist salida)', "link" => base_url('Personal/offboarding/' . $empleadoID), "class" => "active"),
         );
 
-        $model = new PersonalModel();
-        $data['colaborador'] = $model->getInfoColaboradorByID($empleadoID);
+        $data['colaborador'] = $this->BaseModel->getEmpleadoByID($empleadoID);
         $data['colaborador']['emp_EmpleadoID'] = encryptDecrypt('encrypt', $data['colaborador']['emp_EmpleadoID']);
-        $data['colaborador']['pue_Nombre'] = $this->db->query("SELECT pue_Nombre FROM puesto WHERE pue_PuestoID=" . encryptDecrypt('decrypt', $data['colaborador']['emp_PuestoID']))->getRowArray()['pue_Nombre'];
-        $data['checklist'] = $model->getChecklist('Egreso');
+        $data['colaborador']['pue_Nombre'] = consultar_dato('puesto', 'pue_Nombre', "pue_PuestoID = " . $data['colaborador']['emp_PuestoID'])['pue_Nombre'];
+        $data['checklist'] = $this->PersonalModel->getChecklist('Egreso');
         $data['empleadoID'] = $empleadoID;
-        $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Egreso' AND cat_Requerido=1")->getRowArray()['total'];
-        $data['totalCheck'] = $model->getTotalCheckSalida('Egreso', encryptDecrypt('decrypt', $empleadoID));
+        $data['total'] = consultar_dato('catalogochecklist', "COUNT(cat_CatalogoID) as 'total'", "cat_Tipo='Egreso' AND cat_Requerido=1");
+        $data['totalCheck'] = $this->PersonalModel->getTotalCheckSalida('Egreso', encryptDecrypt('decrypt', $empleadoID));
 
+        load_plugins(['sweetalert2'], $data);
         //Styles
-        $data['styles'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.css');
-
         //Scripts
-        $data['scripts'][] = base_url('assets/plugins/sweet-alert2/sweetalert2.min.js');
 
         //Cargar vistas
         echo view('htdocs/header', $data);
@@ -535,29 +664,45 @@ class Personal extends BaseController
         $empleadoID = encryptDecrypt('decrypt', $post['col']);
         unset($post['col']);
         $id = json_encode($post['check']);
-        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=" . $empleadoID)->getRowArray();
-        $builder = $this->db->table('checklistempleado');
-        if ($registro !== NULL) {
-            $builder->update(array('che_CatalogoChecklistSalidaID' => $id), array('che_ChecklistEmpleadoID' => $registro['che_ChecklistEmpleadoID']));
+
+        $registro = $this->PersonalModel->existeRegistroChecklist($empleadoID);
+        $data = ['che_CatalogoChecklistSalidaID' => $id];
+        if ($registro) {
+            update('checklistempleado', $data, ['che_ChecklistEmpleadoID' => $registro['che_ChecklistEmpleadoID']]);
             $result = $registro['che_ChecklistEmpleadoID'];
             $tipo = 'Actualizar';
         } else {
-            $data = array(
-                "che_EmpleadoID" => $empleadoID,
-                "che_CatalogoChecklistSalidaID" => $id
-            );
-            $builder->insert($data);
-            $result = $this->db->insertID();
+            $data['che_EmpleadoID'] = $empleadoID;
+            $result = insert('checklistempleado', $data);
             $tipo = 'Insertar';
         }
-        if ($result) {
-            insertLog($this, session('id'), $tipo, 'offboarding', $result);
-            $this->session->setFlashdata(array('response' => 'success', 'txttoastr' => '¡Offboarding actualizado correctamente!'));
-        } else {
-            $this->session->setFlashdata(array('response' => 'error', 'txttoastr' => '¡Ocurrio un error intente mas tarde!'));
-        }
+
+        $message = $result
+            ? ['response' => 'success', 'txttoastr' => '¡Offboarding actualizado correctamente!']
+            : ['response' => 'error', 'txttoastr' => '¡Ocurrio un error, intente más tarde!'];
+
+        $this->session->setFlashdata($message);
+        insertLog($this, session('id'), $tipo, 'offboarding', $result);
+
         return redirect()->to($_SERVER['HTTP_REFERER']);
     } //end saveoffboarding
+
+    //Diego -> funcion añadir contrato
+    public function addContrato()
+    {
+        $post = $this->request->getPost();
+        $post['con_EmpleadoID'] = decrypt($post['con_EmpleadoID']);
+        $post['con_Fecha'] = date('Y-m-d');
+
+        $message = insert('contrato', $post)
+            ? ['response' => 'success', 'txttoastr' => '¡Contrato generado correctamente!']
+            : ['response' => 'error', 'txttoastr' => '¡Ocurrió un error al registrar los datos para el contrato!'];
+
+        $this->session->setFlashdata($message);
+        return redirect()->to($_SERVER['HTTP_REFERER']);
+    }
+    //end addContrato
+
 
     /*
                    _         __   __
@@ -580,10 +725,15 @@ class Personal extends BaseController
     //Lia trae los empleados dados de baja
     public function ajax_getEmpleadosBaja()
     {
-        $colaboradores = $this->PersonalModel->getBajas();
-        $data['data'] = $colaboradores;
-        echo json_encode($data, JSON_UNESCAPED_SLASHES);
-    } //end ajax_getEmpleadosBaja
+        $colaboradores = array_map(function ($colaborador, $i) {
+            $colaborador['numero'] = $i + 1;
+            $colaborador['baj_FechaBaja'] = longDate($colaborador['baj_FechaBaja'], ' de ');
+            return $colaborador;
+        }, $this->PersonalModel->getBajas(), array_keys($this->PersonalModel->getBajas()));
+
+        echo json_encode(['data' => $colaboradores], JSON_UNESCAPED_SLASHES);
+    }
+    //end ajax_getEmpleadosBaja
 
     //Lia- agrega o edita la info de un colaborador
     function ajax_saveColaborador()
@@ -728,7 +878,7 @@ class Personal extends BaseController
         foreach ($_FILES['fileZip']['name'] as $key => $nombre_archivo) {
             $ext = pathinfo($nombre_archivo, PATHINFO_EXTENSION);
             $nEmpleado = (int) explode('_', $nombre_archivo)[5];
-            $empleadoID = consultar_dato('empleado','empleado',"emp_Numero = $nEmpleado AND emp_Estatus=1") ?? null;
+            $empleadoID = consultar_dato('empleado', 'empleado', "emp_Numero = $nEmpleado AND emp_Estatus=1") ?? null;
 
             if (!$empleadoID) continue;
 
@@ -752,7 +902,7 @@ class Personal extends BaseController
                     'not_Icono' => 'zmdi zmdi-money-box',
                     'not_Color' => 'bg-blue',
                 ];
-                insert('notificacion',$notificacion);
+                insert('notificacion', $notificacion);
             } else {
                 $existe++;
             }
@@ -775,7 +925,7 @@ class Personal extends BaseController
             $children = array();
             foreach ($empleadosxanio as $emp) {
                 $empleado = (int)encryptDecrypt('decrypt', $emp);
-                $empleado = consultar_dato('empleado','emp_Nombre,emp_Numero',"emp_EmpleadoID = $empleado");
+                $empleado = consultar_dato('empleado', 'emp_Nombre,emp_Numero', "emp_EmpleadoID = $empleado");
                 $nombre = $empleado['emp_Nombre'];
                 $num = $empleado['emp_Numero'];
                 $children2 = array();
@@ -949,31 +1099,6 @@ class Personal extends BaseController
         echo json_encode($array);
     }
 
-    public function ajaxEnviarNotiNuevoIngreso()
-    {
-        $post = $this->request->getPost();
-        $idEmpleado = encryptDecrypt('decrypt', $post['empleadoID']);
-
-        $data['code'] = 0;
-
-        $this->db->transStart();
-
-        $sql = "SELECT emp_Nombre,pue_Nombre,dep_Nombre,emp_FechaIngreso FROM empleado
-                JOIN puesto ON pue_PuestoID=emp_PuestoID
-                JOIN departamento ON dep_DepartamentoID=emp_DepartamentoID
-            WHERE emp_EmpleadoID=?";
-        $empleado = $this->db->query($sql, array($idEmpleado))->getRowArray();
-
-        $check = $this->db->query("SELECT * FROM catalogochecklist WHERE cat_Estatus=1")->getResultArray();
-        $arrayResponsables = array();
-        foreach ($check as $ch) {
-            $responsables = json_decode($ch['cat_ResponsableID']);
-            foreach ($responsables as $responsable) {
-                array_push($arrayResponsables, $responsable);
-            }
-        }
-    }
-
     //Lis->Guarda la foto del empleado
     public function ajaxSubirFotoEmpleado($empleadoID)
     {
@@ -1003,4 +1128,134 @@ class Personal extends BaseController
         } //if
         echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
+
+    //Lia->obtiene informacion del onboarding del colaborador
+    public function ajax_getInfoOnboardingColaboradorByID($colaboradorID)
+    {
+        $data['colaborador'] = $this->PersonalModel->getColaboradorByID($colaboradorID);
+        $data['foto'] = fotoPerfil($colaboradorID);
+        $data['total'] = $this->db->query("SELECT COUNT(cat_CatalogoID) as 'total' FROM catalogochecklist WHERE cat_Tipo='Ingreso' AND cat_Requerido=1")->getRowArray()['total'];
+        $data['totalCheck'] = $this->PersonalModel->getTotalCheck('Ingreso', encryptDecrypt('decrypt', $colaboradorID));
+        $data['response'] = 'success';
+        echo json_encode($data,);
+    }
+
+    //Lia->obtiene el checklist de ingreso
+    public function ajax_getChecklist($colaboradorID)
+    {
+        $checklist = $this->PersonalModel->getChecklist('Ingreso');
+        $emp_EmpleadoID = encryptDecrypt('decrypt', $colaboradorID);
+        $response = [];
+        foreach ($checklist as $ck) {
+            $catalogoID = '["' . $ck['cat_CatalogoID'] . '"]';
+
+            $sql = "
+                SELECT COUNT(che_ChecklistEmpleadoID) as 'existe'
+                FROM checklistempleado
+                WHERE JSON_CONTAINS(che_CatalogoChecklistID, ?)
+                AND che_EmpleadoID = ?
+            ";
+
+            $query = db()->query($sql, [$catalogoID, $emp_EmpleadoID]);
+            $check = $query->getRowArray();
+
+
+            $checked = ($check['existe'] == 1) ? true : false;
+
+            $response[] = [
+                'id' => $ck['cat_CatalogoID'],
+                'nombre' => $ck['cat_Nombre'],
+                'requerido' => $ck['cat_Requerido'],
+                'checked' => $checked
+            ];
+        }
+        echo json_encode($response);
+    } //and ajax_getChecklist
+
+    //Diego-> guardar onboarding
+    public function ajax_saveOnboarding()
+    {
+        $post = $this->request->getPost();
+        $empleadoID = encryptDecrypt('decrypt', $post['col']);
+        unset($post['col']);
+        if ($post) {
+            $id = json_encode($post['check']);
+        } else {
+            $id = '';
+        }
+        $registro = $this->db->query("SELECT * FROM checklistempleado WHERE che_EmpleadoID=" . $empleadoID)->getRowArray();
+        $builder = $this->db->table('checklistempleado');
+        if ($registro !== NULL) {
+            $builder->update(array('che_CatalogoChecklistID' => $id), array('che_ChecklistEmpleadoID' => $registro['che_ChecklistEmpleadoID']));
+            $result = $registro['che_ChecklistEmpleadoID'];
+            $tipo = 'Actualizar';
+        } else {
+            $data = array(
+                "che_EmpleadoID" => $empleadoID,
+                "che_CatalogoChecklistID" => $id
+            );
+            $builder->insert($data);
+            $result = $this->db->insertID();
+            $tipo = 'Insertar';
+        }
+        if ($result) {
+            insertLog($this, session('id'), $tipo, 'onboarding', $result);
+            $response['code'] = 1;
+        } else {
+            $response['code'] = 0;
+        }
+        echo json_encode($response, JSON_UNESCAPED_SLASHES);
+    } //end saveOboarding
+
+    //Lia ->Envia correos para le onboarding 
+    public function ajaxEnviarNotiNuevoIngreso()
+    {
+        $post = $this->request->getPost();
+        $idEmpleado = encryptDecrypt('decrypt', $post['empleadoID']);
+        $empleado = $this->PersonalModel->getInfoEmpleadoByID($idEmpleado);
+        $checklist = $this->PersonalModel->getChecklist('Ingreso');
+
+        // Extraer IDs de responsables únicos
+        $responsablesArr = array_unique(array_merge(...array_map(function ($ch) {
+            return json_decode($ch['cat_ResponsableID'], true);
+        }, $checklist)));
+
+        $enviado = 0;
+        foreach ($responsablesArr as $responsable) {
+            $empResp = $this->PersonalModel->getInfoEmpleadoByID($responsable);
+            $nombreCatCheck = $this->PersonalModel->getChecklistByEmpleado($responsable);
+
+            // Preparar datos de correo
+            $data_correo = [
+                'nombre' => $empResp['emp_Nombre'],
+                'titulo' => '¡Nuevo ingreso de personal!',
+                'cuerpo' => 'Mediante el presente se le comunica que el día <b>' . longDate($empleado['emp_FechaIngreso'], ' de ') . '</b>
+                            se incorporará a ' . getSetting('nombre_empresa', $this) . ' un nuevo integrante llamad@ <b>' . $empleado['emp_Nombre'] . '</b> 
+                            el cual, se une al equipo de <b>' . $empleado['dep_Nombre'] . '</b> con el puesto de <b>' . $empleado['pue_Nombre'] . '</b>.<br>
+                            El departamento de Recursos Humanos te pide tu apoyo con los indicadores:<br>  <b>' . $nombreCatCheck . '</b> del checklist de ingreso.',
+            ];
+
+            // Enviar correo y agregar notificación
+            if (!empty($empResp['emp_Correo'])) {
+                sendMail($empResp['emp_Correo'], 'Nuevo Ingreso', $data_correo, 'NuevoIngreso');
+            }
+
+            $notificacion = [
+                "not_EmpleadoID" => $empResp['emp_EmpleadoID'],
+                "not_Titulo" => 'Nuevo ingreso',
+                "not_Descripcion" => $empleado['emp_Nombre'] . ' se incorpora al equipo.',
+                "not_EmpleadoIDCreo" => (int)session("id"),
+                "not_FechaRegistro" => date('Y-m-d H:i:s'),
+                "not_URL" => '#',
+                "not_Icono" => "zmdi zmdi-folder-person",
+                "not_Color" => "bg-purple"
+            ];
+            insert('notificacion', $notificacion);
+            $enviado++;
+        }
+
+        echo json_encode(["response" => $enviado > 0 ? 1 : 0]);
+    }
+    //end ajaxEnviarNotiNuevoIngreso
+
 }

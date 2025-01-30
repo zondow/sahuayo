@@ -1,16 +1,5 @@
 $(document).ready(function(e) {
 
-    $(".select2-multiple").select2({
-        language: "es",
-        selectOnClose: false,
-        allowClear: true,
-        placeholder: " Seleccione",
-
-    });
-
-    $(".select2").select2();
-
-
     var tblPoliticas = $("#tblPoliticas").DataTable({
         destroy: true,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
@@ -21,12 +10,12 @@ $(document).ready(function(e) {
             "processing": true,
         },
         columns: [
-            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
             { "data": "no"},
             { "data": "nombre"},
             { "data": "documento"},
             { "data": "puestos"},
             { "data": "estatus",render: function(data,type,row){return estado(data,type,row)}},
+            { "data": "acciones",render: function(data,type,row){return acciones(data,type,row)}},
         ],
         columnDefs: [
             {targets:0,className: 'text-center'},
@@ -55,7 +44,7 @@ $(document).ready(function(e) {
                 "sPrevious": "<i class='zmdi zmdi-caret-left'>"
             },
         },
-        "order": [[ 3, "desc" ]],
+        "order": [[ 0, "asc" ]],
         "processing":true,
 
     });
@@ -63,12 +52,12 @@ $(document).ready(function(e) {
     function acciones(data,type,row){
         let button = '';
         if(revisarPermisos('Editar','normativaInterna'))
-            button+=' <a type="button" class="btn btn-info waves-effect waves-light editarPolitica" title="Editar politica" data-id="'+row['id']+'" style="color:#FFFFFF"><i class="fa fa-edit"></i> </a>';
+            button+=' <button class="btn btn-info  btn-icon btn-icon-mini btn-round hidden-sm-down editarPolitica" title="Editar politica" data-id="'+row['id']+'" style="color:#FFFFFF"><i class="fa fa-edit"></i> </button>';
         if(revisarPermisos('Documentos','normativaInterna'))
-            button+=' <a type="button" class="btn btn-warning waves-effect waves-light historialPolitica" title="Historial de documentos" data-id="'+row['id']+'" style="color:#FFFFFF"><i class="far fa-folder-open"></i> </a><br>';
+            button+=' <button class="btn btn-warning   btn-icon btn-icon-mini btn-round hidden-sm-down historialPolitica" title="Historial de documentos" data-id="'+row['id']+'" style="color:#FFFFFF"><i class="far fa-folder-open"></i> </button>';
         if(revisarPermisos('Cambios','normativaInterna'))
-        button+=' <a type="button" class="btn btn-secondary waves-effect waves-light cambiosPolitica" title="Historial de cambios" data-id="'+row['id']+'" style="color:#FFFFFF"><i class=" fas fa-history"></i> </a><br>';
-        button+=' <a type="button" class="btn btn-dark waves-effect waves-light colaboradoresPolitica" title="Colaboradores" data-id="'+row['id']+'" style="color:#FFFFFF"><i class=" fa fa-users"></i> </a><br>';
+        button+=' <button class="btn btn-secondary  btn-icon btn-icon-mini btn-round hidden-sm-down cambiosPolitica" title="Historial de cambios" data-id="'+row['id']+'" style="color:#FFFFFF"><i class=" fas fa-history"></i> </button>';
+        button+=' <button class="btn btn-primary  btn-icon btn-icon-mini btn-round hidden-sm-down colaboradoresPolitica" title="Colaboradores" data-id="'+row['id']+'" style="color:#FFFFFF"><i class=" fa fa-users"></i> </button><br>';
         return button;
     }
 
@@ -76,8 +65,8 @@ $(document).ready(function(e) {
 
         if(revisarPermisos('Eliminar','normativaInterna'))
         return row['estatus'] === 1 ?
-            '<a class="badge badge-success activarInactivar" data-id="'+row['id']+'" data-estado="'+row['estatus']+'"  title="Click para cambiar estatus" style="color: #ffffff">Activo</a>' :
-            '<a class="badge badge-danger activarInactivar" data-id="'+row['id']+'" data-estado="'+row['estatus']+'" title="Click para cambiar estatus" style="color: #ffffff">Inactivo</a>';
+            '<span class="badge badge-info activarInactivar" data-id="'+row['id']+'" data-estado="'+row['estatus']+'"  title="Click para cambiar estatus">Activo</span>' :
+            '<span class="badge badge-default activarInactivar" data-id="'+row['id']+'" data-estado="'+row['estatus']+'" title="Click para cambiar estatus">Inactivo</span>';
     }
 
     var form = $("#form");
@@ -92,7 +81,7 @@ $(document).ready(function(e) {
         e.preventDefault();
         form[0].reset();
 
-        puestos.select2('').trigger('change');
+        //puestos.select2('').trigger('change');
         $("#titleModal").html('Nueva política / reglamento');
         $("#pol_PoliticaID").val(0);
         modal.modal("show");
@@ -184,7 +173,7 @@ $(document).ready(function(e) {
     $('body').on('click', '.editarPolitica', function(e) {
         e.preventDefault();
         form[0].reset();
-        puestos.select2('').trigger('change');
+        //puestos.select2('').trigger('change');
         $("#titleModal").html('Editar política / reglamento');
         let politicaID = $(this).data('id');
         getInfoPolitica(politicaID);
@@ -247,7 +236,6 @@ $(document).ready(function(e) {
             text: txt,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
         }).then((result) => {
@@ -305,9 +293,9 @@ $(document).ready(function(e) {
             if(data.response === "success"){
                 $('#politicaID').val(data.info.pol_PoliticaID);
                 if(data.info.pol_Cambios !== ""){
-                    $('#pol_Cambios').summernote('code',data.info.pol_Cambios);
+                    //$('#pol_Cambios').summernote('code',data.info.pol_Cambios);
                 }else{
-                    $('#pol_Cambios').summernote();
+                    //$('#pol_Cambios').summernote();
                 }
             }
         }).fail(function () {
@@ -323,12 +311,12 @@ $(document).ready(function(e) {
     }
 
 
-    $('#pol_Cambios').summernote({
+    /*$('#pol_Cambios').summernote({
         //placeholder: 'Hello bootstrap 4',
         tabsize: 2,
         height: 400,
         lang: 'es-ES' // default: 'en-US'
-    });
+    });*/
     let modalHistorialDoctos=$("#modalHistDoctos");
     $('body').on('click', '.historialPolitica', function(e) {
         e.preventDefault();
@@ -466,7 +454,7 @@ $(document).ready(function(e) {
             data = JSON.parse(JSON.stringify(data));
             if (data.response === 1) {
                 swal.fire({
-                    title: "¡Correos enviados exitosamente!",
+                    title: "¡Notificados exitosamente!",
                     text: "",
                     icon: 'success',
                 }).then(() => {
@@ -478,7 +466,7 @@ $(document).ready(function(e) {
                 swal.fire({
                     title: '¡Tuvimos un problema!',
                     type: 'error',
-                    text: 'Ocurrio un error al tratar de enviar los correos,por favor intente de nuevo.',
+                    text: 'Ocurrio un error al tratar de enviar la notificacion,por favor intente de nuevo.',
                 }).then(() => {
                     location.reload();
                 });

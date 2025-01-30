@@ -71,9 +71,9 @@
                 var eliminar = calEvent.eliminar;
                 $("#idEvt").val(id);
                 if (eliminar === 'no') {
-                    $('#botonEliminar').hide();
+                    $('#deleteDiaIn').addClass('hidden');
                 } else if (eliminar === 'si') {
-                    $('#botonEliminar').show();
+                    $('#deleteDiaIn').removeClass('hidden');
                 }
                 verDia(id, bd);
 

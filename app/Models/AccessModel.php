@@ -18,6 +18,7 @@ class AccessModel extends Model{
                 EMP.emp_Estatus AS `status`,
                 EMP.emp_Estado AS `estado`,
                 EMP.emp_SucursalID AS `sucursal`,
+                EMP.emp_FechaIngreso as `fechaIngreso`,
                 'usuario' AS `type`,
                 EMP.emp_Estatus AS `status`,
                 PUE.pue_Nombre AS `nombrePuesto`,

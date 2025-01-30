@@ -132,7 +132,6 @@ $(document).ready(function () {
             text: '¿Esta seguro de declinar las vacaciones?',
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#f72800",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             html: '<textarea id="txtObsDeclinar" placeholder="Escriba el motivo" ' +

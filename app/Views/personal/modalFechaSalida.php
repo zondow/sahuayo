@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title" id="tituloModal">Fecha de salida</h4>
+                <h4 class="modal-title" id="tituloModal">Fecha de salida</h5>
             </div>
             <form id="formColaborador" method="post" autocomplete="off">
                 <div class="modal-body">
@@ -17,9 +17,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light waves-effect" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success bntGuardarFecha">Guardar</button>
+                <div class="modal-footer text-right">
+                    <button type="button" class="btn btn-round btn-lightlu" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-round btn-success bntGuardarFecha">Guardar</button>
                 </div>
             </form>
         </div>
