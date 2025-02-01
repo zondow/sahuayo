@@ -1736,7 +1736,7 @@ class PDF extends BaseController
     } // end trabajoTDeterminado
 
     //Diego -> PDF reporte trabajo indeterminado
-    public function trabajoTIndeterminado($contratoID, $empleadoID)
+    public function trabajoTIndeterminado_old($contratoID, $empleadoID)
     {
         $model = new PdfModel();
         $contrato = $model->getDatosContratos(encryptDecrypt('decrypt', $contratoID));
@@ -4922,9 +4922,27 @@ class PDF extends BaseController
         $yLinea = $pdf->GetY() + $lineHeight - 0.5; // Coordenada Y de la línea
         $pdf->Line($xInicial, $yLinea, $xInicial + $width, $yLinea);
 
-
-
-
+         # Actividad principal #
+         $pdf->SetXY(29, 118);
+         $actividad = strtoupper(utf8_decode($contrato['con_Actividad'])).'.';
+         $width = 270;
+         $lineHeight = 4.7;
+         $textWidth = $pdf->GetStringWidth($actividad);
+ 
+         // Calcular cuántos puntos agregar para llenar el ancho
+         if ($textWidth < $width) {
+             $remainingWidth = $width - $textWidth;
+             $dotWidth = $pdf->GetStringWidth('.');
+             
+             // Cantidad de puntos necesarios
+             $numDots = floor($remainingWidth / $dotWidth);
+             
+             // Agregar los puntos al final del texto
+             $actividad .= str_repeat('.', $numDots);
+         }
+ 
+         $pdf->MultiCell(160, $lineHeight, $actividad, 0, 'J');
+ 
 
         /*Pagina 2*/
         $pdf->AddPage("P", "Letter");
@@ -4999,6 +5017,261 @@ class PDF extends BaseController
 
         //Output
         $pdf->output('I', 'Contrato Determinado.pdf');
+        exit();
+    } // end trabajoTDeterminado
+
+    //Diego -> PDF reporte trabajo determinado
+    public function trabajoTIndeterminado($contratoID, $empleadoID)
+    {
+        $contrato = $this->PdfModel->getDatosContratos(encryptDecrypt('decrypt', $contratoID));
+        $empleado = $this->PdfModel->getDatosEmpleado(encryptDecrypt('decrypt', $empleadoID));
+        $empleadoNombreLargo = $this->db->query('SELECT emp_Nombre FROM empleado WHERE emp_Estatus = 1 ORDER BY CHAR_LENGTH(emp_Nombre) DESC LIMIT 1')->getRowArray()['emp_Nombre'];
+        $puestoLargo = $this->db->query('SELECT pue_Nombre FROM puesto WHERE pue_Estatus = 1 ORDER BY CHAR_LENGTH(pue_Nombre) DESC LIMIT 1')->getRowArray()['pue_Nombre'];
+
+        //Create Document
+        $pdf = new Fpdi();
+        /*Pagina 1*/
+        $pdf->AddPage("P", "Letter");
+        $pdf->setSourceFile(FCPATH . "/assets/formatos/contratos/ContratoTrabajoTiempoIndeterminado.pdf");
+        $template = $pdf->importPage(1);
+        $pdf->useTemplate($template, -1, 0, 220, 280);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->SetXY(30, 91); // Estableces la posición inicial
+
+        ##Nombre##
+        // Generar la línea de texto con puntos suspensivos si es necesario
+        $linea = 'C. ' . $empleado['emp_Nombre'];
+        $pdf->SetFont('Arial', 'B', 11);
+
+        // Calcular el ancho actual y el ancho máximo
+        $widthActual = $pdf->GetStringWidth(utf8_decode($linea));
+        $widthMaximo = 160;
+
+        // Si el ancho actual es menor que el máximo, añadimos puntos
+        if ($widthActual < $widthMaximo) {
+            // Calcular la cantidad de puntos suspensivos necesarios
+            $puntos = '...';
+            while ($pdf->GetStringWidth(utf8_decode($linea . $puntos)) < $widthMaximo) {
+                $puntos .= '.';
+            }
+            // Ajustar los puntos al tamaño exacto
+            while ($pdf->GetStringWidth(utf8_decode($linea . $puntos)) > $widthMaximo) {
+                $puntos = substr($puntos, 0, -1);
+            }
+            $linea .= $puntos;
+        }
+
+        // Determinar posición inicial para dibujar la línea
+        $xInicial = $pdf->GetX();
+        $yInicial = $pdf->GetY();
+        $widthLinea = $pdf->GetStringWidth(utf8_decode($linea));
+
+        // Imprimir el texto
+        $pdf->Cell($widthLinea + 2, 4.7, utf8_decode($linea), 0, 1, 'J');
+
+        // Dibujar la línea subrayada
+        $pdf->SetLineWidth(0.5); // Grosor de la línea
+        $pdf->Line($xInicial, $yInicial + 4.7, $xInicial + $widthLinea, $yInicial + 4.7);
+
+        ## Domicilio ##
+        $domicilio = strtoupper($empleado['emp_Direccion']) . " código postal " . $empleado['emp_CodigoPostal'] . " de la ciudad de  " . strtoupper($empleado['emp_Municipio']) . ", " . strtoupper($empleado['emp_EntidadFederativa']);
+        $pdf->SetXY(29, 100.5);
+
+        // Coordenadas iniciales
+        $xInicial = $pdf->GetX();
+        $yInicial = $pdf->GetY();
+        $width = 160; // Ancho del MultiCell
+        $lineHeight = 4.5; // Altura de cada línea
+
+        // Dividir el texto en líneas manualmente
+        $lines = $this->wordWrapText($pdf, utf8_decode($domicilio), $width);
+
+        // Dibujar líneas subrayadas y rellenar con puntos
+        foreach ($lines as $index => $line) {
+            // Calcular ancho actual de la línea
+            $lineWidth = $pdf->GetStringWidth($line);
+
+            // Agregar puntos si queda espacio
+            while ($lineWidth < $width) {
+                $line .= '.';
+                $lineWidth = $pdf->GetStringWidth($line);
+            }
+
+            // Ajustar el exceso de puntos al ancho exacto
+            while ($lineWidth > $width) {
+                $line = substr($line, 0, -1); // Quitar el último carácter
+                $lineWidth = $pdf->GetStringWidth($line);
+            }
+
+            // Imprimir la línea con puntos
+            $pdf->SetXY($xInicial, $yInicial + ($index * $lineHeight));
+            $pdf->Cell($width, $lineHeight, $line, 0, 1, 'J');
+
+            // Dibujar subrayado
+            $yLinea = $yInicial + ($index * $lineHeight) + $lineHeight - 0.5;
+            $pdf->Line($xInicial, $yLinea, $xInicial + $width, $yLinea);
+        }
+
+        ## Puesto ##
+        // Configuración inicial
+        $pdf->SetXY(112, 109.5);
+        $width = 75; // Ancho de la celda
+        $lineHeight = 5; // Altura de la celda
+        $puesto = utf8_decode($empleado['pue_Nombre']); // Texto del puesto
+
+        // Calcular el ancho actual del texto
+        $textWidth = $pdf->GetStringWidth($puesto);
+
+        // Agregar puntos para rellenar si el texto no llena todo el ancho
+        if ($textWidth < $width) {
+            while ($pdf->GetStringWidth($puesto . '...') <= $width) {
+                $puesto .= '.';
+            }
+            // Ajustar si se pasa del ancho permitido
+            while ($pdf->GetStringWidth($puesto) > $width) {
+                $puesto = substr($puesto, 0, -1); // Remover último carácter
+            }
+        }
+
+        // Dibujar el texto con puntos
+        $pdf->Cell($width, $lineHeight, $puesto, 0, 0, 'J');
+
+        // Subrayar la celda
+        $xInicial = $pdf->GetX() - $width; // Coordenada inicial X de la celda
+        $yLinea = $pdf->GetY() + $lineHeight - 0.5; // Coordenada Y de la línea
+        $pdf->Line($xInicial, $yLinea, $xInicial + $width, $yLinea);
+
+        # Actividad principal #
+        $pdf->SetXY(29, 124);
+        $actividad = strtoupper(utf8_decode($contrato['con_Actividad'])).'.';
+        $width = 450;
+        $lineHeight = 5;
+        $textWidth = $pdf->GetStringWidth($actividad);
+
+        // Calcular cuántos puntos agregar para llenar el ancho
+        if ($textWidth < $width) {
+            $remainingWidth = $width - $textWidth;
+            $dotWidth = $pdf->GetStringWidth('.');
+            
+            // Cantidad de puntos necesarios
+            $numDots = floor($remainingWidth / $dotWidth);
+            
+            // Agregar los puntos al final del texto
+            $actividad .= str_repeat('.', $numDots);
+        }
+
+        $pdf->MultiCell(160, $lineHeight, $actividad, 0, 'J');
+
+
+
+
+        /*Pagina 2*/
+        $pdf->AddPage("P", "Letter");
+        $pdf->setSourceFile(FCPATH . "/assets/formatos/contratos/ContratoTrabajoTiempoIndeterminado.pdf");
+        $template = $pdf->importPage(2);
+        $pdf->useTemplate($template, -1, 0, 220, 280);
+        $pdf->SetFont('Arial', 'B', 11);
+
+        $width = 50;
+        $pdf->SetXY(80, 82.7);
+        $pdf->Cell($width, 4.7, utf8_decode(longDate($empleado['emp_FechaIngreso'],' de ')), 0, 0, 'C');
+        $xInicial = $pdf->GetX() - $width; // Coordenada inicial X de la celda
+        $yLinea = $pdf->GetY() + $lineHeight - 0.5; // Coordenada Y de la línea
+        $pdf->Line($xInicial, $yLinea, $xInicial + $width, $yLinea);
+
+        ## Salario ##
+        // Salario deeterminado
+        $pdf->SetXY(29, 91.5);
+        $quincenal = '$' . number_format($contrato['con_SalarioDeterminado']) . ' ' . num_letras($contrato['con_SalarioDeterminado'], 'MN');
+
+        // Calcular el ancho actual del texto
+        $widthActual = $pdf->GetStringWidth(utf8_decode($quincenal));
+        $widthMaximo = 160;
+
+        // Añadir puntos suspensivos hasta completar el ancho máximo
+        if ($widthActual < $widthMaximo) {
+            $puntos = '...';
+            while ($pdf->GetStringWidth(utf8_decode($quincenal . $puntos)) < $widthMaximo) {
+                $puntos .= '.';
+            }
+            // Ajustar los puntos al tamaño exacto
+            while ($pdf->GetStringWidth(utf8_decode($quincenal . $puntos)) > $widthMaximo) {
+                $puntos = substr($puntos, 0, -1);
+            }
+            $quincenal .= $puntos;
+        }
+        // Dibujar el texto sin subrayado
+        $pdf->Cell($widthMaximo, 4.7, utf8_decode($quincenal), 0, 0, 'J');
+
+        // Salario indeterminado
+        $pdf->SetXY(29, 100.5);
+        $quincenal = '$' . number_format($contrato['con_SalarioIndeterminado']) . ' ' . num_letras($contrato['con_SalarioIndeterminado'], 'MN');
+
+        // Calcular el ancho actual del texto
+        $widthActual = $pdf->GetStringWidth(utf8_decode($quincenal));
+        $widthMaximo = 160;
+
+        // Añadir puntos suspensivos hasta completar el ancho máximo
+        if ($widthActual < $widthMaximo) {
+            $puntos = '...';
+            while ($pdf->GetStringWidth(utf8_decode($quincenal . $puntos)) < $widthMaximo) {
+                $puntos .= '.';
+            }
+            // Ajustar los puntos al tamaño exacto
+            while ($pdf->GetStringWidth(utf8_decode($quincenal . $puntos)) > $widthMaximo) {
+                $puntos = substr($puntos, 0, -1);
+            }
+            $quincenal .= $puntos;
+        }
+
+        // Dibujar el texto sin subrayado
+        $pdf->Cell($widthMaximo, 4.7, utf8_decode($quincenal), 0, 0, 'J');
+
+        // Salario vales
+        $pdf->SetXY(29, 109);
+        $quincenal = '$' . number_format($contrato['con_Vales']) . ' ' . num_letras($contrato['con_Vales'], 'MN');
+
+        // Calcular el ancho actual del texto
+        $widthActual = $pdf->GetStringWidth(utf8_decode($quincenal));
+        $widthMaximo = 160;
+
+        // Añadir puntos suspensivos hasta completar el ancho máximo
+        if ($widthActual < $widthMaximo) {
+            $puntos = '...';
+            while ($pdf->GetStringWidth(utf8_decode($quincenal . $puntos)) < $widthMaximo) {
+                $puntos .= '.';
+            }
+            // Ajustar los puntos al tamaño exacto
+            while ($pdf->GetStringWidth(utf8_decode($quincenal . $puntos)) > $widthMaximo) {
+                $puntos = substr($puntos, 0, -1);
+            }
+            $quincenal .= $puntos;
+        }
+
+        // Dibujar el texto sin subrayado
+        $pdf->Cell($widthMaximo, 4.7, utf8_decode($quincenal), 0, 0, 'J');
+
+
+
+        /*Pagina 3*/
+        $pdf->AddPage("P", "Letter");
+        $pdf->setSourceFile(FCPATH . "/assets/formatos/contratos/ContratoTrabajoTiempoIndeterminado.pdf");
+        $template = $pdf->importPage(3);
+        $pdf->useTemplate($template, -1, 0, 220, 280);
+        $pdf->SetFont('Arial', 'B', 11);
+
+        ## Fecha ##
+        $pdf->SetXY(107, 142.7);
+        $pdf->MultiCell(60, 4.7, utf8_decode(strtoupper(longDate($contrato['con_Fecha'],' de '))), 0, 'L');
+
+
+        ## Nombre empleado ##
+        $linea = 'C. ' . $empleado['emp_Nombre'];
+        $pdf->SetXY(145, 186);
+        $pdf->MultiCell(30, 4.7, utf8_decode($linea), 0, 'C');
+
+        //Output
+        $pdf->output('I', 'Contrato Indeterminado.pdf');
         exit();
     } // end trabajoTDeterminado
 
