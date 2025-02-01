@@ -2246,3 +2246,19 @@ function mensajeBienvenida()
         'genero' => ($infoEmpleado['emp_Sexo'] == 'Femenino') ? 'Bienvenida' : 'Bienvenido'
     ];
     }
+
+    // DEVUELVE EL ULTIMO QUERY REALIZADO A LA BASE DE DATOS
+	use Config\Database;
+
+function debugsql() {
+    $db = Database::connect();
+    $query = $db->getLastQuery(); // Obtener la última consulta ejecutada
+
+    $calledFrom = debug_backtrace();
+    echo '<strong>' . $calledFrom[0]['file'] . '</strong>';
+    echo ' (line <strong>' . $calledFrom[0]['line'] . '</strong>)';
+    echo "\n<pre style=\"background: #f0f0f0; padding: 1em;\">\n";
+    echo print_r($query, true) . "\n</pre>\n";
+    exit();
+}
+

@@ -342,6 +342,7 @@ class Evaluaciones extends BaseController
  
         //Obtener los datos 
         $data['plantilla']=$this->EvaluacionesModel->getInfoPlantillaByID(encryptDecrypt('decrypt',$plantillaID));
+        $data['plantillaID']=$plantillaID;
         $data['sucursales']=$this->BaseModel->getSucursales();
         $data['departamentos']=$this->BaseModel->getDepartamentos();
         $data['puestos']=$this->BaseModel->getPuestos();
@@ -930,7 +931,8 @@ class Evaluaciones extends BaseController
     public function ajax_getEvaluadosCuestionario(){
         $post = $this->request->getPost();
         $cuestionarioID = $post['cuestionarioID'];  
-        $evaluados = $this->EvaluacionesModel->getEvaluadosByCuestionarioID($cuestionarioID);
+        $plantillaID = decrypt($post['plantillaID']);  
+        $evaluados = $this->EvaluacionesModel->getEvaluadosByCuestionarioID($cuestionarioID,$plantillaID);
 
         return $this->response->setJSON(['data' => $evaluados]);
     }
@@ -962,7 +964,51 @@ class Evaluaciones extends BaseController
         }
     }
 
+    public function ajax_getAsigNivelEvaluadoEvaluador(){
+        $post = $this->request->getPost();
+        $existe = consultar_dato('evaluadorcuestionario', '*', 'eva_EmpleadoID ='. $post['evaluadoID']. ' AND eva_PlantillaID = '. decrypt($post['plantillaID']));
+        $existe['eva_Evaluadores'] = !empty($existe['eva_Evaluadores']) ? json_decode($existe['eva_Evaluadores']) : null;
+        return $this->response->setJSON(['data' => $existe]);
+    }
+
+    public function ajax_guardarNivelEvaluacionEvaluadoEvaluador() {
+        $post = $this->request->getPost();
     
+        $plantillaID = decrypt($post['plantillaID']);
+        $existe = consultar_dato('evaluadorcuestionario', 'eva_EvaluadorCuestionarioID','eva_NivelEvaluacion = "'.$post['nivelEvaluacion'].'" AND eva_CuestionarioID = '.$post['cuestionarioID']. ' AND eva_EmpleadoID ='. $post['evaluadoID']. ' AND eva_PlantillaID = '. $plantillaID);
+        $data = [
+            'eva_PlantillaID' => $plantillaID,
+            'eva_EmpleadoID' => $post['evaluadoID'],
+            'eva_CuestionarioID' => $post['cuestionarioID'],
+            'eva_Evaluadores' => json_encode(!empty($post['empleadoID']) && is_array($post['empleadoID']) ? array_map('decrypt', $post['empleadoID']) : []),
+            'eva_NivelEvaluacion' => $post['nivelEvaluacion'],
+            'eva_UsuarioID' => session('id'),
+            'eva_Fecha' => date('Y-m-d')
+        ];
+    
+        $r = $existe ? update('evaluadorcuestionario', $data, ['eva_EvaluadorCuestionarioID' => $existe]) : insert('evaluadorcuestionario', $data);
+        return $this->response->setJSON(['success' => (bool) $r]);
+    }
+
+    public function ajax_getInfoEvaluadores(){
+        $post = $this->request->getPost();
+        return $this->response->setJSON(['data' => $this->EvaluacionesModel->getEvaluadores($post['cuestionarioID'],$post['evaluadoID'],decrypt($post['plantillaID']))]);
+    }
+    
+    public function ajax_getEvaluadosEvaluadoresCuestionario(){
+        $post = $this->request->getPost();
+        $cuestionarioID = $post['cuestionarioID'];  
+        $plantillaID = decrypt($post['plantillaID']);  
+        $evaluados = $this->EvaluacionesModel->getEvaluadosEvaluadoresByCuestionarioID($cuestionarioID,$plantillaID);
+
+        return $this->response->setJSON(['data' => $evaluados]);
+    }
+
+    public function ajax_eliminarEvaluador(){
+        $post = $this->request->getPost();
+        $evaluadorGrupo = $this->EvaluacionesModel->eliminarEvaluadorGrupo($post);
+        return $this->response->setJSON(['success' => $evaluadorGrupo]);
+    }
 
     
 }
