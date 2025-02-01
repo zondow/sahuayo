@@ -123,3 +123,24 @@ CREATE TABLE IF NOT EXISTS `preguntacuestionario` (
 INSERT INTO `preguntacuestionario` (`pre_PreguntaID`, `pre_CuestionarioID`, `pre_GrupoID`, `pre_Texto`, `pre_TipoRespuesta`, `pre_Obligatoria`, `pre_Ponderacion`, `pre_UsuarioID`, `pre_Fecha`, `pre_Estatus`) VALUES
 	(2, 1, 1, 'Pregunta 1', 'seleccion', 1, 0, 105, '2024-11-21', 1),
 	(3, 1, 2, 'Pregunta 2', 'abierta', 1, 0, 105, '2024-11-21', 1);
+
+
+-- Volcando estructura para tabla sahuayo_prueba.respuestacuestionario
+CREATE TABLE IF NOT EXISTS `respuestacuestionario` (
+  `res_RespuestaID` int(11) NOT NULL AUTO_INCREMENT,
+  `res_CuestionarioID` int(11) NOT NULL DEFAULT 0,
+  `res_PreguntaID` int(11) NOT NULL DEFAULT 0,
+  `res_Texto` text NOT NULL,
+  `res_UsuarioID` int(11) NOT NULL DEFAULT 0,
+  `res_Fecha` date NOT NULL,
+  `res_Estatus` tinyint(4) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`res_RespuestaID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla sahuayo_prueba.respuestacuestionario: ~4 rows (aproximadamente)
+INSERT INTO `respuestacuestionario` (`res_RespuestaID`, `res_CuestionarioID`, `res_PreguntaID`, `res_Texto`, `res_UsuarioID`, `res_Fecha`, `res_Estatus`) VALUES
+	(2, 1, 2, 'Respuesta 1', 105, '0000-00-00', 1),
+	(3, 1, 2, 'Respuesta 2', 105, '0000-00-00', 1),
+	(4, 1, 2, 'Respuesta 3', 105, '0000-00-00', 1),
+	(5, 1, 2, 'Respuesta 4', 105, '0000-00-00', 1),
+	(6, 1, 3, '', 105, '0000-00-00', 1);
