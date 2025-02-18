@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+
 defined('FCPATH') or exit('No direct script access allowed');
 
 
@@ -29,6 +31,8 @@ class Evaluaciones extends BaseController
         );
 
         load_plugins(['select2', 'datatables_buttons', 'daterangepicker', 'sweetalert2'], $data);
+
+        $data['evaluaciones'] = $this->EvaluacionesModel->getEvaluacionesCreadas();
 
         //Styles
         //Scripts
@@ -355,13 +359,55 @@ class Evaluaciones extends BaseController
         //custom scripts
         //$data['scripts'][] = base_url('assets/js/evaluaciones/addEvaluacionDesempeno.js');
      
-
-
         //Cargar vistas
         echo view('htdocs/header', $data);
         echo view('evaluaciones/addEvaluacionDesempeno',$data);
         echo view('htdocs/footer');
 
+    }
+
+    public function misEvaluaciones(){
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Mis evaluaciones';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "active"),
+            array("titulo" => 'Mis evaluaciones ', "link" => base_url('Evaluaciones/misEvaluaciones'), "class" => "active"),
+        );
+
+        //data
+        $data['evaluacionesActivas'] = $this->EvaluacionesModel->getEvaluacionesActivas();
+
+        //cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('evaluaciones/misEvaluaciones');
+        echo view('htdocs/footer');
+    }
+
+    public function evaluacion($plantillaID){
+        validarSesion(self::LOGIN_TYPE);
+        $data['title'] = 'Mi evaluacion';
+        $data['breadcrumb'] = array(
+            array("titulo" => 'Inicio', "link" => base_url('Usuario/index'), "class" => "active"),
+            array("titulo" => 'Mis evaluaciones ', "link" => base_url('Evaluaciones/misEvaluaciones'), "class" => "active"),
+            array("titulo" => 'Mis evaluacion ', "link" => base_url('Evaluaciones/evaluacion/'.$plantillaID), "class" => "active"),
+        );
+        
+        //data
+        $plantillaEvaluado = explode(',',decrypt($plantillaID));
+        $data['plantillaID'] = $plantillaEvaluado[0];
+        $data['evaluadoID'] = $plantillaEvaluado[1];
+        $data['preguntas'] = $this->EvaluacionesModel->getPreguntasRespuestasByPlantillaID($data['plantillaID']);
+
+        //plugins
+        load_plugins(['select2','barrating','rangeslider'],$data);
+        //Scripts
+        $data['scripts'][] = 'https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.9.6/lottie.min.js';
+
+
+        //cargar vistas
+        echo view('htdocs/header', $data);
+        echo view('evaluaciones/evaluacion');
+        echo view('htdocs/footer');
     }
 
     /*
@@ -547,7 +593,27 @@ class Evaluaciones extends BaseController
 
         return "";
     }
-
+    public function saveEvaluacion() {
+        $post = $this->request->getPost();
+        $ids = array_map('decrypt', array_intersect_key($post, array_flip(['evaluadoID', 'cuestionarioID', 'plantillaID'])));
+        $post = array_diff_key($post, array_flip(['evaluadoID', 'cuestionarioID', 'plantillaID']));    
+        $result = insert('respuestaevaluador', [
+            'res_FechaRegistro'  => date('Y-m-d H:i:s'),
+            'res_EvaluadorID'    => session('id'),
+            'res_EvaluadoID'     => $ids['evaluadoID'],
+            'res_CuestionarioID' => $ids['cuestionarioID'],
+            'res_PlantillaID'    => $ids['plantillaID'],
+            'res_Respuestas'     => json_encode($post)
+        ]);
+    
+        $this->session->setFlashdata([
+            'response' => $result ? 'success' : 'error',
+            'txttoastr' => $result ? '¡Se registró tu evaluación con éxito!' : '¡Ocurrió un error al registrar tu evaluación!'
+        ]);
+    
+        return redirect()->to($result ? base_url('Evaluaciones/misEvaluaciones') : $_SERVER['HTTP_REFERER']);
+    }
+    
 
     /*
                    _         __   __
@@ -564,12 +630,11 @@ class Evaluaciones extends BaseController
         $periodos = $this->EvaluacionesModel->getPeriodosEvaluacion();
 
         foreach ($periodos as &$periodo) {
-            $periodo['eva_EvaluacionID'] = $periodo['eva_EvaluacionID'];
-            $periodo['eva_Tipo'] = $periodo['eva_Tipo'];
+            $periodo['eva_Tipo'] .= !empty($periodo['pla_Nombre']) ? " ({$periodo['pla_Nombre']})" : '';
             $periodo['eva_FechaInicio'] = longDate($periodo['eva_FechaInicio'], ' de ');
             $periodo['eva_FechaFin'] = longDate($periodo['eva_FechaFin'], ' de ');
             $periodo['eva_Estatus'] = (int)$periodo['eva_Estatus'];
-            $periodo['estado'] = (int)$periodo['eva_Estatus'] === 1 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Baja</span>';
+            $periodo['estado'] = $periodo['eva_Estatus'] === 1 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Baja</span>';
         }
 
         echo json_encode(array("data" => $periodos));
@@ -589,6 +654,7 @@ class Evaluaciones extends BaseController
         } else {
             $data_bd = [
                 'eva_Tipo' => $post['eva_Tipo'],
+                'eva_PlantillaID' => $post['eva_PlantillaID'],
                 'eva_FechaInicio' => $post['fInicio'],
                 'eva_FechaFin' => $post['fFin'],
                 'eva_FechaRegistro' => date('Y-m-d'),

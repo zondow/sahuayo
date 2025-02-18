@@ -212,10 +212,18 @@ function load_barrating(&$data)
     $data['scripts'][] = base_url('assets/libs/barrating/cropper.min.js');
 }
 
-function load_jquery_knob(&$data){
+function load_jquery_knob(&$data)
+{
     $data['scripts'][] = base_url('assets/libs/jquery-knob/jquery.knob.min.js');
 }
 
-function load_chart_js(&$data){
+function load_chart_js(&$data)
+{
     $data['scripts'][] = base_url('assets/libs/chart-js/Chart.bundle.min.js');
+}
+
+function load_rangeslider(&$data)
+{
+    $data['styles'][] = base_url('assets/libs/ion-rangeslider/ion.rangeSlider.css');
+    $data['scripts'][] = base_url('assets/libs/ion-rangeslider/ion.rangeSlider.min.js');
 }

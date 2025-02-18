@@ -2,6 +2,25 @@
     .br-wrapper {
         margin-left: 40px,  !important;
     }
+
+    .br-widget a {
+        position: relative;
+    }
+
+    .br-widget a:hover::after {
+        content: attr(data-rating-text);
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 5px 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 10;
+    }
 </style>
 <?php
 if ($permitir) {

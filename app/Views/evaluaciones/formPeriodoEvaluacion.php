@@ -41,10 +41,24 @@
                             <label>* Tipo de evaluación</label>
                             <select id="eva_Tipo" name="eva_Tipo" class="select2">
                                 <option value="0" hidden>Seleccione</option>
-                                <option value="Desempeño">Desempeño</option>
-                                <option value="Competencias">Competencias</option>
+                                <!--<option value="Desempeño">Desempeño</option>
+                                <option value="Competencias">Competencias</option>-->
+                                <option value="Otras">Otras</option>
                                 <option value="Clima Laboral">Clima Laboral</option>
                                 <option value="Nom035">Nom 035</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="evaluacionesCreadas" class="row">
+                        <div class="form-group col-md-12" style="padding-bottom: 1%">
+                            <label>* Selecciona la evaluación</label>
+                            <select id="eva_PlantillaID" name="eva_PlantillaID" class="select2">
+                                <option value="0" hidden>Seleccione</option>
+                                <?php foreach ($evaluaciones as $evaluacion) : ?>
+                                    <option value="<?= $evaluacion['pla_PlantillaID']; ?>">
+                                        <?= $evaluacion['pla_Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>

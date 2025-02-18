@@ -143,10 +143,10 @@ if (showMenu($incidencias)) : ?>
 
     </ul>
 </li>
-<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-assignment-check"></i><span>Desempeño</span> </a>
+<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-assignment-check"></i><span>Evaluaciones</span> </a>
     <ul class="ml-menu">
         <li><a href="<?= base_url("Evaluaciones/plantillasDesempeño") ?>">Plantillas</a></li>
-
+        <li><a href="<?= base_url("Evaluaciones/misEvaluaciones") ?>">Realizar evaluaciones</a></li>
     </ul>
 </li>
 <li class="header">Reclutamiento</li>

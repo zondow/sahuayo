@@ -10,7 +10,7 @@ class EvaluacionesModel extends Model
     //Lia->Trae los periodos de evaluacion
     public function getPeriodosEvaluacion()
     {
-        return $this->db->query("SELECT E.* FROM evaluacion E ORDER BY eva_FechaInicio DESC")->getResultArray();
+        return $this->db->query("SELECT E.*,PC.pla_Nombre FROM evaluacion E LEFT JOIN plantillacuestionario PC ON PC.pla_PlantillaID = E.eva_PlantillaID ORDER BY eva_FechaInicio DESC")->getResultArray();
     }
 
     public function getEvaluacionExistente($tipo, $fechaInicio, $fechaFin)
@@ -535,7 +535,7 @@ class EvaluacionesModel extends Model
         foreach ($colaboradores as &$colaborador) {
             $colaborador['emp_Foto'] = fotoPerfil(encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID']));
             $colaborador['evaluadores'] = array();
-            $evaluadores = $this->db->query("SELECT eva_NivelEvaluacion, eva_Evaluadores FROM evaluadorcuestionario WHERE eva_EmpleadoID = ? AND eva_CuestionarioID = ? AND eva_PlantillaID = ?",[$colaborador['emp_EmpleadoID'], $cuestionarioID, $plantillaID])->getResultArray();
+            $evaluadores = $this->db->query("SELECT eva_NivelEvaluacion, eva_Evaluadores FROM evaluadorcuestionario WHERE eva_EmpleadoID = ? AND eva_CuestionarioID = ? AND eva_PlantillaID = ?", [$colaborador['emp_EmpleadoID'], $cuestionarioID, $plantillaID])->getResultArray();
             $badges = [];
             foreach ($evaluadores as $evaluadorNivel) {
                 if (!empty($evaluadorNivel['eva_Evaluadores'])) {
@@ -580,34 +580,86 @@ class EvaluacionesModel extends Model
         return $colaboradores;
     }
 
-    public function eliminarEvaluadorGrupo($data) {
+    public function eliminarEvaluadorGrupo($data)
+    {
         $query = $this->db->query(
             "SELECT eva_Evaluadores FROM evaluadorcuestionario 
              WHERE eva_EmpleadoID = ? AND eva_PlantillaID = ? 
-             AND eva_CuestionarioID = ? AND eva_NivelEvaluacion = ?", 
+             AND eva_CuestionarioID = ? AND eva_NivelEvaluacion = ?",
             [$data['evaluadoID'], $data['plantillaID'], $data['cuestionarioID'], $data['nivel']]
         )->getRowArray();
-    
+
         if (!$query || empty($query['eva_Evaluadores'])) return false; // Validar existencia y contenido
-    
+
         // Decodificar JSON, eliminar el evaluador y reindexar
-        $evaluadores = array_values(array_filter(json_decode($query['eva_Evaluadores'], true) ?: [], 
-            fn($id) => $id != $data['evaluadorID']
+        $evaluadores = array_values(array_filter(
+            json_decode($query['eva_Evaluadores'], true) ?: [],
+            fn ($id) => $id != $data['evaluadorID']
         ));
-    
+
         // Si el array está vacío, guardar null en lugar de []
         $nuevo_json = empty($evaluadores) ? null : json_encode($evaluadores);
-    
+
         return update('evaluadorcuestionario', ['eva_Evaluadores' => $nuevo_json], [
-            'eva_EmpleadoID' => $data['evaluadoID'], 
-            'eva_PlantillaID' => $data['plantillaID'], 
-            'eva_CuestionarioID' => $data['cuestionarioID'], 
+            'eva_EmpleadoID' => $data['evaluadoID'],
+            'eva_PlantillaID' => $data['plantillaID'],
+            'eva_CuestionarioID' => $data['cuestionarioID'],
             'eva_NivelEvaluacion' => $data['nivel']
         ]);
     }
-    
-    
-    
+
+    public function getEvaluacionesCreadas()
+    {
+        return $this->db->query("SELECT pla_PlantillaID, pla_Nombre FROM plantillacuestionario WHERE pla_Estatus = 1")->getResultArray();
+    }
+
+    public function getEvaluacionesActivas()
+    {
+        $empleadoID = (string)session('id');
+        $empleadoID = (string)108;
+        $fechaActual = date('Y-m-d');
+
+        $evaluaciones = $this->db->query('
+            SELECT 
+                E.eva_FechaInicio as fechaInicio, 
+                E.eva_FechaFin as fechaFin, 
+                PC.pla_PlantillaID as plantillaID, 
+                PC.pla_Nombre as nombre,
+                PC.pla_Tipo as tipo,
+                EC.eva_NivelEvaluacion as nivelEvaluacion,
+                EC.eva_EmpleadoID,
+                EVALUADO.emp_Nombre as nombreEvaluado
+            FROM evaluacion E
+            JOIN plantillacuestionario PC ON E.eva_PlantillaID = PC.pla_PlantillaID
+            JOIN evaluadorcuestionario EC ON EC.eva_PlantillaID = PC.pla_PlantillaID
+            JOIN empleado EVALUADO ON EVALUADO.emp_EmpleadoID = EC.eva_EmpleadoID      
+            WHERE 
+                ? BETWEEN E.eva_FechaInicio AND E.eva_FechaFin 
+                AND E.eva_Estatus = 1 
+                AND E.eva_Tipo = "Otras" 
+                AND JSON_CONTAINS(EC.eva_Evaluadores, JSON_QUOTE(?))
+        ', [$fechaActual, $empleadoID])->getResultArray();
+        foreach($evaluaciones as &$evaluacion){
+            $evaluacion['res_RespuestaEvaluadorID'] = $this->db->query('SELECT res_RespuestaEvaluadorID FROM respuestaevaluador WHERE res_EvaluadorID = ? AND res_EvaluadoID=? AND res_PlantillaID =?',[$empleadoID,$evaluacion['eva_EmpleadoID'],$evaluacion['plantillaID']])->getRowArray() ? true : false;
+        }
+        return $evaluaciones;
+    }
+
+    public function getPreguntasRespuestasByPlantillaID($plantillaID)
+    {
+        $preguntas = $this->db->query('SELECT PC.*,GC.gru_Titulo 
+        FROM preguntacuestionario PC 
+        JOIN grupocuestionario GC ON PC.pre_GrupoID = GC.gru_GrupoID 
+        WHERE PC.pre_CuestionarioID = ? AND PC.pre_Estatus=1 ORDER BY PC.pre_GrupoID ASC', [$plantillaID])->getResultArray();
+        foreach ($preguntas as &$preg) {
+            unset($preg['pre_Fecha'], $preg['pre_UsuarioID'], $preg['pre_Estatus']);
+            $preg['respuestas'] = $this->db->query('SELECT res_RespuestaID, res_Texto FROM respuestacuestionario WHERE res_PreguntaID = ? AND res_Estatus=1', $preg['pre_PreguntaID'])->getResultArray();
+        }
+        return $preguntas;
+    }
+
+
+
 
 
 

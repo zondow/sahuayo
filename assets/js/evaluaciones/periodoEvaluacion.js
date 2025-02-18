@@ -6,7 +6,17 @@ $(document).ready(function (e) {
     var fInicio = $("#fInicio");
     var fFin = $("#fFin");
     var btnSave = $("#btnSavePeriodo");
+    // Ocultar el select al cargar la página
+    $("#evaluacionesCreadas").hide();
 
+    $("#eva_Tipo").change(function () {
+        if ($(this).val() === "Otras") {
+            $("#evaluacionesCreadas").fadeIn(); // Mostrar con animación
+        } else {
+            $("#evaluacionesCreadas").fadeOut(); // Ocultar con animación
+        }
+    });
+    
 
     $("body").on("click", ".modalPeriodoEvaluacion", function (evt) {
         evt.preventDefault();
@@ -88,7 +98,6 @@ $(document).ready(function (e) {
                 });
             }
         });
-
     });
 
 

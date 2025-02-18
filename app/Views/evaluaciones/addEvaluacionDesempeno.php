@@ -756,11 +756,6 @@
                                     data-id="${row.eva_CuestionarioID}" data-empleado="${row.emp_EmpleadoID}" data-emp="${row.emp_Nombre}">
                                     <i class="zmdi zmdi-plus"></i>
                                 </button>
-                                ${row.evaluador == 1 ? `
-                                    <button class="btn btn-warning btn-icon btn-icon-mini btn-round btn-ver-evaluador" title="Ver Evaluador(es)" 
-                                        data-id="${row.eva_CuestionarioID}" data-empleado="${row.emp_EmpleadoID}">
-                                        <i class="zmdi zmdi-pin-account"></i>
-                                    </button>` : ''}
                             `;
 
                     }
