@@ -218,8 +218,10 @@ class Personal extends BaseController
             array("titulo" => 'Organigrama', "link" => base_url('Personal/organigrama'), "class" => "active"),
         );
 
-        $data['scripts'][] = base_url('assets/plugins/html2pdf/html2pdf.bundle.min.js');
-        $data['scripts'][] = base_url('assets/js/personal/organigrama.js');
+       
+        $data['scripts'][] = base_url('assets/plugins/orgchart/orgchart.js');
+        //$data['scripts'][] = base_url('assets/libs/spinkit/spinkit.css');
+        $data['scripts'][] = base_url('assets/js/personal/organigrama.js'); 
 
         //Cargar vistas
         echo view('htdocs/header', $data);
@@ -830,7 +832,6 @@ class Personal extends BaseController
     //Diego-> ajax consultar empleados organigrama
     public function ajax_regresarEmpleados()
     {
-
         $sql = "select E.emp_Nombre,E.emp_EmpleadoID, E.emp_Numero,J.emp_Nombre as Jefe,p.pue_Nombre
             from empleado as E
                 join empleado as J on E.emp_jefe=J.emp_Numero
@@ -846,20 +847,25 @@ class Personal extends BaseController
         }
 
         $sql2 = "select a.emp_Nombre as nombre,a.emp_EmpleadoID as Ejf, p.pue_Nombre as puesto
-        from empleado a
-        join puesto p ON a.emp_PuestoID = p.pue_PuestoID
-        where a.emp_jefe=0 and a.emp_Estatus=1 ";
+                from empleado a
+                join puesto p ON a.emp_PuestoID = p.pue_PuestoID
+                where a.emp_jefe=0 and a.emp_Estatus=1 ";
         $res = $this->db->query($sql2);
         $resg = $res->getRowArray();
 
-        $st = fotoPerfil(encryptDecrypt('encrypt', $resg['Ejf']));
-        $resg['fotoperfil'] = $st;
+        if ($resg) { // Verificamos si hay datos antes de acceder a ellos
+            $st = fotoPerfil(encryptDecrypt('encrypt', $resg['Ejf']));
+            $resg['fotoperfil'] = $st;
+        } else {
+            $resg = []; // Evita que cause errores al intentar acceder a un null
+        }
 
         if ($result || $res->NumRows() > 0) {
             echo json_encode(array("response" => "success", "result" => $result, "general" => $resg));
         } else {
             echo json_encode(array("response" => "error"));
         }
+
     } //end ajax_regresarEmpleados
 
     // Diego->ajax subir recibo nomina
@@ -1257,5 +1263,38 @@ class Personal extends BaseController
         echo json_encode(["response" => $enviado > 0 ? 1 : 0]);
     }
     //end ajaxEnviarNotiNuevoIngreso
+
+    public function ajaxEmpleadosOrganigrama()
+    {
+        $colaboradores = $this->PersonalModel->getEmpleadosOrganigrama();
+        $arremp = [];
+    
+        foreach ($colaboradores as $colaborador) {
+            $id = isset($colaborador['emp_Numero']) ? (int)$colaborador['emp_Numero'] : null;
+            $pid = isset($colaborador['emp_Jefe']) ? (int)$colaborador['emp_Jefe'] : null;
+            $nombre = !empty($colaborador['emp_Nombre']) ? $colaborador['emp_Nombre'] : "Sin Nombre";
+            $puesto = !empty($colaborador['pue_Nombre']) ? $colaborador['pue_Nombre'] : "Sin Puesto";
+            $imagen = !empty($colaborador['emp_Foto']) ? $colaborador['emp_Foto'] : "default.jpg";
+            $departamento = isset($colaborador['dep_Nombre']) ? $colaborador['dep_Nombre'] : "Sin Departamento";
+            
+            
+            $arremp[] = [
+                'id' => $id,
+                'pid' => $pid,
+                'Nombre' => $nombre,
+                'Puesto' => $puesto,
+                'img' => $imagen,
+                'Departamento' => $departamento
+            ];
+            
+        }
+    
+        // ✅ Si el array está vacío, enviar un mensaje de error
+        if (empty($arremp)) {
+            return $this->response->setJSON(["error" => "No se encontraron empleados"]);
+        } else {
+            return $this->response->setJSON(["empleados" => array_values($arremp)]);
+        }
+    }
 
 }

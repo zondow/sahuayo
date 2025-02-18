@@ -280,4 +280,30 @@ class PersonalModel extends Model
     public function getDatosContratos($empleadoID){
         return $this->db->query('select * from contrato where con_EmpleadoID = '.encryptDecrypt('decrypt',$empleadoID))->getResultArray();
     }//getDatosContratos
+
+    public function getEmpleadosOrganigrama(){
+        $sql = "SELECT 
+                    E.emp_EmpleadoID, 
+                    E.emp_Nombre, 
+                    E.emp_Numero, 
+                    P.pue_Nombre, 
+                    E.emp_Jefe,
+                    D.dep_Nombre
+                FROM empleado E
+                LEFT JOIN puesto P ON P.pue_PuestoID =   E.emp_PuestoID
+                LEFT JOIN departamento D ON D.dep_DepartamentoID = E.emp_DepartamentoID
+                WHERE E.emp_Estatus = 1";
+        $colaboradores = $this->db->query($sql)->getResultArray();
+        //$data=array();
+        foreach ($colaboradores as &$colaborador){
+            $colaborador['emp_Foto'] = obtenerImagenDesdeURL(fotoPerfil(encryptDecrypt('encrypt', $colaborador['emp_EmpleadoID'])));
+            $colaborador['emp_EmpleadoID']=encryptDecrypt('encrypt',$colaborador['emp_EmpleadoID']);
+           
+            if($colaborador['emp_Numero'] == "0015"){
+                $colaborador['emp_Jefe'] = "";
+            }
+            //array_push($data, $colaborador);
+        }
+        return $colaboradores;
+    }
 }//end PersonalModel

@@ -219,3 +219,8 @@ function load_jquery_knob(&$data){
 function load_chart_js(&$data){
     $data['scripts'][] = base_url('assets/libs/chart-js/Chart.bundle.min.js');
 }
+
+
+function load_OrgChart(&$data){
+    $data['scripts'][] = base_url('assets/plugins/OrgChartJS/orgchart_old.js');
+}

@@ -64,7 +64,7 @@ class Usuario extends BaseController
 
         //Cargar vistas
         echo view('htdocs/header', $data);
-        echo view('usuario/dashboard', $data);
+        //echo view('usuario/dashboard', $data);
         echo view('htdocs/modalPdf');
         echo view('htdocs/footer');
     } //INDEX
