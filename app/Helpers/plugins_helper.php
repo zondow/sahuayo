@@ -227,3 +227,7 @@ function load_rangeslider(&$data)
     $data['styles'][] = base_url('assets/libs/ion-rangeslider/ion.rangeSlider.css');
     $data['scripts'][] = base_url('assets/libs/ion-rangeslider/ion.rangeSlider.min.js');
 }
+
+function load_OrgChart(&$data){
+    $data['scripts'][] = base_url('assets/plugins/OrgChartJS/orgchart_old.js');
+}

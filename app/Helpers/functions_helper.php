@@ -2262,3 +2262,9 @@ function debugsql() {
     exit();
 }
 
+function obtenerImagenDesdeURL($url) {
+    $tipo = pathinfo($url, PATHINFO_EXTENSION);
+    $datos = file_get_contents($url);
+    return 'data:image/' . $tipo . ';base64,' . base64_encode($datos);
+}
+
